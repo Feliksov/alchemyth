@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Собери своё кольцо — Alchemyth</title>
+<meta name="description" content="Конструктор кольца Alchemyth: оправа, камень, огранка, вес и металл — шаг за шагом, с живыми снимками.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --c-bg:#faf7f2; --c-surface:#ffffff; --c-surface-2:#f1ece2; --c-raise:#ffffff;
+    --c-ink:#15161a; --c-ink-dim:#6a655b; --c-ink-faint:#a39c90;
+    --c-line:#e3dbcc; --c-line-soft:#eee8db;
+    --c-accent:#6d2fd4; --c-accent-soft:#f0e8ff; --c-gold:#8f6128;
+    --c-shadow:0 18px 40px -24px rgba(30,22,10,.4);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --c-bg:#0a0b0e; --c-surface:#141519; --c-surface-2:#1b1c22; --c-raise:#1b1c22;
+      --c-ink:#f4f1e9; --c-ink-dim:#9d9789; --c-ink-faint:#6c6659;
+      --c-line:#292a31; --c-line-soft:#212228;
+      --c-accent:#bd93ff; --c-accent-soft:#261c3c; --c-gold:#d9b878;
+      --c-shadow:0 18px 40px -24px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="dark"]{
+    --c-bg:#0a0b0e; --c-surface:#141519; --c-surface-2:#1b1c22; --c-raise:#1b1c22;
+    --c-ink:#f4f1e9; --c-ink-dim:#9d9789; --c-ink-faint:#6c6659;
+    --c-line:#292a31; --c-line-soft:#212228;
+    --c-accent:#bd93ff; --c-accent-soft:#261c3c; --c-gold:#d9b878;
+    --c-shadow:0 18px 40px -24px rgba(0,0,0,.8);
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; background:var(--c-bg); color:var(--c-ink);
+    font-family:'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+    line-height:1.55; -webkit-font-smoothing:antialiased;
+  }
+  button{ font:inherit; color:inherit; background:none; border:none; }
+  :focus-visible{ outline:2px solid var(--c-accent); outline-offset:3px; border-radius:2px; }
+  .wrap{ max-width:1180px; margin-inline:auto; padding-block:26px 70px; }
+  .mono{ font-family:'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric:tabular-nums; }
+  h1,h2,h3{ font-family:'Fraunces', ui-serif, Georgia, serif; font-weight:400; line-height:1.06; text-wrap:balance; margin:0; }
+
+  .masthead{ display:flex; justify-content:space-between; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding-block:10px 26px; font-family:'IBM Plex Mono',monospace; font-size:.67rem;
+    letter-spacing:.18em; text-transform:uppercase; color:var(--c-ink-faint); }
+  .intro{ max-width:34ch; }
+  .intro h1{ font-size:clamp(2.2rem,5.2vw,3.4rem); letter-spacing:-.015em; }
+  .intro h1 i{ font-style:italic; color:var(--c-accent); }
+  .intro p{ color:var(--c-ink-dim); margin:.9rem 0 0; font-size:.95rem; }
+
+  .layout{ display:grid; grid-template-columns:minmax(0,1fr) 400px; gap:clamp(1.6rem,4vw,3.4rem); align-items:start; margin-top:2.6rem; }
+  @media (max-width:940px){ .layout{ grid-template-columns:1fr; } .rail{ position:static !important; order:-1; } }
+
+  .steps{ list-style:none; margin:0; padding:0; }
+  .stepli{ border-top:1px solid var(--c-line); }
+  .stepli:last-child{ border-bottom:1px solid var(--c-line); }
+  .stepli.is-locked{ opacity:.38; }
+
+  .stephead{ width:100%; display:flex; align-items:center; gap:1rem; padding:1.05rem .2rem; text-align:left; cursor:pointer; }
+  .stepli.is-locked .stephead{ cursor:default; }
+  .stepnum{ font-family:'IBM Plex Mono',monospace; font-size:.66rem; letter-spacing:.1em; color:var(--c-ink-faint); width:1.6rem; flex:none; }
+  .stepli.is-open .stepnum{ color:var(--c-accent); }
+  .steptitle{ font-family:'Fraunces',serif; font-size:1.18rem; flex:none; }
+  .stepli.is-open .steptitle{ color:var(--c-accent); }
+  .stepval{ margin-left:auto; display:flex; align-items:center; gap:.6rem; color:var(--c-ink-dim); font-size:.85rem; text-align:right; }
+  .stepval .mini{ width:34px; height:34px; flex:none; border-radius:50%; overflow:hidden; display:block;
+    background:radial-gradient(70% 60% at 50% 32%, #2f313c, #111218); }
+  .stepval .mini:empty{ display:none; }
+  .stepval .mini svg, .stepval .mini img{ width:100%; height:100%; display:block; object-fit:cover; }
+  .caret{ width:9px; height:9px; border-right:1.4px solid var(--c-ink-faint); border-bottom:1.4px solid var(--c-ink-faint);
+    transform:rotate(45deg); flex:none; transition:transform .35s ease; margin-left:.2rem; }
+  .stepli.is-open .caret{ transform:rotate(225deg); border-color:var(--c-accent); }
+
+  .stepbody{ display:grid; grid-template-rows:0fr; opacity:0; transition:grid-template-rows .45s cubic-bezier(.22,.7,.2,1), opacity .3s ease; }
+  .stepli.is-open .stepbody{ grid-template-rows:1fr; opacity:1; }
+  .stepbody > .inner{ overflow:hidden; }
+  .stepbody .pad{ padding:.2rem .2rem 1.5rem; }
+  @media (prefers-reduced-motion: reduce){ .stepbody{ transition:none; } }
+
+  .cards{ display:grid; grid-template-columns:repeat(3,1fr); gap:.7rem; }
+  @media (max-width:560px){ .cards{ grid-template-columns:repeat(2,1fr); } }
+
+  .card{ position:relative; }
+  .card input{ position:absolute; inset:0; opacity:0; margin:0; cursor:pointer; }
+  .card label{
+    display:flex; flex-direction:column; align-items:center; gap:.5rem; text-align:center; cursor:pointer;
+    background:var(--c-surface); border:1px solid var(--c-line-soft); border-radius:16px;
+    padding:.7rem .6rem .9rem; height:100%;
+    transition:border-color .25s ease, transform .25s ease, box-shadow .25s ease, background .25s ease;
+  }
+  .card label:hover{ transform:translateY(-3px); border-color:var(--c-line); box-shadow:var(--c-shadow); }
+  .card .art{ width:100%; aspect-ratio:1/1; border-radius:12px; overflow:hidden;
+    background:radial-gradient(74% 62% at 50% 30%, #32343f 0%, #1a1b21 52%, #0d0e12 100%);
+    display:flex; align-items:center; justify-content:center; }
+  .card .art svg{ width:85%; height:auto; display:block; }
+  .card .art img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .card .cname{ font-weight:600; font-size:.86rem; line-height:1.25; }
+  .card .csub{ font-size:.7rem; color:var(--c-ink-faint); }
+  .card input:checked + label{ border-color:var(--c-accent); background:var(--c-accent-soft); }
+  .card input:checked + label .cname{ color:var(--c-accent); }
+  .card input:focus-visible + label{ outline:2px solid var(--c-accent); outline-offset:2px; }
+  .tag{ position:absolute; top:.5rem; left:.5rem; z-index:2; font-family:'IBM Plex Mono',monospace;
+    font-size:.54rem; letter-spacing:.08em; text-transform:uppercase; color:#e9d9b4;
+    background:rgba(20,16,8,.6); border:1px solid rgba(233,217,180,.45); border-radius:20px;
+    padding:.12rem .45rem; pointer-events:none; backdrop-filter:blur(3px); }
+
+  .more-toggle{ display:flex; align-items:center; justify-content:center; gap:.5rem; width:100%;
+    border:1px dashed var(--c-line); border-radius:14px; padding:.9rem; cursor:pointer; color:var(--c-ink-dim);
+    font-size:.85rem; transition:border-color .25s ease, color .25s ease; }
+  .more-toggle:hover{ border-color:var(--c-accent); color:var(--c-accent); }
+  .more-wrap{ display:grid; grid-template-rows:0fr; transition:grid-template-rows .45s cubic-bezier(.22,.7,.2,1); }
+  .more-wrap.open{ grid-template-rows:1fr; }
+  .more-wrap > div{ overflow:hidden; }
+  .more-wrap .cards{ padding-top:.7rem; }
+
+  .swrow{ display:flex; gap:.8rem; flex-wrap:wrap; }
+  .sw{ position:relative; }
+  .sw input{ position:absolute; inset:0; opacity:0; margin:0; cursor:pointer; }
+  .sw label{ display:flex; flex-direction:column; align-items:center; gap:.45rem; cursor:pointer; width:88px; }
+  .sw .dot{ width:48px; height:48px; border-radius:50%; overflow:hidden; box-shadow:inset 0 0 0 1px rgba(0,0,0,.14);
+    transition:transform .25s ease; display:block; background:radial-gradient(70% 60% at 40% 30%, #2f313c, #0f1014); }
+  .sw label:hover .dot{ transform:scale(1.08); }
+  .sw .dot svg{ width:100%; height:100%; display:block; }
+  .sw .sname{ font-size:.75rem; color:var(--c-ink-dim); text-align:center; line-height:1.3; }
+  .sw input:checked + label .dot{ box-shadow:inset 0 0 0 1px rgba(0,0,0,.14), 0 0 0 2px var(--c-bg), 0 0 0 4px var(--c-accent); }
+  .sw input:checked + label .sname{ color:var(--c-ink); font-weight:600; }
+  .sw input:focus-visible + label .dot{ outline:2px solid var(--c-accent); outline-offset:4px; }
+
+  .chips{ display:flex; gap:.5rem; flex-wrap:wrap; }
+  .chip{ position:relative; }
+  .chip input{ position:absolute; inset:0; opacity:0; margin:0; cursor:pointer; }
+  .chip label{ display:block; padding:.5rem 1rem; border:1px solid var(--c-line); border-radius:40px;
+    font-family:'IBM Plex Mono',monospace; font-size:.8rem; cursor:pointer; color:var(--c-ink-dim); transition:all .2s ease; }
+  .chip label:hover{ border-color:var(--c-accent); color:var(--c-accent); }
+  .chip input:checked + label{ background:var(--c-accent); border-color:var(--c-accent); color:#fff; }
+  .chip input:focus-visible + label{ outline:2px solid var(--c-accent); outline-offset:2px; }
+
+  .grp{ font-family:'IBM Plex Mono',monospace; font-size:.63rem; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--c-ink-faint); margin:.2rem 0 .7rem; display:flex; align-items:center; gap:.7rem; }
+  .grp::after{ content:""; flex:1; height:1px; background:var(--c-line-soft); }
+  .swrow + .grp{ margin-top:1.3rem; }
+  .hint{ color:var(--c-ink-dim); font-size:.83rem; margin:0 0 .9rem; max-width:58ch; }
+  .hint b{ color:var(--c-ink); font-weight:600; }
+
+  .rail{ position:sticky; top:22px; display:flex; flex-direction:column; gap:.9rem; }
+  .stage{
+    position:relative; border-radius:22px; overflow:hidden;
+    background:
+      radial-gradient(58% 40% at 50% 22%, rgba(255,246,226,.2), transparent 72%),
+      radial-gradient(80% 68% at 50% 32%, #34363f 0%, #191a20 46%, #0a0b0e 100%);
+    display:flex; align-items:center; justify-content:center; box-shadow:var(--c-shadow);
+  }
+  .stage svg{ width:88%; height:auto; display:block; position:relative; z-index:1; }
+  .stagesvg{ width:100%; border-radius:16px; overflow:hidden; display:flex; align-items:center; justify-content:center; position:relative; z-index:1; }
+  #ring3d{ position:absolute; inset:0; width:100%; height:100%; display:block; z-index:2; cursor:grab; touch-action:none; }
+  #ring3d.grabbing{ cursor:grabbing; }
+  .stagehint{ position:absolute; left:0; right:0; bottom:14px; z-index:3; text-align:center; pointer-events:none;
+    font-family:'IBM Plex Mono',monospace; font-size:.6rem; letter-spacing:.14em; text-transform:uppercase;
+    color:rgba(255,255,255,.34); transition:opacity .5s ease; }
+  .stagehint.gone{ opacity:0; }
+  .stage .ph{ color:#63667a; font-size:.85rem; text-align:center; padding:2rem; max-width:22ch; line-height:1.5; }
+  .pop{ animation:pop .55s cubic-bezier(.2,.8,.25,1); }
+  @keyframes pop{ from{ transform:scale(.96) translateY(4px); opacity:.4; } to{ transform:none; opacity:1; } }
+  .sparkle{ animation:twinkle 3.4s ease-in-out infinite; }
+  .sparkle.s2{ animation-delay:1.5s; }
+  @keyframes twinkle{ 0%,100%{ opacity:.3; } 46%{ opacity:1; } }
+  @media (prefers-reduced-motion: reduce){ .pop,.sparkle{ animation:none; } }
+
+
+  .stagesvg .ph{ color:#6f7280; font-size:.9rem; text-align:center; line-height:1.6; padding:2rem; }
+  .hero{ margin:0; width:100%; position:relative; }
+  .hero img{ width:100%; height:auto; display:block; border-radius:16px;
+    animation:heroIn .5s cubic-bezier(.2,.8,.25,1); }
+  @keyframes heroIn{ from{ opacity:0; transform:scale(.97);} to{ opacity:1; transform:none;} }
+  @media (prefers-reduced-motion: reduce){ .hero img{ animation:none; } }
+  .hero figcaption{ position:absolute; left:0; right:0; bottom:0; padding:1.4rem 1.2rem .9rem;
+    border-radius:0 0 16px 16px; text-align:center;
+    background:linear-gradient(to top, rgba(6,7,10,.78), transparent); }
+  .hero .hname{ font-family:'Fraunces',serif; font-size:1.05rem; color:#f3f0e8; letter-spacing:.01em; display:block; }
+  .hero .hnote{ display:block; margin-top:.3rem; font-family:'IBM Plex Mono',monospace; font-size:.58rem;
+    letter-spacing:.09em; text-transform:uppercase; color:rgba(243,240,232,.5); }
+  .chip.wide label{ padding:.6rem 1.1rem; font-family:'IBM Plex Sans',sans-serif; font-size:.86rem; text-align:left; }
+  .chip.wide label span{ display:block; font-size:.7rem; opacity:.65; margin-top:.1rem; }
+  .chip.wide input:checked + label span{ opacity:.85; }
+  .pills{ display:flex; flex-wrap:wrap; gap:.4rem; }
+  .pill{ font-family:'IBM Plex Mono',monospace; font-size:.66rem; letter-spacing:.05em;
+    border:1px solid var(--c-line); border-radius:30px; padding:.24rem .65rem; color:var(--c-ink-dim); }
+  .pill.on{ border-color:var(--c-accent); color:var(--c-accent); }
+
+  .spec{ border:1px solid var(--c-line); border-radius:16px; background:var(--c-surface); padding:1.15rem 1.25rem; }
+  .spec dl{ margin:0; display:grid; grid-template-columns:auto 1fr; gap:.42rem 1rem; }
+  .spec dt{ font-family:'IBM Plex Mono',monospace; font-size:.64rem; letter-spacing:.09em; text-transform:uppercase; color:var(--c-ink-faint); align-self:center; }
+  .spec dd{ margin:0; font-weight:600; text-align:right; font-size:.9rem; }
+  .spec dd.wait{ font-weight:400; color:var(--c-ink-faint); }
+  .spec .foot{ margin:.85rem 0 0; padding-top:.8rem; border-top:1px solid var(--c-line-soft); font-size:.78rem; color:var(--c-ink-dim); }
+  .spec .foot b{ color:var(--c-ink); font-weight:600; }
+
+  .bespoke{ margin-top:2.6rem; border:1px solid var(--c-line); border-radius:22px; overflow:hidden; background:var(--c-surface); }
+  .bespoke .bhead{ padding:1.6rem 1.7rem; }
+  .bespoke h2{ font-size:clamp(1.3rem,2.6vw,1.75rem); }
+  .bespoke h2 i{ font-style:italic; color:var(--c-accent); }
+  .bespoke .bhead p{ color:var(--c-ink-dim); font-size:.9rem; margin:.5rem 0 0; max-width:54ch; }
+  .btrack{ display:grid; grid-template-columns:repeat(auto-fit,minmax(152px,1fr)); border-top:1px solid var(--c-line-soft); }
+  .btrack div{ padding:1.1rem 1.2rem; border-left:1px solid var(--c-line-soft); }
+  .btrack div:first-child{ border-left:none; }
+  .btrack .bn{ font-family:'IBM Plex Mono',monospace; font-size:.62rem; letter-spacing:.12em; color:var(--c-accent); }
+  .btrack .bt{ font-weight:600; font-size:.88rem; margin-top:.3rem; }
+  .btrack .bd{ font-size:.78rem; color:var(--c-ink-dim); margin-top:.2rem; }
+  .drop{ margin:1.4rem 1.7rem 1.7rem; border:1.5px dashed var(--c-line); border-radius:16px; padding:1.3rem;
+    display:flex; align-items:center; gap:1rem; flex-wrap:wrap; transition:border-color .25s ease; }
+  .drop:hover{ border-color:var(--c-accent); }
+  .drop .dtext{ flex:1; min-width:210px; font-size:.85rem; color:var(--c-ink-dim); }
+  .drop .dtext b{ color:var(--c-ink); display:block; font-weight:600; margin-bottom:.15rem; }
+  .drop .dbtn{ border:1px solid var(--c-accent); color:var(--c-accent); border-radius:30px; padding:.5rem 1.1rem;
+    font-size:.83rem; cursor:pointer; transition:background .2s ease, color .2s ease; }
+  .drop .dbtn:hover{ background:var(--c-accent); color:#fff; }
+  .drop input[type=file]{ display:none; }
+  .thumbz{ display:flex; gap:.5rem; flex-wrap:wrap; }
+  .thumbz img{ width:58px; height:58px; object-fit:cover; border-radius:12px; border:1px solid var(--c-line); }
+  .dnote{ font-size:.72rem; color:var(--c-ink-faint); width:100%; margin:0; }
+
+  footer.note{ margin-top:2rem; padding-top:1.4rem; border-top:1px solid var(--c-line);
+    color:var(--c-ink-dim); font-size:.82rem; max-width:66ch; }
+  .defs{ position:absolute; width:0; height:0; overflow:hidden; }
+
+/* ---------- alchemyth.ru: палитра сайта поверх токенов конструктора ---------- */
+:root,
+:root:not([data-theme="light"]),
+:root[data-theme="light"],
+:root[data-theme="dark"]{
+  --c-bg:#16130F; --c-surface:#1F1B14; --c-surface-2:#241D14; --c-raise:#1F1B14;
+  --c-ink:#EDE3CC; --c-ink-dim:#A99E82; --c-ink-faint:#7E7460;
+  --c-line:#35291B; --c-line-soft:#272017;
+  --c-accent:#C89952; --c-accent-soft:#2A2013; --c-gold:#C89952;
+  --c-shadow:0 18px 40px -24px rgba(0,0,0,.75);
+  --brass:#9C6B2E; --brass-light:#C89952; --on-dark:#EDE3CC; --on-dark-mute:#A99E82;
+  --ink-site:#16130F; --ink-site-2:#1F1B14;
+}
+.wrap{ padding-inline:clamp(20px,4vw,32px); }
+.masthead a{ color:inherit; text-decoration:none; border-bottom:1px solid currentColor; }
+.masthead a:hover{ color:var(--brass-light); }
+
+/* ---------- шапка, меню и подвал — как на главной ---------- */
+a{ color:inherit; text-decoration:none; }
+.site-wrap{ max-width:1120px; margin:0 auto; padding:0 clamp(20px,4vw,32px); }
+.site-head{ position:sticky; top:0; z-index:20; background:rgba(22,19,15,.92);
+  backdrop-filter:blur(6px); border-bottom:.5px solid rgba(237,227,204,.14); }
+.site-nav{ display:flex; align-items:center; justify-content:space-between; height:68px; }
+.nav-spacer{ width:28px; }
+.logo{ font-family:'Fraunces',serif; font-size:20px; letter-spacing:.02em; }
+.logo .my{ color:var(--brass-light); }
+.burger{ background:none; border:none; width:28px; height:20px; position:relative; cursor:pointer; padding:0; }
+.burger span{ display:block; position:absolute; left:0; width:100%; height:1px; background:var(--on-dark); }
+.burger span:nth-child(1){ top:0; }
+.burger span:nth-child(2){ top:9px; width:70%; }
+.burger span:nth-child(3){ top:18px; }
+.overlay{ position:fixed; inset:0; background:rgba(10,9,6,.55); opacity:0; pointer-events:none;
+  transition:opacity .25s ease; z-index:29; }
+.overlay.open{ opacity:1; pointer-events:auto; }
+.drawer{ position:fixed; top:0; left:0; height:100%; width:300px; background:var(--ink-site-2);
+  border-right:.5px solid rgba(237,227,204,.14); transform:translateX(-100%); transition:transform .3s ease;
+  z-index:30; padding:28px 32px; display:flex; flex-direction:column; }
+.drawer.open{ transform:translateX(0); }
+.drawer-close{ align-self:flex-end; background:none; border:none; color:var(--on-dark-mute);
+  font-family:'IBM Plex Sans',sans-serif; font-size:14px; cursor:pointer; margin-bottom:40px; }
+.drawer-nav{ display:flex; flex-direction:column; gap:20px; }
+.drawer-nav a{ font-family:'Fraunces',serif; font-size:20px; }
+.drawer-nav a:hover{ color:var(--brass-light); }
+.drawer-nav a[aria-current]{ color:var(--brass-light); }
+.drawer-foot{ margin-top:auto; font-size:13px; color:var(--on-dark-mute); }
+.site-foot{ padding:32px 0; border-top:.5px solid rgba(237,227,204,.14); margin-top:0; }
+.foot-row{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; }
+.foot-links{ display:flex; gap:20px; font-size:14px; color:var(--on-dark-mute); }
+.foot-links a:hover{ color:var(--brass-light); }
+.copyright{ font-size:13px; color:var(--on-dark-mute); }
+@media (max-width:520px){ .foot-row{ flex-direction:column; align-items:flex-start; } }
+@media (prefers-reduced-motion: reduce){ .drawer,.overlay{ transition:none; } }
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay"></div>
+
+<aside class="drawer" id="drawer">
+  <button class="drawer-close" id="drawerClose" aria-label="Закрыть меню">Закрыть</button>
+  <nav class="drawer-nav">
+    <a href="index.html#hero">Главная</a>
+    <a href="index.html#categories">Каталог</a>
+    <a href="constructor.html" aria-current="page">Собери своё кольцо</a>
+    <a href="index.html#recipe">Рецепт философского камня</a>
+    <a href="index.html#versus">Лабораторный против натурального</a>
+    <a href="https://instagram.com/alchemyth.lab" target="_blank" rel="noopener">Instagram</a>
+  </nav>
+  <div class="drawer-foot">alchemyth.философский камень</div>
+</aside>
+
+<header class="site-head">
+  <div class="site-wrap site-nav">
+    <button class="burger" id="burgerBtn" aria-label="Открыть меню">
+      <span></span><span></span><span></span>
+    </button>
+    <a class="logo" href="index.html">alche<span class="my">(my)</span>th</a>
+    <span class="nav-spacer"></span>
+  </div>
+</header>
+
+<main>
+
+
+<svg class="defs" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="m-platinum" x1="0" y1="0" x2=".85" y2="1">
+    <stop offset="0%" stop-color="#ffffff"/><stop offset="20%" stop-color="#b9c0c8"/>
+    <stop offset="40%" stop-color="#f7f9fb"/><stop offset="62%" stop-color="#848c95"/>
+    <stop offset="82%" stop-color="#e4e8ec"/><stop offset="100%" stop-color="#a8b0b8"/>
+  </linearGradient>
+  <linearGradient id="m-white" x1="0" y1="0" x2=".85" y2="1">
+    <stop offset="0%" stop-color="#ffffff"/><stop offset="20%" stop-color="#ccd2d9"/>
+    <stop offset="40%" stop-color="#ffffff"/><stop offset="62%" stop-color="#99a1aa"/>
+    <stop offset="82%" stop-color="#f0f3f6"/><stop offset="100%" stop-color="#bcc3ca"/>
+  </linearGradient>
+  <linearGradient id="m-yellow" x1="0" y1="0" x2=".85" y2="1">
+    <stop offset="0%" stop-color="#fffaea"/><stop offset="20%" stop-color="#d9ad43"/>
+    <stop offset="40%" stop-color="#fdf0c4"/><stop offset="62%" stop-color="#8f6013"/>
+    <stop offset="82%" stop-color="#eecd84"/><stop offset="100%" stop-color="#b3821f"/>
+  </linearGradient>
+  <linearGradient id="m-rose" x1="0" y1="0" x2=".85" y2="1">
+    <stop offset="0%" stop-color="#fff5ef"/><stop offset="20%" stop-color="#d59578"/>
+    <stop offset="40%" stop-color="#fce3d5"/><stop offset="62%" stop-color="#95513a"/>
+    <stop offset="82%" stop-color="#eebda6"/><stop offset="100%" stop-color="#bd7a5e"/>
+  </linearGradient>
+
+  <radialGradient id="g-diamond" cx=".36" cy=".26" r=".88">
+    <stop offset="0%" stop-color="#ffffff"/><stop offset="38%" stop-color="#eaf1fa"/>
+    <stop offset="72%" stop-color="#bfcede"/><stop offset="100%" stop-color="#8296ae"/>
+  </radialGradient>
+  <radialGradient id="g-fancy-yellow" cx=".36" cy=".26" r=".88">
+    <stop offset="0%" stop-color="#fffdf0"/><stop offset="38%" stop-color="#f7dd63"/>
+    <stop offset="72%" stop-color="#d9ab1f"/><stop offset="100%" stop-color="#8a6a10"/>
+  </radialGradient>
+  <radialGradient id="g-fancy-blue" cx=".36" cy=".26" r=".88">
+    <stop offset="0%" stop-color="#f0f9ff"/><stop offset="38%" stop-color="#8fc8ee"/>
+    <stop offset="72%" stop-color="#4b8fc4"/><stop offset="100%" stop-color="#1d4c74"/>
+  </radialGradient>
+  <radialGradient id="g-fancy-pink" cx=".36" cy=".26" r=".88">
+    <stop offset="0%" stop-color="#fff5f9"/><stop offset="38%" stop-color="#f6aecb"/>
+    <stop offset="72%" stop-color="#d9739f"/><stop offset="100%" stop-color="#8f3b63"/>
+  </radialGradient>
+  <radialGradient id="g-ruby" cx=".36" cy=".26" r=".88">
+    <stop offset="0%" stop-color="#ffb3c6"/><stop offset="38%" stop-color="#ef3665"/>
+    <stop offset="72%" stop-color="#b30f39"/><stop offset="100%" stop-color="#63041a"/>
+  </radialGradient>
+  <radialGradient id="g-sapphire" cx=".36" cy=".26" r=".88">
+    <stop offset="0%" stop-color="#a8c2ff"/><stop offset="38%" stop-color="#3f6ae6"/>
+    <stop offset="72%" stop-color="#173db0"/><stop offset="100%" stop-color="#06143f"/>
+  </radialGradient>
+  <radialGradient id="g-emerald" cx=".36" cy=".26" r=".88">
+    <stop offset="0%" stop-color="#9df5cd"/><stop offset="38%" stop-color="#22b478"/>
+    <stop offset="72%" stop-color="#0a8351"/><stop offset="100%" stop-color="#023821"/>
+  </radialGradient>
+  <radialGradient id="g-ghost" cx=".36" cy=".26" r=".88">
+    <stop offset="0%" stop-color="#ffffff" stop-opacity=".45"/><stop offset="60%" stop-color="#c2cad6" stop-opacity=".24"/>
+    <stop offset="100%" stop-color="#848d9c" stop-opacity=".16"/>
+  </radialGradient>
+
+  <linearGradient id="fadeGrad" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#ffffff" stop-opacity=".85"/>
+    <stop offset="62%" stop-color="#ffffff" stop-opacity="0"/>
+  </linearGradient>
+  <mask id="fadeMask" maskUnits="userSpaceOnUse" x="0" y="214" width="240" height="92">
+    <rect x="0" y="214" width="240" height="92" fill="url(#fadeGrad)"/>
+  </mask>
+
+  <filter id="soft" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="1.7"/></filter>
+  <filter id="shade" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="4.5"/></filter>
+</defs></svg>
+
+<div class="wrap">
+  <div class="masthead"><span><a href="index.html">Главная</a> · Собери своё кольцо</span><span>Кольцо на заказ</span></div>
+
+  <div class="intro">
+    <h1>Соберите <i>своё</i> кольцо</h1>
+    <p>Шаг за шагом, на каждом — только один выбор, кольцо собирается на глазах. У дуэта шагов больше: там два камня, и каждый выбирается отдельно. Всё остальное, чего здесь нет, живёт в авторском разделе внизу.</p>
+  </div>
+
+  <div class="layout">
+    <div>
+      <form id="cfg"><ol class="steps" id="steps"></ol></form>
+
+      <section class="bespoke">
+        <div class="bhead">
+          <h2>Ничего не подошло? <i>Авторское украшение</i></h2>
+          <p>Конструктор покрывает то, что заказывают чаще всего. Всё сложное — несимметричные закрепки, смешанные камни, кольцо по эскизу или по фотографии бабушкиного — делаем отдельно, вместе с ювелиром.</p>
+        </div>
+        <div class="btrack">
+          <div><div class="bn">01</div><div class="bt">Идея</div><div class="bd">Фото, скриншот, эскиз на салфетке или просто описание.</div></div>
+          <div><div class="bn">02</div><div class="bt">Разговор</div><div class="bd">Уточняем камень, металл, посадку и бюджет.</div></div>
+          <div><div class="bn">03</div><div class="bt">CAD и рендер</div><div class="bd">Показываем кольцо в 3D до того, как оно отлито.</div></div>
+          <div><div class="bn">04</div><div class="bt">Рост и огранка</div><div class="bd">Растим камень под утверждённую модель.</div></div>
+        </div>
+        <label class="drop" for="refUpload">
+          <div class="dtext"><b>Покажите, что нравится</b>Перетащите фото или выберите файл — так разговор начинается быстрее всего.</div>
+          <span class="dbtn">Выбрать фото</span>
+          <input type="file" id="refUpload" accept="image/*" multiple>
+          <div class="thumbz" id="refThumbs"></div>
+          <p class="dnote" id="refNote">Файлы остаются в браузере — это демонстрация шага, ничего никуда не отправляется.</p>
+        </label>
+      </section>
+
+      <footer class="note">Снимки оправ — студийная съёмка, сделанная для каталога: платина, белый бриллиант. Металл и цвет камня пока показаны в спецификации, а не на фотографии — следующим шагом они будут меняться прямо на снимке. Форма и вес камня относятся к центральному камню и указаны рядом.</footer>
+    </div>
+
+    <aside class="rail">
+      <div class="stage" id="stage">
+        <canvas id="ring3d" hidden></canvas>
+        <div id="stageSvg" class="stagesvg"></div>
+        <div id="stageHint" class="stagehint" hidden>потяните, чтобы повернуть</div>
+      </div>
+      <div class="pills" id="pills"></div>
+      <div class="spec">
+        <dl id="specList"></dl>
+        <p class="foot">Срок от реактора до готового кольца: <b id="sLead">—</b></p>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ===== Слоты под ваши картинки. Положите сюда путь к рендеру или фото —
+     карточка сразу покажет его вместо векторной схемы.
+     Например:  solitaire:'img/solitaire.png'                       ===== */
+  /* Фотографии оправ. Карточка берёт квадрат 420, витрина — 880.
+     Чтобы заменить на съёмку своих образцов, достаточно положить файлы под теми же именами. */
+  var FAM_IDS = ['solitaire','halo','pave','trinity','bezel','cathedral','eternity','cluster','vintage','tension'];
+  var PHOTOS = {}, PHOTOS_BIG = {};
+  FAM_IDS.forEach(function(id){ PHOTOS[id]='img/'+id+'.jpg'; PHOTOS_BIG[id]='img/'+id+'_big.jpg'; });
+
+  /* Снимки отдельных вариантов. Ключ — "семейство-вариант".
+     Пока файла нет, витрина показывает снимок семейства и честно об этом пишет. */
+  var VARIANT_SHOTS = {
+    'solitaire-p4':1, 'solitaire-p6':2,
+    'halo-classic':1, 'halo-double':2, 'halo-hidden':2,
+    'pave-r1':1, 'pave-r2':2, 'pave-r3':2,
+    'trinity-round':1, 'trinity-baguette':2, 'trinity-pear':2,
+    'bezel-full':1, 'bezel-half':2,
+    'cathedral-plain':1, 'cathedral-pave':2,
+    'eternity-full':1, 'eternity-half':2, 'eternity-center':2,
+    'cluster-flower':1, 'cluster-honeycomb':2,
+    'vintage-milgrain':1, 'vintage-filigree':2,
+    'tension-classic':1, 'tension-open':2
+  };
+  function shotKey(fam,v){ return fam+'-'+v; }
+  function heroSrc(fam,v){
+    var k=shotKey(fam,v);
+    return VARIANT_SHOTS[k]===1 ? PHOTOS_BIG[fam] : (VARIANT_SHOTS[k] ? 'img/'+k+'_big.jpg' : null);
+  }
+
+  var FAMILIES = [
+    { id:'solitaire', name:'Солитер', tag:'чаще всего', note:'Камень на лапках и ничего вокруг — весь свет достаётся ему одному.',
+      variants:[{id:'p4',name:'4 лапки',sub:'острее силуэт'},{id:'p6',name:'6 лапок',sub:'надёжнее хват'}] },
+    { id:'halo', name:'Гало', note:'Ореол из мелких бриллиантов: центральный камень выглядит заметно крупнее.',
+      variants:[{id:'classic',name:'Классическое',sub:'один ряд'},{id:'double',name:'Двойное',sub:'два ряда'},{id:'hidden',name:'Скрытое',sub:'видно только сбоку'}] },
+    { id:'pave', name:'Паве', note:'Дорожка камней по шинке — кольцо светится по всей длине пальца.',
+      variants:[{id:'r1',name:'Один ряд',sub:'сдержанно'},{id:'r2',name:'Два ряда',sub:'ярче'},{id:'r3',name:'Три ряда',sub:'максимум'}] },
+    { id:'trinity', name:'Трилогия', note:'Центр и два спутника — классическая история «прошлое, настоящее, будущее».',
+      variants:[{id:'round',name:'Круглые',sub:'мягко'},{id:'baguette',name:'Багеты',sub:'графично'},{id:'pear',name:'Груши',sub:'текуче'}] },
+    { id:'bezel', name:'Бизель', note:'Глухой ободок. Ничего не цепляется — оправа для тех, кто не снимает кольцо.',
+      variants:[{id:'full',name:'Полный',sub:'по кругу'},{id:'half',name:'Половинный',sub:'камень открыт'}] },
+
+    { id:'duet', name:'Дуэт', note:'Toi et Moi — «ты и я». Два крупных камня рядом, каждый со своей огранкой и цветом.',
+      variants:[{id:'em-pear',name:'Изумруд и груша',sub:'классика жанра'},{id:'oval-pear',name:'Овал и груша',sub:'мягче'},
+                {id:'oval-oval',name:'Два овала',sub:'симметрично'},{id:'em-round',name:'Изумруд и круг',sub:'графично'}] },
+
+    { id:'cathedral', name:'Катедрал', extra:true, note:'Арки поднимают камень над шинкой — профиль как у свода собора.',
+      variants:[{id:'plain',name:'Гладкие арки',sub:'чистая линия'},{id:'pave',name:'Арки с паве',sub:'с дорожкой'}] },
+    { id:'eternity', name:'Дорожка', extra:true, note:'Камни идут по всему кольцу или по верхней половине.',
+      variants:[{id:'full',name:'Полная',sub:'по кругу'},{id:'half',name:'Половинная',sub:'удобнее носить'},{id:'center',name:'С акцентом',sub:'центр крупнее'}] },
+    { id:'cluster', name:'Кластер', extra:true, note:'Соцветие мелких камней читается как один крупный.',
+      variants:[{id:'flower',name:'Цветок',sub:'шесть лепестков'},{id:'honeycomb',name:'Соты',sub:'два кольца'}] },
+    { id:'vintage', name:'Винтаж', extra:true, note:'Миллигрейн по краям и филигранные завитки — почерк начала прошлого века.',
+      variants:[{id:'milgrain',name:'Миллигрейн',sub:'зерно по краю'},{id:'filigree',name:'Филигрань',sub:'с завитками'}] },
+    { id:'tension', name:'Тенсион', extra:true, note:'Камень держится напряжением металла — выглядит парящим.',
+      variants:[{id:'classic',name:'Классический',sub:'узкий зазор'},{id:'open',name:'Открытый',sub:'широкий зазор'}] }
+  ];
+  var METALS = [
+    { id:'platinum', name:'Платина', grad:'m-platinum' },
+    { id:'white',    name:'Белое 750', grad:'m-white' },
+    { id:'yellow',   name:'Жёлтое 750', grad:'m-yellow' },
+    { id:'rose',     name:'Розовое 750', grad:'m-rose' }
+  ];
+  var STONES = [
+    { id:'diamond',  name:'Белый',   group:'Бриллианты', grad:'g-diamond',      method:'CVD, без примесей', hard:'10', full:'Бриллиант, белый' },
+    { id:'yellow',   name:'Жёлтый',  group:'Бриллианты', grad:'g-fancy-yellow', method:'азот при росте',    hard:'10', full:'Бриллиант, фантазийный жёлтый' },
+    { id:'blue',     name:'Синий',   group:'Бриллианты', grad:'g-fancy-blue',   method:'бор при росте',     hard:'10', full:'Бриллиант, фантазийный синий' },
+    { id:'pink',     name:'Розовый', group:'Бриллианты', grad:'g-fancy-pink',   method:'обработка после роста', hard:'10', full:'Бриллиант, фантазийный розовый' },
+    { id:'ruby',     name:'Рубин',   group:'Цветные камни', grad:'g-ruby',      method:'флюсовый',          hard:'9', full:'Рубин' },
+    { id:'sapphire', name:'Сапфир',  group:'Цветные камни', grad:'g-sapphire',  method:'флюсовый',          hard:'9', full:'Сапфир' },
+    { id:'emerald',  name:'Изумруд', group:'Цветные камни', grad:'g-emerald',   method:'гидротермальный',   hard:'7,5–8', full:'Изумруд' }
+  ];
+  var SHAPES = [
+    { id:'oval',     name:'Овал',      facets:'~56' },
+    { id:'round',    name:'Круг',      facets:'57–58' },
+    { id:'cushion',  name:'Кушон',     facets:'~64' },
+    { id:'pear',     name:'Груша',     facets:'~58' },
+    { id:'emerald',  name:'Изумрудная',facets:'~50' },
+    { id:'princess', name:'Принцесса', facets:'~76' }
+  ];
+  /* 1…10 карат, шаг карат. Диаметр камня растёт как кубический корень из веса —
+     так же, как в жизни: 1 ct ≈ 6,4 мм, 10 ct ≈ 13,9 мм. */
+  var CARATS = [];
+  for(var w=1; w<=10; w++) CARATS.push({ id:String(w), s:Math.pow(w,1/3) });
+  var DUET_PAIRS = { 'em-pear':['emerald','pear'], 'oval-pear':['oval','pear'],
+                     'oval-oval':['oval','oval'], 'em-round':['emerald','round'] };
+  var LEAD_EXTRA = { solitaire:0, bezel:0, tension:1, halo:1, pave:1, trinity:1, cathedral:1, cluster:2, eternity:2, vintage:2, duet:3 };
+
+  var state = { family:'solitaire', variant:'p4', stone:'diamond', shape:'oval', carat:'1',
+                stone2:'diamond', shape2:'pear', carat2:'1', metal:'platinum' };
+  var picked = { family:false, variant:false, stone:false, shape:false, carat:false,
+                 stone2:false, shape2:false, carat2:false, metal:false };
+
+  /* ================= geometry helpers ================= */
+  var uid = 0, LIGHT = 232;
+  function f(n){ return Math.round(n*10)/10; }
+  function pt(cx,cy,r,d){ var a=d*Math.PI/180; return [cx+r*Math.cos(a), cy+r*Math.sin(a)]; }
+  function find(arr,id){ for(var i=0;i<arr.length;i++){ if(arr[i].id===id) return arr[i]; } return arr[0]; }
+  function pts(list){ return list.map(function(p){ return f(p[0])+','+f(p[1]); }).join(' '); }
+  function shade(angle, lo, hi){
+    var d=(angle-LIGHT)*Math.PI/180;
+    return (lo + (hi-lo)*(0.5+0.5*Math.cos(d))).toFixed(3);
+  }
+
+  function silhouette(shape,R,attrs){
+    switch(shape){
+      case 'oval': return '<ellipse rx="'+f(R*0.76)+'" ry="'+f(R)+'" '+attrs+'/>';
+      case 'cushion': return '<rect x="'+f(-R*0.88)+'" y="'+f(-R*0.88)+'" width="'+f(R*1.76)+'" height="'+f(R*1.76)+'" rx="'+f(R*0.34)+'" '+attrs+'/>';
+      case 'princess': return '<rect x="'+f(-R*0.85)+'" y="'+f(-R*0.85)+'" width="'+f(R*1.7)+'" height="'+f(R*1.7)+'" rx="'+f(R*0.07)+'" '+attrs+'/>';
+      case 'emerald': { var w=R*0.76,h=R,c=R*0.28;
+        return '<polygon points="'+f(-w+c)+','+f(-h)+' '+f(w-c)+','+f(-h)+' '+f(w)+','+f(-h+c)+' '+f(w)+','+f(h-c)+' '+
+               f(w-c)+','+f(h)+' '+f(-w+c)+','+f(h)+' '+f(-w)+','+f(h-c)+' '+f(-w)+','+f(-h+c)+'" '+attrs+'/>'; }
+      case 'pear': return '<path d="M0,'+f(-R)+' C '+f(R*0.44)+','+f(-R*0.62)+' '+f(R*0.74)+','+f(-R*0.12)+' '+f(R*0.74)+','+f(R*0.28)+
+        ' A '+f(R*0.74)+','+f(R*0.74)+' 0 0 1 '+f(-R*0.74)+','+f(R*0.28)+
+        ' C '+f(-R*0.74)+','+f(-R*0.12)+' '+f(-R*0.44)+','+f(-R*0.62)+' 0,'+f(-R)+' Z" '+attrs+'/>';
+      default: return '<circle r="'+f(R)+'" '+attrs+'/>';
+    }
+  }
+
+  /* true round-brilliant crown: table + 8 stars + 8 bezels + 16 upper girdles */
+  function brilliantCrown(R,simple){
+    var out='', k, rt=R*0.50, rs=R*0.71;
+    function P(r,a){ return pt(0,0,r,a); }
+    for(k=0;k<8;k++){                                    /* upper girdle */
+      var a0=k*45, am=(k+0.5)*45, a2=(k+1)*45;
+      var G0=P(R,a0), Gm=P(R,am), G1=P(R,a2), S=P(rs,am);
+      out += '<polygon points="'+pts([G0,Gm,S])+'" fill="#fff" fill-opacity="'+shade(a0+12,.03,.30)+'"/>';
+      out += '<polygon points="'+pts([Gm,G1,S])+'" fill="#fff" fill-opacity="'+shade(a2-12,.03,.30)+'"/>';
+    }
+    for(k=0;k<8;k++){                                    /* bezel kites */
+      var a=k*45;
+      out += '<polygon points="'+pts([P(rt,a),P(rs,a-22.5),P(R,a),P(rs,a+22.5)])+
+             '" fill="#fff" fill-opacity="'+shade(a,.05,.40)+'"/>';
+    }
+    for(k=0;k<8;k++){                                    /* star facets */
+      var b=(k+0.5)*45;
+      out += '<polygon points="'+pts([P(rt,k*45),P(rt,(k+1)*45),P(rs,b)])+
+             '" fill="#fff" fill-opacity="'+shade(b,.04,.26)+'"/>';
+    }
+    var tab=[]; for(k=0;k<8;k++) tab.push(P(rt,k*45));   /* table */
+    out += '<polygon points="'+pts(tab)+'" fill="#fff" fill-opacity=".14"/>';
+    out += '<polygon points="'+pts(tab)+'" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="'+(simple?.5:.8)+'"/>';
+    if(!simple){
+      var ln='';
+      for(k=0;k<8;k++){
+        var a1=k*45, b1=(k+0.5)*45;
+        ln += '<path d="M'+f(P(rt,a1)[0])+','+f(P(rt,a1)[1])+' L'+f(P(R,a1)[0])+','+f(P(R,a1)[1])+'"/>';
+        ln += '<path d="M'+f(P(rs,b1)[0])+','+f(P(rs,b1)[1])+' L'+f(P(R,b1)[0])+','+f(P(R,b1)[1])+'"/>';
+      }
+      out += '<g stroke="#fff" stroke-opacity=".26" stroke-width=".5" fill="none">'+ln+'</g>';
+    }
+    return out;
+  }
+
+  function stepCrown(shape,R){
+    var st=[[0.78,.09],[0.56,.17],[0.34,.28]], out='';
+    for(var s=0;s<st.length;s++){
+      out += silhouette(shape,R*st[s][0],'fill="#fff" fill-opacity="'+st[s][1]+'" stroke="#fff" stroke-opacity=".4" stroke-width=".6"');
+    }
+    return out;
+  }
+
+  function princessCrown(R){
+    var h=R*0.85, out='', q=[[1,1],[1,-1],[-1,-1],[-1,1]];
+    for(var i=0;i<4;i++){
+      var a=q[i], b=q[(i+1)%4];
+      var ang=[315,45,135,225][i];
+      out += '<polygon points="'+pts([[a[0]*h,a[1]*h],[b[0]*h,b[1]*h],[0,0]])+'" fill="#fff" fill-opacity="'+shade(ang,.05,.36)+'"/>';
+    }
+    out += '<rect x="'+f(-h*0.42)+'" y="'+f(-h*0.42)+'" width="'+f(h*0.84)+'" height="'+f(h*0.84)+
+      '" fill="#fff" fill-opacity=".13" stroke="#fff" stroke-opacity=".5" stroke-width=".7" transform="rotate(45)"/>';
+    return out;
+  }
+
+  function sparkle(x,y,s,cls){
+    return '<path class="sparkle'+(cls||'')+'" transform="translate('+f(x)+','+f(y)+')" d="M0,'+f(-s)+' L'+f(s*0.18)+','+f(-s*0.18)+
+      ' L'+f(s)+',0 L'+f(s*0.18)+','+f(s*0.18)+' L0,'+f(s)+' L'+f(-s*0.18)+','+f(s*0.18)+' L'+f(-s)+',0 L'+f(-s*0.18)+','+f(-s*0.18)+
+      '" fill="#fff" fill-opacity=".9"/>';
+  }
+
+  function gem(shape,R,grad,simple,ghost){
+    var cid='gc'+(++uid), crown;
+    if(shape==='emerald') crown = stepCrown(shape,R);
+    else if(shape==='princess') crown = princessCrown(R);
+    else if(shape==='oval') crown = '<g transform="scale(0.76,1)">'+brilliantCrown(R,simple)+'</g>';
+    else if(shape==='pear') crown = '<g transform="translate(0,'+f(R*0.1)+') scale(0.82,0.9)">'+brilliantCrown(R,simple)+'</g>';
+    else if(shape==='cushion') crown = '<g transform="scale(1.02)">'+brilliantCrown(R,simple)+'</g>';
+    else crown = brilliantCrown(R,simple);
+
+    var out = '<clipPath id="'+cid+'">'+silhouette(shape,R,'')+'</clipPath>';
+    out += '<g clip-path="url(#'+cid+')">';
+    out += silhouette(shape,R,'fill="url(#'+(ghost?'g-ghost':grad)+')"');
+    out += ghost ? '' : crown;
+    if(!simple && !ghost){
+      out += '<ellipse cx="'+f(-R*0.32)+'" cy="'+f(-R*0.38)+'" rx="'+f(R*0.36)+'" ry="'+f(R*0.21)+'" fill="#fff" fill-opacity=".34" filter="url(#soft)"/>';
+      out += '<ellipse cx="'+f(R*0.34)+'" cy="'+f(R*0.42)+'" rx="'+f(R*0.3)+'" ry="'+f(R*0.18)+'" fill="#fff" fill-opacity=".14" filter="url(#soft)"/>';
+    }
+    out += '</g>';
+    if(ghost){
+      out += silhouette(shape,R,'fill="none" stroke="#ffffff" stroke-opacity=".45" stroke-width="1.2" stroke-dasharray="4 3"');
+    } else {
+      out += silhouette(shape,R,'fill="none" stroke="#1b2432" stroke-opacity=".45" stroke-width="'+(simple?1:1.5)+'"');
+      out += silhouette(shape,R*0.94,'fill="none" stroke="#ffffff" stroke-opacity=".45" stroke-width="'+(simple?.6:.9)+'"');
+      if(!simple) out += sparkle(-R*0.46,-R*0.5,R*0.3) + sparkle(R*0.5,R*0.32,R*0.2,' s2');
+    }
+    return out;
+  }
+
+  function accent(x,y,r,grad){
+    return '<g transform="translate('+f(x)+','+f(y)+')"><circle r="'+f(r)+'" fill="url(#'+grad+')"/>'+
+      '<circle r="'+f(r)+'" fill="none" stroke="#1b2432" stroke-opacity=".45" stroke-width=".5"/>'+
+      '<circle cx="'+f(-r*0.3)+'" cy="'+f(-r*0.32)+'" r="'+f(r*0.36)+'" fill="#fff" fill-opacity=".72"/></g>';
+  }
+  function bead(x,y,r,m){ return '<circle cx="'+f(x)+'" cy="'+f(y)+'" r="'+f(r)+'" fill="url(#'+m+')" stroke="#000" stroke-opacity=".14" stroke-width=".3"/>'; }
+  function prongAngles(n){ return n===6 ? [30,90,150,210,270,330] : [42,138,222,318]; }
+  function prongsBack(R,n,m){
+    return prongAngles(n).map(function(a){
+      var b=pt(0,0,R*0.5,a), t=pt(0,0,R*1.15,a);
+      return '<path d="M'+f(b[0])+','+f(b[1])+' L'+f(t[0])+','+f(t[1])+'" stroke="url(#'+m+')" stroke-width="'+f(R*0.24)+'" stroke-linecap="round"/>';
+    }).join('');
+  }
+  function clawTips(R,n,m){
+    return prongAngles(n).map(function(a){
+      var t=pt(0,0,R*0.95,a);
+      return '<g><circle cx="'+f(t[0])+'" cy="'+f(t[1])+'" r="'+f(R*0.155)+'" fill="url(#'+m+')" stroke="#000" stroke-opacity=".2" stroke-width=".4"/>'+
+        '<circle cx="'+f(t[0]-R*0.05)+'" cy="'+f(t[1]-R*0.05)+'" r="'+f(R*0.055)+'" fill="#fff" fill-opacity=".55"/></g>';
+    }).join('');
+  }
+  function ringOfAccents(radius,r,grad,from,to){
+    from=(from===undefined)?0:from; to=(to===undefined)?360:to;
+    var span=to-from, n=Math.max(4, Math.round((span/360)*(2*Math.PI*radius)/(r*2.35))), out='';
+    for(var i=0;i<n;i++){
+      var p=pt(0,0,radius, from+(span/n)*i+(span===360?0:(span/n)/2));
+      out += accent(p[0],p[1],r,grad);
+    }
+    return out;
+  }
+
+  /* ================= the ring ================= */
+  var RX=120, RY=156, RR=52, RW=12, FLOOR=214;
+
+  function stonesOnBand(radii,sr,grad,arcs){
+    var out='';
+    radii.forEach(function(rad){
+      arcs.forEach(function(arc){
+        var span=arc[1]-arc[0], n=Math.max(2, Math.round((span/360)*(2*Math.PI*rad)/(sr*2.4)));
+        for(var i=0;i<n;i++){ var p=pt(RX,RY,rad, arc[0]+(span/n)*(i+0.5)); out += accent(p[0],p[1],sr,grad); }
+      });
+    });
+    return out;
+  }
+  function bandShadow(){
+    return '<ellipse cx="'+RX+'" cy="'+(FLOOR+4)+'" rx="'+(RR*0.92)+'" ry="7" fill="#000" opacity=".5" filter="url(#shade)"/>';
+  }
+  function baseBand(m,simple){
+    var out = '<circle cx="'+RX+'" cy="'+RY+'" r="'+RR+'" fill="none" stroke="url(#'+m+')" stroke-width="'+RW+'"/>';
+    if(!simple){
+      out += '<circle cx="'+RX+'" cy="'+RY+'" r="'+(RR+RW/2-0.6)+'" fill="none" stroke="#000" stroke-opacity=".22" stroke-width="1.2"/>';
+      out += '<circle cx="'+RX+'" cy="'+RY+'" r="'+(RR-RW/2+0.6)+'" fill="none" stroke="#000" stroke-opacity=".3" stroke-width="1.4"/>';
+      var a1=pt(RX,RY,RR+RW*0.26,128), a2=pt(RX,RY,RR+RW*0.26,178);
+      out += '<path d="M'+f(a1[0])+','+f(a1[1])+' A'+(RR+RW*0.26)+','+(RR+RW*0.26)+' 0 0 1 '+f(a2[0])+','+f(a2[1])+
+             '" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="2.6" stroke-linecap="round"/>';
+      var b1=pt(RX,RY,RR-RW*0.2,30), b2=pt(RX,RY,RR-RW*0.2,74);
+      out += '<path d="M'+f(b1[0])+','+f(b1[1])+' A'+(RR-RW*0.2)+','+(RR-RW*0.2)+' 0 0 1 '+f(b2[0])+','+f(b2[1])+
+             '" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="1.8" stroke-linecap="round"/>';
+    }
+    return out;
+  }
+  function splitBand(m,gap){
+    var a=pt(RX,RY,RR,270+gap), b=pt(RX,RY,RR,270-gap);
+    return '<path d="M'+f(a[0])+','+f(a[1])+' A'+RR+','+RR+' 0 1 1 '+f(b[0])+','+f(b[1])+
+      '" fill="none" stroke="url(#'+m+')" stroke-width="'+RW+'" stroke-linecap="round"/>';
+  }
+  function gallery(hy,R,m){
+    return '<path d="M'+f(RX-R*0.5)+','+f(hy+R*0.45)+' L'+f(RX-3.5)+',106 M'+f(RX+R*0.5)+','+f(hy+R*0.45)+' L'+f(RX+3.5)+
+      ',106" fill="none" stroke="url(#'+m+')" stroke-width="'+f(Math.max(3.4,R*0.2))+'" stroke-linecap="round"/>';
+  }
+  function arches(hy,R,m,withPave,grad){
+    var out='';
+    [-1,1].forEach(function(s){
+      out += '<path d="M'+f(RX+s*(RR-2))+','+f(RY-6)+' Q'+f(RX+s*(RR-6))+','+f(hy+6)+' '+f(RX+s*R*0.72)+','+f(hy+R*0.3)+
+        '" fill="none" stroke="url(#'+m+')" stroke-width="7" stroke-linecap="round"/>';
+    });
+    if(withPave) out += stonesOnBand([RR],2.4,grad,[[186,248],[292,354]]);
+    return out;
+  }
+
+  function head(cfg,R,hy,m,grad,simple,ghost){
+    var fam=cfg.family, v=cfg.variant, shape=cfg.shape, back='', front='', extra='';
+    var core = gem(shape,R,grad,simple,ghost);
+    switch(fam){
+      case 'solitaire': { var n=v==='p6'?6:4; back=prongsBack(R,n,m); front=clawTips(R,n,m); break; }
+      case 'halo': {
+        if(v==='hidden') extra = ringOfAccents(R*1.02,R*0.16,'g-diamond',15,165);
+        else { extra = ringOfAccents(R*1.42,R*0.19,'g-diamond'); if(v==='double') extra += ringOfAccents(R*1.86,R*0.155,'g-diamond'); }
+        back = extra+prongsBack(R,4,m); front=clawTips(R,4,m); break;
+      }
+      case 'pave': case 'cathedral': { back=prongsBack(R,4,m); front=clawTips(R,4,m); break; }
+      case 'trinity': {
+        var sr=R*0.52;
+        [-1,1].forEach(function(s){
+          var x=s*R*1.72, y=R*0.22, side='';
+          if(v==='baguette'){
+            side = '<g transform="translate('+f(x)+','+f(y)+')">'+
+              '<polygon points="'+f(-sr*0.8)+','+f(-sr*0.95)+' '+f(sr*0.8)+','+f(-sr*0.7)+' '+f(sr*0.8)+','+f(sr*0.7)+' '+f(-sr*0.8)+','+f(sr*0.95)+
+              '" fill="url(#g-diamond)" stroke="#1b2432" stroke-opacity=".4" stroke-width=".7"/>'+
+              '<polygon points="'+f(-sr*0.45)+','+f(-sr*0.55)+' '+f(sr*0.45)+','+f(-sr*0.4)+' '+f(sr*0.45)+','+f(sr*0.4)+' '+f(-sr*0.45)+','+f(sr*0.55)+
+              '" fill="#fff" fill-opacity=".26"/></g>';
+          } else if(v==='pear'){
+            side = '<g transform="translate('+f(x)+','+f(y)+') rotate('+(s*90)+')">'+gem('pear',sr,'g-diamond',true)+'</g>';
+          } else {
+            side = '<g transform="translate('+f(x)+','+f(y)+')">'+gem('round',sr,'g-diamond',true)+'</g>';
+          }
+          back += side + '<g transform="translate('+f(x)+','+f(y)+')">'+clawTips(sr,4,m)+'</g>';
+        });
+        back += prongsBack(R,4,m); front=clawTips(R,4,m); break;
+      }
+      case 'bezel': {
+        if(v==='half'){
+          [[100,260],[-80,80]].forEach(function(arc){
+            var p1=pt(0,0,R*1.1,arc[0]), p2=pt(0,0,R*1.1,arc[1]);
+            back += '<path d="M'+f(p1[0])+','+f(p1[1])+' A'+f(R*1.1)+','+f(R*1.1)+' 0 0 1 '+f(p2[0])+','+f(p2[1])+
+              '" fill="none" stroke="url(#'+m+')" stroke-width="'+f(R*0.26)+'" stroke-linecap="round"/>';
+          });
+        } else {
+          back = silhouette(shape,R*1.18,'fill="url(#'+m+')" stroke="#000" stroke-opacity=".2" stroke-width=".7"');
+          back += silhouette(shape,R*1.04,'fill="none" stroke="#000" stroke-opacity=".25" stroke-width="1"');
+        }
+        break;
+      }
+      case 'tension': {
+        [-1,1].forEach(function(s){
+          back += '<rect x="'+f(s>0?R*0.82:-R*1.18)+'" y="'+f(-R*0.34)+'" width="'+f(R*0.36)+'" height="'+f(R*0.68)+
+            '" rx="'+f(R*0.14)+'" fill="url(#'+m+')" stroke="#000" stroke-opacity=".2" stroke-width=".5"/>';
+        });
+        break;
+      }
+      case 'cluster': {
+        var hc=v==='honeycomb', cr=hc?R*0.44:R*0.5;
+        core = gem(shape,cr,grad,true,ghost);
+        back = ringOfAccents(hc?R*0.74:R*0.8, hc?R*0.3:R*0.34, 'g-diamond');
+        if(hc) back = ringOfAccents(R*1.3,R*0.25,'g-diamond') + back;
+        front = clawTips(cr,4,m); R = cr; break;
+      }
+      case 'eternity': {
+        var er = v==='center'?R*0.85:R*0.55;
+        core = gem(shape,er,grad,simple,ghost);
+        back = prongsBack(er,4,m); front = clawTips(er,4,m); R = er; break;
+      }
+      case 'duet': {
+        var dr = R*0.82;
+        var g2 = find(STONES, cfg.stone2||'diamond').grad;
+        var s2 = cfg.shape2 || 'pear';
+        core = '<g transform="translate('+f(-dr*0.92)+',0)">'+gem(shape,dr,grad,simple,ghost)+'</g>'+
+               '<g transform="translate('+f(dr*0.92)+',0)">'+gem(s2,dr,g2,simple,ghost)+'</g>';
+        back = '<g transform="translate('+f(-dr*0.92)+',0)">'+prongsBack(dr,4,m)+'</g>'+
+               '<g transform="translate('+f(dr*0.92)+',0)">'+prongsBack(dr,4,m)+'</g>';
+        front = '<g transform="translate('+f(-dr*0.92)+',0)">'+clawTips(dr,4,m)+'</g>'+
+                '<g transform="translate('+f(dr*0.92)+',0)">'+clawTips(dr,4,m)+'</g>';
+        R = dr; break;
+      }
+      case 'vintage': {
+        var beads='';
+        for(var i=0;i<20;i++){ var p=pt(0,0,R*1.36,i*18); beads += bead(p[0],p[1],R*0.07,m); }
+        back = ringOfAccents(R*1.2,R*0.09,'g-diamond');
+        if(v==='filigree'){
+          back += ringOfAccents(R*1.56,R*0.13,'g-diamond',200,340);
+          [-1,1].forEach(function(s){
+            back += '<path d="M'+f(s*R*0.5)+','+f(R*0.85)+' q'+f(s*R*0.7)+','+f(R*0.15)+' '+f(s*R*0.25)+','+f(R*0.75)+
+              '" fill="none" stroke="url(#'+m+')" stroke-width="'+f(R*0.11)+'" stroke-linecap="round"/>';
+          });
+        }
+        back = beads+back+prongsBack(R,6,m); front = clawTips(R,6,m); break;
+      }
+    }
+    return { back:back, core:core, front:front, R:R };
+  }
+
+  function renderRing(cfg,opts){
+    opts = opts||{};
+    var simple=!!opts.simple, ghost=!!opts.ghost;
+    var m = find(METALS,cfg.metal).grad, grad = find(STONES,cfg.stone).grad;
+    var cs = find(CARATS,cfg.carat).s || 1;
+    var R = 18*cs, hy = 94 - R;
+    var fam=cfg.family, v=cfg.variant, band;
+
+    band = (fam==='tension') ? splitBand(m, v==='open'?42:30) : baseBand(m,simple);
+    if(fam==='pave'){
+      var rows = { r1:[[RR],2.7], r2:[[RR-3.6,RR+3.6],2.2], r3:[[RR-6.6,RR,RR+6.6],1.85] }[v];
+      band += stonesOnBand(rows[0],rows[1],'g-diamond',[[184,249],[291,356]]);
+    }
+    if(fam==='eternity'){
+      band += stonesOnBand([RR],2.7,'g-diamond', v==='full' ? [[0,248],[292,360]] : [[184,249],[291,356]]);
+    }
+    if(fam==='vintage'){
+      for(var i=0;i<56;i++){
+        var p1=pt(RX,RY,RR+RW/2-1.2,i*6.42), p2=pt(RX,RY,RR-RW/2+1.2,i*6.42);
+        band += bead(p1[0],p1[1],1.15,m)+bead(p2[0],p2[1],1.15,m);
+      }
+    }
+    var h = head(cfg,R,hy,m,grad,simple,ghost);
+    var conn = fam==='cathedral' ? arches(hy,h.R,m,v==='pave','g-diamond') : (fam==='tension' ? '' : gallery(hy,h.R,m));
+    var body = band + conn + '<g transform="translate('+RX+','+f(hy)+')">'+h.back+h.core+h.front+'</g>';
+
+    if(opts.head) return '<svg viewBox="50 20 140 140" role="img" aria-label="Оправа">'+body+'</svg>';
+    var refl = '<g mask="url(#fadeMask)" opacity=".5" transform="translate(0,'+(2*FLOOR)+') scale(1,-1)">'+body+'</g>';
+    /* крупный камень отодвигает кадр, чтобы кольцо целиком осталось в витрине */
+    var grow = (cs-1)*64, top = f(18-grow), hgt = f(290+grow);
+    return '<svg viewBox="0 '+top+' 240 '+hgt+'" role="img" aria-label="Кольцо">'+bandShadow()+body+refl+'</svg>';
+  }
+
+  /* ================= UI ================= */
+  var el = function(id){ return document.getElementById(id); };
+  var ORDER_ONE = ['family','variant','stone','shape','carat','metal'];
+  var ORDER_DUO = ['family','variant','stone','shape','carat','stone2','shape2','carat2','metal'];
+  function isDuo(){ return state.family==='duet'; }
+  function ORDERnow(){ return isDuo() ? ORDER_DUO : ORDER_ONE; }
+  var TITLES_ONE = { family:'Оправа', variant:'Вариант', stone:'Камень', shape:'Огранка', carat:'Вес', metal:'Металл' };
+  var TITLES_DUO = { family:'Оправа', variant:'Вариант',
+    stone:'Первый камень', shape:'Огранка первого', carat:'Вес первого',
+    stone2:'Второй камень', shape2:'Огранка второго', carat2:'Вес второго', metal:'Металл' };
+  function TITLE(k){ return (isDuo() ? TITLES_DUO : TITLES_ONE)[k] || k; }
+  function baseKey(k){ return k.replace(/2$/,''); }
+  var open = 'family', builtOrder = null;
+
+  function card(group,id,checked,name,sub,tag){
+    return '<div class="card">'+(tag?'<span class="tag">'+tag+'</span>':'')+
+      '<input type="radio" name="'+group+'" id="'+group+'-'+id+'" value="'+id+'"'+(checked?' checked':'')+'>'+
+      '<label for="'+group+'-'+id+'"><span class="art" data-art="'+group+':'+id+'"></span>'+
+      '<span class="cname">'+name+'</span>'+(sub?'<span class="csub">'+sub+'</span>':'')+'</label></div>';
+  }
+
+  function bodyFor(key){
+    var out='';
+    if(key==='family'){
+      var main=FAMILIES.filter(function(x){return !x.extra;}), more=FAMILIES.filter(function(x){return x.extra;});
+      out += '<p class="hint">Пять оправ закрывают почти весь спрос. Остальные — под кнопкой <b>Другие</b>, чтобы не мешали.</p>';
+      out += '<div class="cards">'+main.map(function(fm){ return card('family',fm.id,picked.family&&state.family===fm.id,fm.name,'',fm.tag); }).join('')+'</div>';
+      out += '<div style="margin-top:.7rem"><button type="button" class="more-toggle" id="moreBtn">'+
+        '<span id="moreLabel">Другие оправы</span><span class="mono" style="font-size:.7rem">+'+more.length+'</span></button>'+
+        '<div class="more-wrap" id="moreWrap"><div><div class="cards">'+
+        more.map(function(fm){ return card('family',fm.id,picked.family&&state.family===fm.id,fm.name,''); }).join('')+
+        '</div></div></div></div>';
+    }
+    if(key==='variant'){
+      var fm=find(FAMILIES,state.family);
+      out += '<p class="hint"><b>'+fm.name+'</b> — '+fm.note+'</p>';
+      out += '<div class="chips">'+fm.variants.map(function(vr){
+        return '<div class="chip wide"><input type="radio" name="variant" id="variant-'+vr.id+'" value="'+vr.id+'"'+
+          (picked.variant&&state.variant===vr.id?' checked':'')+'>'+
+          '<label for="variant-'+vr.id+'">'+vr.name+'<span>'+vr.sub+'</span></label></div>';
+      }).join('')+'</div>';
+    }
+    if(key==='stone' || key==='stone2'){
+      var g = key;
+      out += '<p class="hint">'+(isDuo()
+        ? (key==='stone' ? 'Левый камень дуэта.' : 'Правый камень дуэта — он может быть другого цвета и огранки, в этом весь смысл Toi et Moi.')
+        : 'Центральный камень. Акценты в паве и гало всегда бриллиантовые.')+
+        ' Цвет у выращенного бриллианта задаётся прямо в реакторе — то, что в природе стоит целое состояние.</p>';
+      ['Бриллианты','Цветные камни'].forEach(function(grp){
+        out += '<div class="grp">'+grp+'</div><div class="swrow">'+
+          STONES.filter(function(x){ return x.group===grp; }).map(function(st){
+            return '<div class="sw"><input type="radio" name="'+g+'" id="'+g+'-'+st.id+'" value="'+st.id+'"'+(picked[g]&&state[g]===st.id?' checked':'')+'>'+
+              '<label for="'+g+'-'+st.id+'"><span class="dot" data-art="stone:'+st.id+'"></span>'+
+              '<span class="sname">'+st.name+'<br><span style="opacity:.62">'+st.method+'</span></span></label></div>';
+          }).join('')+'</div>';
+      });
+    }
+    if(key==='shape' || key==='shape2'){
+      var gs = key;
+      out += '<p class="hint">Форма '+(isDuo()? (key==='shape'?'левого':'правого') :'центрального')+' камня — от неё зависит и характер, и число граней.</p>';
+      out += '<div class="cards">'+SHAPES.map(function(sh){
+        return '<div class="card"><input type="radio" name="'+gs+'" id="'+gs+'-'+sh.id+'" value="'+sh.id+'"'+(picked[gs]&&state[gs]===sh.id?' checked':'')+'>'+
+          '<label for="'+gs+'-'+sh.id+'"><span class="art" data-art="shape:'+sh.id+'"></span>'+
+          '<span class="cname">'+sh.name+'</span><span class="csub">'+sh.facets+' граней</span></label></div>';
+      }).join('')+'</div>';
+    }
+    if(key==='carat' || key==='carat2'){
+      var gc = key;
+      out += '<p class="hint">Вес '+(isDuo()? (key==='carat'?'левого':'правого') :'центрального')+' камня, от карата до десяти. Камень растёт в тех же пропорциях, что и настоящий: <b>1 ct — около 6,4 мм, 10 ct — около 13,9 мм</b>.</p>';
+      out += '<div class="chips">'+CARATS.map(function(c){
+        return '<div class="chip"><input type="radio" name="'+gc+'" id="'+gc+'-'+c.id+'" value="'+c.id+'"'+(picked[gc]&&state[gc]===c.id?' checked':'')+'>'+
+          '<label for="'+gc+'-'+c.id+'">'+c.id+' ct</label></div>';
+      }).join('')+'</div>';
+    }
+    if(key==='metal'){
+      out += '<p class="hint">Шинка и закрепка. Белые металлы подчёркивают холодный блеск, жёлтый и розовый — тёплый.</p>';
+      out += '<div class="swrow">'+METALS.map(function(mt){
+        return '<div class="sw"><input type="radio" name="metal" id="metal-'+mt.id+'" value="'+mt.id+'"'+(picked.metal&&state.metal===mt.id?' checked':'')+'>'+
+          '<label for="metal-'+mt.id+'"><span class="dot"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="20" fill="url(#'+mt.grad+')"/></svg></span>'+
+          '<span class="sname">'+mt.name+'</span></label></div>';
+      }).join('')+'</div>';
+    }
+    return out;
+  }
+
+  function stepValue(key){
+    if(!picked[key]) return '';
+    if(key==='family') return find(FAMILIES,state.family).name;
+    if(key==='variant') return find(find(FAMILIES,state.family).variants,state.variant).name;
+    if(key==='stone'||key==='stone2') return find(STONES,state[key]).name;
+    if(key==='shape'||key==='shape2') return find(SHAPES,state[key]).name;
+    if(key==='carat'||key==='carat2') return state[key]+' ct';
+    if(key==='metal') return find(METALS,state.metal).name;
+    return '';
+  }
+  function reachable(key){
+    var O=ORDERnow(), i=O.indexOf(key);
+    if(i<0) return false;
+    for(var j=0;j<i;j++){ if(!picked[O[j]]) return false; }
+    return true;
+  }
+  function flavour(key){ return key==='variant' ? state.family : (key+'|'+(isDuo()?'duo':'one')); }
+
+  function buildSteps(){
+    builtOrder = ORDERnow().join(',');
+    el('steps').innerHTML = ORDERnow().map(function(key,i){
+      return '<li class="stepli" data-key="'+key+'">'+
+        '<button type="button" class="stephead" data-open="'+key+'">'+
+          '<span class="stepnum">'+(i+1<10?'0':'')+(i+1)+'</span><span class="steptitle">'+TITLE(key)+'</span>'+
+          '<span class="stepval"><span class="vtext"></span><span class="mini" data-mini="'+key+'"></span></span>'+
+          '<span class="caret"></span></button>'+
+        '<div class="stepbody"><div class="inner"><div class="pad" data-pad="'+key+'"></div></div></div></li>';
+    }).join('');
+  }
+
+  function miniFor(key){
+    if(key==='stone'||key==='shape') return '<svg viewBox="-24 -24 48 48">'+gem(state.shape,20,find(STONES,state.stone).grad,true)+'</svg>';
+    if(key==='stone2'||key==='shape2') return '<svg viewBox="-24 -24 48 48">'+gem(state.shape2,20,find(STONES,state.stone2).grad,true)+'</svg>';
+    if(key==='metal') return '<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="20" fill="url(#'+find(METALS,state.metal).grad+')"/></svg>';
+    if(key==='family') return PHOTOS[state.family] ? '<img src="'+PHOTOS[state.family]+'" alt="">' : '';
+    return '';
+  }
+
+  function syncSteps(){
+    ORDERnow().forEach(function(key){
+      var li=document.querySelector('.stepli[data-key="'+key+'"]');
+      var isOpen=(open===key), ok=reachable(key);
+      li.classList.toggle('is-open',isOpen);
+      li.classList.toggle('is-locked',!ok);
+      var pad=li.querySelector('[data-pad="'+key+'"]');
+      if(isOpen && pad.getAttribute('data-filled')!==flavour(key)){
+        pad.innerHTML = bodyFor(key);
+        pad.setAttribute('data-filled', flavour(key));
+      }
+      var body=li.querySelector('.stepbody');
+      if(isOpen) body.removeAttribute('inert'); else body.setAttribute('inert','');
+      li.querySelector('.vtext').textContent = stepValue(key);
+      li.querySelector('[data-mini="'+key+'"]').innerHTML = (picked[key] && !isOpen) ? miniFor(key) : '';
+    });
+  }
+
+  function paintArts(){
+    Array.prototype.forEach.call(document.querySelectorAll('[data-art]'), function(n){
+      var p=n.getAttribute('data-art').split(':'), g=p[0], id=p[1];
+      if(g==='family'){
+        if(PHOTOS[id]){
+          n.innerHTML = '<img src="'+PHOTOS[id]+'" alt="'+find(FAMILIES,id).name+'" loading="lazy">';
+        } else {
+          var fmx=find(FAMILIES,id);
+          n.innerHTML = renderRing({family:'trinity',variant:fmx.variants[0].id,stone:state.stone,
+            shape:state.shape,carat:'1',metal:state.metal},{simple:true,head:true,ghost:true});
+        }
+      } else if(g==='shape'){
+        n.innerHTML = '<svg viewBox="-26 -26 52 52">'+gem(id,21,find(STONES,state.stone).grad,false)+'</svg>';
+      } else if(g==='stone'){
+        n.innerHTML = '<svg viewBox="-22 -22 44 44">'+gem('round',19,find(STONES,id).grad,false)+'</svg>';
+      }
+    });
+  }
+
+  function paintStage(){
+    var box=el('stageSvg'), cv=el('ring3d'), hint=el('stageHint');
+    cv.hidden = true; hint.hidden = true; box.hidden = false;
+    if(!picked.family){
+      box.innerHTML = '<div class="ph">Выберите оправу —<br>кольцо появится здесь</div>';
+      return;
+    }
+    var fm = find(FAMILIES, state.family);
+    var src = picked.variant ? heroSrc(state.family, state.variant) : PHOTOS_BIG[state.family];
+    var variantShot = !!src;
+    if(!src) src = PHOTOS_BIG[state.family];
+    if(!src){
+      box.innerHTML = '<figure class="hero">'+renderRing(state,{ghost:!picked.stone})+
+        '<figcaption><span class="hname">'+find(FAMILIES,state.family).name+
+        (picked.variant ? ' · '+find(find(FAMILIES,state.family).variants,state.variant).name : '')+'</span>'+
+        '<span class="hnote">съёмка этой оправы готовится — пока схема</span></figcaption></figure>';
+      return;
+    }
+    var notes = [];
+    if(picked.variant && !variantShot) notes.push('вариант «'+find(fm.variants,state.variant).name+'» — снимок готовится');
+    if(picked.metal && state.metal!=='platinum') notes.push('на снимке платина');
+    if(picked.stone && state.stone!=='diamond') notes.push('на снимке белый бриллиант');
+    if(picked.shape && state.shape!=='round') notes.push('на снимке круглая огранка');
+    if(picked.carat) notes.push('вес камня — в спецификации');
+    box.innerHTML = '<figure class="hero"><img src="'+src+'" alt="'+fm.name+'">'+
+      '<figcaption><span class="hname">'+fm.name+
+      (picked.variant ? ' · '+find(fm.variants,state.variant).name : '')+'</span>'+
+      (notes.length ? '<span class="hnote">'+notes.join(' · ')+'</span>' : '')+
+      '</figcaption></figure>';
+  }
+
+  function paintSpec(){
+    var fm=find(FAMILIES,state.family), vr=find(fm.variants,state.variant);
+    var mt=find(METALS,state.metal);
+    function row(dt,dd,ready,mono){
+      return '<dt>'+dt+'</dt><dd class="'+(ready?'':'wait ')+(mono?'mono':'')+'">'+dd+'</dd>';
+    }
+    function stoneLine(sk,shk,ck){
+      var st=find(STONES,state[sk]), sh=find(SHAPES,state[shk]);
+      if(!picked[sk]) return 'не выбран';
+      return st.full+', '+sh.name.toLowerCase()+(picked[ck]?', '+state[ck]+' ct':'');
+    }
+    var html='';
+    html += row('Оправа', picked.family ? (fm.name+(picked.variant?' · '+vr.name:'')) : 'не выбрана', picked.family);
+    if(isDuo()){
+      html += row('Левый камень', stoneLine('stone','shape','carat'), picked.stone);
+      html += row('Правый камень', stoneLine('stone2','shape2','carat2'), picked.stone2);
+    } else {
+      html += row('Камень', stoneLine('stone','shape','carat'), picked.stone);
+      html += row('Огранка', picked.shape ? (find(SHAPES,state.shape).name+' · '+find(SHAPES,state.shape).facets) : '—', picked.shape, true);
+      html += row('Твёрдость', picked.stone ? (find(STONES,state.stone).hard+' по Моосу') : '—', picked.stone, true);
+    }
+    html += row('Металл', picked.metal ? mt.name : 'не выбран', picked.metal);
+    el('specList').innerHTML = html;
+
+    var O=ORDERnow(), done=O.every(function(k){ return picked[k]; });
+    var weeks = 4 + parseInt(state.carat,10) + (LEAD_EXTRA[state.family]||0) + (isDuo()? parseInt(state.carat2,10) : 0);
+    el('sLead').textContent = done ? ('~'+weeks+' недель') : 'считаем после выбора';
+    el('pills').innerHTML = O.map(function(k){
+      return '<span class="pill'+(picked[k]?' on':'')+'">'+TITLE(k)+(picked[k]?' ✓':'')+'</span>';
+    }).join('');
+  }
+
+  function paint(){ syncSteps(); paintArts(); paintStage(); paintSpec(); }
+
+  el('cfg').addEventListener('change', function(e){
+    var t=e.target; if(!t.name) return;
+    var key=t.name;
+    state[key]=t.value; picked[key]=true;
+    if(key==='variant' && isDuo() && DUET_PAIRS[t.value]){
+      state.shape = DUET_PAIRS[t.value][0]; state.shape2 = DUET_PAIRS[t.value][1];
+    }
+    if(key==='family'){
+      state.variant=find(FAMILIES,t.value).variants[0].id; picked.variant=false;
+      if(t.value!=='duet'){ picked.stone2=false; picked.shape2=false; picked.carat2=false; }
+      if(ORDERnow().join(',')!==builtOrder) buildSteps();
+    }
+    var O=ORDERnow(), i=O.indexOf(key), next=null;
+    for(var j=i+1;j<O.length;j++){ if(!picked[O[j]]){ next=O[j]; break; } }
+    open = next || key;
+    paint();
+    if(next && window.matchMedia('(max-width:940px)').matches){
+      var li=document.querySelector('.stepli[data-key="'+next+'"]');
+      if(li) setTimeout(function(){ li.scrollIntoView({behavior:'smooth',block:'center'}); },120);
+    }
+  });
+
+  el('steps').addEventListener('click', function(e){
+    var b=e.target.closest('[data-open]'); if(!b) return;
+    var key=b.getAttribute('data-open');
+    if(!reachable(key)) return;
+    open = (open===key) ? null : key;
+    paint();
+  });
+
+  document.addEventListener('click', function(e){
+    if(e.target && e.target.id==='moreBtn'){
+      var w=el('moreWrap'); w.classList.toggle('open');
+      el('moreLabel').textContent = w.classList.contains('open') ? 'Свернуть' : 'Другие оправы';
+    }
+  });
+
+  var up=el('refUpload');
+  up.addEventListener('change', function(){
+    var box=el('refThumbs');
+    Array.prototype.slice.call(up.files||[]).slice(0,4).forEach(function(file){
+      var r=new FileReader();
+      r.onload=function(ev){ var img=document.createElement('img'); img.src=ev.target.result; img.alt='Референс'; box.appendChild(img); };
+      r.readAsDataURL(file);
+    });
+    el('refNote').textContent = 'Видим '+(up.files?up.files.length:0)+' файл(а). Всё остаётся в браузере — это демонстрация шага.';
+  });
+
+  buildSteps(); paint();
+})();
+</script>
+
+</main>
+
+<footer class="site-foot">
+  <div class="site-wrap foot-row">
+    <a class="logo" href="index.html">alche<span class="my">(my)</span>th</a>
+    <div class="foot-links">
+      <a href="https://instagram.com/alchemyth.lab" target="_blank" rel="noopener">Instagram</a>
+      <a href="mailto:hello@alchemyth.ru">hello@alchemyth.ru</a>
+      <a href="index.html#categories">Каталог</a>
+    </div>
+    <span class="copyright">© 2026 alchemyth.философский камень</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger = document.getElementById('burgerBtn');
+  var closeBtn = document.getElementById('drawerClose');
+  var drawer = document.getElementById('drawer');
+  var overlay = document.getElementById('overlay');
+  function open(){ drawer.classList.add('open'); overlay.classList.add('open'); }
+  function shut(){ drawer.classList.remove('open'); overlay.classList.remove('open'); }
+  burger.addEventListener('click', open);
+  closeBtn.addEventListener('click', shut);
+  overlay.addEventListener('click', shut);
+  document.querySelectorAll('.drawer-nav a').forEach(function(a){ a.addEventListener('click', shut); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') shut(); });
+})();
+</script>
+</body>
+</html>
