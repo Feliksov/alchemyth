@@ -189,6 +189,14 @@
     /* тот же вход, что у снимка: маска обязана двигаться вместе с ним */
     animation:heroIn .5s cubic-bezier(.2,.8,.25,1); }
   .hero .tint.deep{ mix-blend-mode:multiply; opacity:.40; }
+  .hero .tint.metal{ opacity:.95; }
+  .hero .hstone{ position:absolute; z-index:3; display:block; pointer-events:none;
+    transform-origin:center center; transition:transform .45s cubic-bezier(.22,.7,.2,1);
+    animation:heroIn .5s cubic-bezier(.2,.8,.25,1); }
+  .hero .hstone img{ width:100%; height:auto; display:block; }
+  .hero .hstone .cuttint{ position:absolute; inset:0; mix-blend-mode:color; opacity:.88;
+    mask-size:100% 100%; -webkit-mask-size:100% 100%; mask-repeat:no-repeat; -webkit-mask-repeat:no-repeat; }
+  @media (prefers-reduced-motion: reduce){ .hero .hstone{ transition:none; animation:none; } }
   .hero img{ width:100%; height:auto; display:block; border-radius:16px;
     animation:heroIn .5s cubic-bezier(.2,.8,.25,1); }
   @keyframes heroIn{ from{ opacity:0; transform:scale(.97);} to{ opacity:1; transform:none;} }
@@ -197,6 +205,8 @@
     border-radius:0 0 16px 16px; text-align:center;
     background:linear-gradient(to top, rgba(6,7,10,.78), transparent); }
   .hero .hname{ font-family:'Fraunces',serif; font-size:1.05rem; color:#f3f0e8; letter-spacing:.01em; display:block; }
+  .hero .hsize{ display:block; margin-top:.25rem; font-size:.66rem; letter-spacing:.12em;
+    text-transform:uppercase; color:rgba(243,240,232,.72); }
   .hero .hnote{ display:block; margin-top:.3rem; font-family:'IBM Plex Mono',monospace; font-size:.58rem;
     letter-spacing:.09em; text-transform:uppercase; color:rgba(243,240,232,.5); }
   .chip.wide label{ padding:.6rem 1.1rem; font-family:'IBM Plex Sans',sans-serif; font-size:.86rem; text-align:left; }
@@ -493,6 +503,38 @@ a{ color:inherit; text-decoration:none; }
     var k=(src||'').replace('img/','').replace('_big.jpg','');
     return MASKED[k] ? 'img/masks/'+k+'.webp' : null;
   }
+  /* цвет металла прямо на снимке: маска шинки и закрепки, без камней */
+  var METAL_TINT = { yellow:'#d8a63c', rose:'#cf8a67' };
+  var METAL_MASKED = { 'bezel':1, 'bezel-half':1, 'cathedral':1, 'eternity':1, 'eternity-half':1, 'halo-hidden':1, 'solitaire':1, 'solitaire-p4-cushion':1, 'solitaire-p4-emerald':1, 'solitaire-p4-oval':1, 'solitaire-p4-pear':1, 'solitaire-p4-princess':1, 'solitaire-p6':1, 'tension':1, 'tension-open':1, 'trinity-baguette':1, 'trinity-pear':1, 'vintage':1 };
+  function metalMaskFor(src){
+    var k=(src||'').replace('img/','').replace('_big.jpg','');
+    return METAL_MASKED[k] ? 'img/metal/'+k+'.webp' : null;
+  }
+  function metalLayers(src, metal){
+    var col=METAL_TINT[metal]; if(!col) return '';
+    var mk=metalMaskFor(src); if(!mk) return '';
+    var m=' -webkit-mask-image:url('+mk+'); mask-image:url('+mk+');';
+    return '<span class="tint metal" style="background:'+col+';'+m+'"></span>';
+  }
+
+  /* вес камня: настоящий камень со снимка, вырезанный и увеличенный по кубическому корню.
+     Снимок считаем каратником; 10 ct — примерно в полтора раза шире. */
+  var STONE_CUTS = { 'bezel':[37.84,17.39,24.66], 'bezel-half':[34.66,24.77,23.75], 'cathedral':[36.82,12.61,22.61], 'cathedral-pave':[39.89,11.59,20.68], 'cluster':[53.86,39.43,17.05], 'cluster-honeycomb':[43.41,29.77,12.16], 'eternity':[19.89,33.86,59.55], 'eternity-center':[43.3,26.7,12.16], 'eternity-half':[18.98,38.75,60.11], 'halo':[36.59,23.3,28.64], 'halo-double':[41.7,32.39,25.0], 'halo-hidden':[41.25,24.43,24.09], 'pave':[37.39,25.91,22.5], 'pave-r2':[41.82,21.14,19.09], 'solitaire':[36.7,24.55,29.89], 'solitaire-p4-cushion':[31.7,28.18,39.89], 'solitaire-p4-emerald':[38.75,29.2,31.14], 'solitaire-p4-oval':[40.23,19.77,27.05], 'solitaire-p4-pear':[40.91,25.11,25.68], 'solitaire-p4-princess':[36.36,21.59,30.11], 'solitaire-p6':[38.18,27.5,30.34], 'tension':[33.41,28.86,16.36], 'tension-open':[40.34,25.23,13.75], 'trinity':[37.39,36.48,20.11], 'trinity-baguette':[37.73,24.32,27.39], 'trinity-pear':[38.64,34.32,21.25], 'vintage':[39.89,25.8,20.0], 'vintage-filigree':[36.36,16.82,21.36] };
+  function caratScale(w){
+    w=Number(w)||1; if(w<=1) return 1;
+    return 1 + 0.46*(Math.pow(w,1/3)-1)/(Math.pow(10,1/3)-1);
+  }
+  function stoneCutLayer(src, carat, stone, tintable){
+    var k=(src||'').replace('img/','').replace('_big.jpg','');
+    var g=STONE_CUTS[k]; if(!g) return '';
+    var sc=caratScale(carat); if(sc<=1.001 && !tintable) return '';
+    var url='img/stonecut/'+k+'.webp';
+    var col=tintable ? STONE_TINT[stone] : null;
+    var inner='<img src="'+url+'" alt="">';
+    if(col) inner += '<span class="cuttint" style="background:'+col+'; -webkit-mask-image:url('+url+'); mask-image:url('+url+')"></span>';
+    return '<span class="hstone" style="left:'+g[0]+'%; top:'+g[1]+'%; width:'+g[2]+'%; transform:scale('+sc.toFixed(3)+')">'+inner+'</span>';
+  }
+
   function tintLayers(src, stone){
     var mk=maskFor(src), col=STONE_TINT[stone];
     if(!mk || !col) return '';
@@ -500,6 +542,15 @@ a{ color:inherit; text-decoration:none; }
     var out='<span class="tint" style="background:'+col+';'+m+'"></span>';
     if(DEEP_STONES[stone]) out+='<span class="tint deep" style="background:'+col+';'+m+'"></span>';
     return out;
+  }
+
+  /* снимки кольца под конкретную комбинацию: оправа-вариант-огранка-цвет.
+     Здесь настоящая съёмка каждого сочетания — подкраска для таких кадров не нужна. */
+  var COMBO_SHOTS = {};
+  function comboShot(fam,v,shape,stone){
+    if(!shape || !stone) return null;
+    var k=fam+'-'+v+'-'+shape+'-'+stone;
+    return COMBO_SHOTS[k] ? 'img/'+k+'_big.jpg' : null;
   }
 
   /* снимки кольца под конкретную огранку: ключ оправа-вариант-огранка */
@@ -512,7 +563,8 @@ a{ color:inherit; text-decoration:none; }
     var k=fam+'-'+v+'-'+shape;
     return SHAPE_SHOTS[k] ? 'img/'+k+'_big.jpg' : null;
   }
-  function heroSrc(fam,v,shape){
+  function heroSrc(fam,v,shape,stone){
+    var cb=comboShot(fam,v,shape,stone); if(cb) return cb;
     var sh=shapeShot(fam,v,shape); if(sh) return sh;
     var k=shotKey(fam,v);
     return VARIANT_SHOTS[k]===1 ? PHOTOS_BIG[fam] : (VARIANT_SHOTS[k] ? 'img/'+k+'_big.jpg' : null);
@@ -901,14 +953,15 @@ a{ color:inherit; text-decoration:none; }
 
   /* ================= UI ================= */
   var el = function(id){ return document.getElementById(id); };
-  var ORDER_ONE = ['family','variant','stone','shape','carat','metal'];
-  var ORDER_DUO = ['family','variant','stone','shape','carat','stone2','shape2','carat2','metal'];
+  var ORDER_ONE = ['family','stone','shape','carat','metal','variant'];
+  var ORDER_DUO = ['family','stone','shape','carat','stone2','shape2','carat2','metal','variant'];
   function isDuo(){ return state.family==='duet'; }
   function ORDERnow(){ return isDuo() ? ORDER_DUO : ORDER_ONE; }
-  var TITLES_ONE = { family:'Оправа', variant:'Вариант', stone:'Камень', shape:'Огранка', carat:'Вес', metal:'Металл' };
-  var TITLES_DUO = { family:'Оправа', variant:'Вариант',
+  var TITLES_ONE = { family:'Оправа', stone:'Камень', shape:'Огранка', carat:'Вес', metal:'Металл', variant:'Посадка камня' };
+  var TITLES_DUO = { family:'Оправа',
     stone:'Первый камень', shape:'Огранка первого', carat:'Вес первого',
-    stone2:'Второй камень', shape2:'Огранка второго', carat2:'Вес второго', metal:'Металл' };
+    stone2:'Второй камень', shape2:'Огранка второго', carat2:'Вес второго',
+    metal:'Металл', variant:'Посадка камней' };
   function TITLE(k){ return (isDuo() ? TITLES_DUO : TITLES_ONE)[k] || k; }
   function baseKey(k){ return k.replace(/2$/,''); }
   var open = 'family', builtOrder = null;
@@ -1081,7 +1134,10 @@ a{ color:inherit; text-decoration:none; }
     }
     var fm = find(FAMILIES, state.family);
     var shapeShotSrc = picked.shape ? shapeShot(state.family, state.variant, state.shape) : null;
-    var src = picked.variant ? heroSrc(state.family, state.variant, picked.shape ? state.shape : null) : PHOTOS_BIG[state.family];
+    var comboSrc = (picked.shape && picked.stone) ? comboShot(state.family, state.variant, state.shape, state.stone) : null;
+    var src = picked.variant
+      ? heroSrc(state.family, state.variant, picked.shape ? state.shape : null, picked.stone ? state.stone : null)
+      : PHOTOS_BIG[state.family];
     var variantShot = !!src;
     if(!src) src = PHOTOS_BIG[state.family];
     if(!src){
@@ -1092,27 +1148,22 @@ a{ color:inherit; text-decoration:none; }
       return;
     }
     var notes = [];
+    var metalTint = picked.metal ? metalLayers(src, state.metal) : '';
     if(picked.variant && !variantShot) notes.push('вариант «'+find(fm.variants,state.variant).name+'» — снимок готовится');
-    if(picked.metal && state.metal!=='platinum') notes.push('на снимке платина');
-    if(picked.shape && state.shape!=='round' && !shapeShotSrc) notes.push('кольцо снято с круглым камнем');
-    var tinted = picked.stone && state.stone!=='diamond' ? tintLayers(src, state.stone) : '';
+    if(picked.metal && state.metal!=='platinum' && !metalTint) notes.push('на снимке платина');
+    if(picked.shape && state.shape!=='round' && !shapeShotSrc && !comboSrc) notes.push('кольцо снято с круглым камнем');
+    var needTint = (!comboSrc && picked.stone && state.stone!=='diamond');
+    var cut = picked.carat ? stoneCutLayer(src, state.carat, state.stone, needTint) : '';
+    /* если камень уже увеличен вырезкой — красим вырезку, а не исходный кадр */
+    var tinted = (needTint && !cut) ? tintLayers(src, state.stone) : '';
+    if(picked.metal && METAL_TINT[state.metal] && !metalTint) notes.push('металл — в спецификации');
     if(picked.stone && state.stone!=='diamond' && !tinted) notes.push('цвет — на макро-снимке камня');
 
-    /* плашка с настоящим макро-снимком выбранного камня: меняется от огранки, цвета и веса */
     var plate = '';
-    if(picked.shape || picked.stone || picked.carat){
-      var sp = stonePhoto(state.shape, state.stone);
-      if(sp){
-        var w = Number(state.carat)||1;
-        var size = (15.5*Math.pow(w,1/3)).toFixed(1);
-        plate = '<div class="hplate" style="width:'+size+'%">'+
-          '<img src="'+sp+'" alt="Камень: '+find(SHAPES,state.shape).name+', '+find(STONES,state.stone).name+'">'+
-          '<span class="hplatecap mono">'+state.carat+' ct · '+stoneMM(state.carat)+' мм</span></div>';
-      }
-    }
-    box.innerHTML = '<figure class="hero"><img src="'+src+'" alt="'+fm.name+'">'+tinted+plate+
+    box.innerHTML = '<figure class="hero"><img src="'+src+'" alt="'+fm.name+'">'+tinted+cut+metalTint+plate+
       '<figcaption><span class="hname">'+fm.name+
       (picked.variant ? ' · '+find(fm.variants,state.variant).name : '')+'</span>'+
+      (picked.carat ? '<span class="hsize mono">'+state.carat+' ct · '+stoneMM(state.carat)+' мм</span>' : '')+
       (notes.length ? '<span class="hnote">'+notes.join(' · ')+'</span>' : '')+
       '</figcaption></figure>';
   }
