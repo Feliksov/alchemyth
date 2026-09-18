@@ -208,8 +208,13 @@
   @media (prefers-reduced-motion: reduce){ .hero .hstone{ transition:none; animation:none; } }
   .hero img{ width:100%; height:auto; display:block; border-radius:16px;
     animation:heroIn .5s cubic-bezier(.2,.8,.25,1); }
+  /* один спрайт держит все 28 сочетаний металла и камня — переключение мгновенное, без подгрузки */
+  .hero .r3d{ width:100%; aspect-ratio:1/1; display:block; border-radius:16px;
+    background-repeat:no-repeat; background-size:700% 400%;
+    transition:background-position .18s steps(1,end);
+    animation:heroIn .5s cubic-bezier(.2,.8,.25,1); }
   @keyframes heroIn{ from{ opacity:0; transform:scale(.97);} to{ opacity:1; transform:none;} }
-  @media (prefers-reduced-motion: reduce){ .hero img, .hero .tint{ animation:none; } }
+  @media (prefers-reduced-motion: reduce){ .hero img, .hero .r3d, .hero .tint{ animation:none; } }
   .hero figcaption{ position:absolute; left:0; right:0; bottom:0; padding:1.4rem 1.2rem .9rem;
     border-radius:0 0 16px 16px; text-align:center;
     background:linear-gradient(to top, rgba(6,7,10,.78), transparent); }
@@ -463,7 +468,7 @@ a{ color:inherit; text-decoration:none; }
   </div>
 </div>
 
-<script>
+<script>window.R3D_HAVE={"bezel_round":[100],"cluster_round":[100],"eternity_round":[100],"eternityhalf_round":[100],"halo_cushion":[100],"halo_emerald":[100],"halo_oval":[100],"halo_pear":[100],"halo_princess":[100],"halo_round":[100],"halodouble_round":[100],"pave_cushion":[100],"pave_emerald":[100],"pave_oval":[100],"pave_pear":[100],"pave_princess":[100],"pave_round":[100],"solitaire6_round":[100],"solitaire_cushion":[50,100,200],"solitaire_emerald":[50,100,200],"solitaire_oval":[50,100,200],"solitaire_pear":[50,100,200],"solitaire_princess":[50,100,200],"solitaire_round":[50,100,200,400],"tension_round":[100],"trinity_round":[100]};
 (function(){
   'use strict';
 
@@ -639,6 +644,49 @@ a{ color:inherit; text-decoration:none; }
     return VARIANT_SHOTS[k]===1 ? PHOTOS_BIG[fam] : (VARIANT_SHOTS[k] ? 'img/'+k+'_big.jpg' : null);
   }
 
+  /* ---- 3D-рендеры: каждая комбинация посчитана физически, подстановкой кадра ----
+     файлы img/r3d/<оправа>_<огранка>_<вес*100>_<металл>_<камень>.jpg */
+  var R3D_CT = [50, 100, 200, 400];
+  var R3D_FAM = {
+    solitaire: { p4:'solitaire', p5:'solitaire', p4f:'solitaire', pc4:'solitaire', p6:'solitaire6' },
+    pave:      { r1:'pave', r2:'pave' },
+    halo:      { classic:'halo', double:'halodouble' },
+    bezel:     { full:'bezel', half:'bezel' },
+    trinity:   { round:'trinity', baguette:'trinity', pear:'trinity' },
+    eternity:  { full:'eternity', half:'eternityhalf', center:'eternity' },
+    cluster:   { flower:'cluster', honeycomb:'cluster' },
+    tension:   { classic:'tension', open:'tension' }
+  };
+  var R3D_SHAPE = { round:1, oval:1, pear:1, emerald:1, princess:1, cushion:1 };
+  var R3D_METAL = { platinum:0, white:1, yellow:2, rose:3 };        /* строка в спрайте */
+  var R3D_STONE = { diamond:0, yellow:1, blue:2, pink:3, green:4, ruby:5, sapphire:6 };
+  var R3D_STONE_ID = { diamond:'diamond', yellow:'yellow', blue:'blue', pink:'pink',
+                       ruby:'ruby', sapphire:'sapphire', emerald:'green' };
+  function r3dCt(w){
+    var v = Math.round((Number(w)||1)*100), best = R3D_CT[0];
+    for(var i=1;i<R3D_CT.length;i++) if(Math.abs(R3D_CT[i]-v) < Math.abs(best-v)) best = R3D_CT[i];
+    return best;
+  }
+  function pad3(n){ n = String(n); while(n.length<3) n = '0'+n; return n; }
+  /* R3D_HAVE подставляется при сборке: перечисляет, что реально просчитано */
+  var R3D_HAVE = window.R3D_HAVE || {};
+  function r3dCtFor(key, w){
+    var list = R3D_HAVE[key]; if(!list || !list.length) return null;
+    var v = Math.round((Number(w)||1)*100), best = list[0];
+    for(var i=1;i<list.length;i++) if(Math.abs(list[i]-v) < Math.abs(best-v)) best = list[i];
+    return best;
+  }
+  function r3d(st){
+    var fams = R3D_FAM[st.family]; if(!fams) return null;
+    var fam = fams[st.variant] || fams[Object.keys(fams)[0]]; if(!fam) return null;
+    if(!R3D_SHAPE[st.shape]) return null;
+    var row = R3D_METAL[st.metal], col = R3D_STONE[R3D_STONE_ID[st.stone]];
+    if(row === undefined || col === undefined) return null;
+    var ct = r3dCtFor(fam+'_'+st.shape, st.carat); if(ct === null) return null;
+    return { src:'img/r3d/'+fam+'_'+st.shape+'_'+pad3(ct)+'.webp', ct:ct/100,
+             x:(col*100/6), y:(row*100/3) };
+  }
+
   var FAMILIES = [
     { id:'solitaire', name:'Солитер', tag:'чаще всего', note:'Камень на лапках и ничего вокруг — весь свет достаётся ему одному.',
       variants:[{id:'p4',name:'4 лапки',sub:'острее силуэт',shotAs:'p4'},{id:'p6',name:'6 лапок',sub:'надёжнее хват',shotAs:'p6'}] },
@@ -719,7 +767,7 @@ a{ color:inherit; text-decoration:none; }
   ];
   /* 1…10 карат, шаг карат. Диаметр камня растёт как кубический корень из веса —
      так же, как в жизни: 1 ct ≈ 6,4 мм, 10 ct ≈ 13,9 мм. */
-  var CARATS = [];
+  var CARATS = [{ id:'0.5', s:Math.pow(0.5,1/3) }];
   for(var w=1; w<=10; w++) CARATS.push({ id:String(w), s:Math.pow(w,1/3) });
   var DUET_PAIRS = { 'em-pear':['emerald','pear'], 'oval-pear':['oval','pear'],
                      'oval-oval':['oval','oval'], 'em-round':['emerald','round'] };
@@ -1142,7 +1190,7 @@ a{ color:inherit; text-decoration:none; }
     }
     if(key==='carat' || key==='carat2'){
       var gc = key;
-      out += '<p class="hint">Вес '+(isDuo()? (key==='carat'?'левого':'правого') :'центрального')+' камня, от карата до десяти. Размер считается по-настоящему и зависит от огранки: круглый камень в карат — 6,5 мм, груша того же веса вытянута до 8,7 мм, а принцесса всего 5,5 — она уходит вглубь.</p>';
+      out += '<p class="hint">Вес '+(isDuo()? (key==='carat'?'левого':'правого') :'центрального')+' камня, от половины карата до десяти. Размер считается по-настоящему и зависит от огранки: круглый камень в карат — 6,5 мм, груша того же веса вытянута до 8,7 мм, а принцесса всего 5,5 — она уходит вглубь.</p>';
       out += '<div class="chips">'+CARATS.map(function(c){
         return '<div class="chip"><input type="radio" name="'+gc+'" id="'+gc+'-'+c.id+'" value="'+c.id+'"'+(picked[gc]&&state[gc]===c.id?' checked':'')+'>'+
           '<label for="'+gc+'-'+c.id+'">'+c.id+' ct</label></div>';
@@ -1261,6 +1309,20 @@ a{ color:inherit; text-decoration:none; }
       return;
     }
     var fm = find(FAMILIES, state.family);
+    var R = r3d(state);
+    if(R){
+      var rnotes = [];
+      if(picked.carat && Math.abs(R.ct - Number(state.carat)) > 0.02)
+        rnotes.push('показан ближайший просчитанный вес — '+String(R.ct).replace('.',',')+' ct');
+      box.innerHTML = '<figure class="hero"><div class="r3d" role="img" aria-label="'+fm.name+'" '+
+        'style="background-image:url('+R.src+');background-position:'+R.x+'% '+R.y+'%"></div>'+
+        '<figcaption><span class="hname">'+fm.name+
+        (picked.variant ? ' · '+find(fm.variants,state.variant).name : '')+'</span>'+
+        (picked.carat ? '<span class="hsize mono">'+state.carat+' ct · '+stoneMM(state.carat, state.shape)+'</span>' : '')+
+        (rnotes.length ? '<span class="hnote">'+rnotes.join(' · ')+'</span>' : '')+
+        '</figcaption></figure>';
+      return;
+    }
     var shapeShotSrc = picked.shape ? shapeShot(state.family, state.variant, state.shape) : null;
     var comboSrc = (picked.shape && picked.stone) ? comboShot(state.family, state.variant, state.shape, state.stone) : null;
     /* вариант выбирается последним, но снимок обязан слушаться огранки и камня уже сейчас:
