@@ -194,6 +194,14 @@
     transform-origin:center center; transition:transform .45s cubic-bezier(.22,.7,.2,1);
     animation:heroIn .5s cubic-bezier(.2,.8,.25,1); }
   .hero .hstone img{ width:100%; height:auto; display:block; }
+  .hero .hprong{ position:absolute; z-index:4; display:block; pointer-events:none;
+    animation:heroIn .5s cubic-bezier(.2,.8,.25,1); }
+  .hero .hprong img{ width:100%; height:auto; display:block; }
+  .engbox{ display:flex; align-items:center; gap:.7rem; margin-top:.9rem; }
+  .engbox input{ flex:1; background:var(--c-surface); border:1px solid var(--c-line); color:var(--c-ink);
+    border-radius:10px; padding:.7rem .9rem; font:inherit; }
+  .engbox input:focus{ outline:none; border-color:var(--c-accent); }
+  .engbox .mono{ font-size:.7rem; color:var(--c-ink-faint); width:2ch; text-align:right; }
   .hero .hstone .cuttint{ position:absolute; inset:0; mix-blend-mode:color; opacity:.88;
     mask-size:100% 100%; -webkit-mask-size:100% 100%; mask-repeat:no-repeat; -webkit-mask-repeat:no-repeat; }
   @media (prefers-reduced-motion: reduce){ .hero .hstone{ transition:none; animation:none; } }
@@ -522,8 +530,19 @@ a{ color:inherit; text-decoration:none; }
   var STONE_CUTS = { 'bezel':[37.84,17.39,24.66], 'bezel-half':[34.66,24.77,23.75], 'cathedral':[36.82,12.61,22.61], 'cathedral-pave':[39.89,11.59,20.68], 'cluster':[53.86,39.43,17.05], 'cluster-honeycomb':[43.41,29.77,12.16], 'eternity':[19.89,33.86,59.55], 'eternity-center':[43.3,26.7,12.16], 'eternity-half':[18.98,38.75,60.11], 'halo':[36.59,23.3,28.64], 'halo-double':[41.7,32.39,25.0], 'halo-hidden':[41.25,24.43,24.09], 'pave':[37.39,25.91,22.5], 'pave-r2':[41.82,21.14,19.09], 'solitaire':[36.7,24.55,29.89], 'solitaire-p4-cushion':[31.7,28.18,39.89], 'solitaire-p4-emerald':[38.75,29.2,31.14], 'solitaire-p4-oval':[40.23,19.77,27.05], 'solitaire-p4-pear':[40.91,25.11,25.68], 'solitaire-p4-princess':[36.36,21.59,30.11], 'solitaire-p6':[38.18,27.5,30.34], 'tension':[33.41,28.86,16.36], 'tension-open':[40.34,25.23,13.75], 'trinity':[37.39,36.48,20.11], 'trinity-baguette':[37.73,24.32,27.39], 'trinity-pear':[38.64,34.32,21.25], 'vintage':[39.89,25.8,20.0], 'vintage-filigree':[36.36,16.82,21.36] };
   function caratScale(w){
     w=Number(w)||1; if(w<=1) return 1;
-    return 1 + 0.24*(Math.pow(w,1/3)-1)/(Math.pow(10,1/3)-1);
+    return 1 + 0.62*(Math.pow(w,1/3)-1);   /* 1 ct — как снято, 10 ct — в полтора с лишним раза шире */
   }
+  /* лапки, снятые отдельно: рисуем их поверх увеличенного камня, чтобы он не «проглатывал» закрепку */
+  var PRONG_CUTS = { 'cathedral':[39.66,24.2,19.32], 'cathedral-pave':[39.43,14.89,21.59], 'cluster':[53.41,38.98,17.95], 'cluster-honeycomb':[42.95,29.32,13.07], 'eternity':[31.14,49.43,42.5], 'eternity-center':[42.84,28.52,13.07], 'eternity-half':[20.11,38.3,57.27], 'halo':[36.14,22.84,29.55], 'halo-double':[41.25,31.93,25.91], 'pave':[41.14,29.09,19.2], 'pave-r2':[41.7,21.48,19.66], 'solitaire':[38.64,39.55,28.41], 'solitaire-p4-cushion':[31.25,45.91,40.8], 'solitaire-p4-emerald':[38.3,47.16,7.5], 'solitaire-p4-oval':[39.77,28.98,27.84], 'solitaire-p4-pear':[42.95,24.66,7.16], 'solitaire-p4-princess':[39.77,46.02,9.43], 'tension':[32.95,29.43,17.27], 'tension-open':[39.89,25.11,14.66], 'trinity':[36.93,37.05,21.02], 'trinity-baguette':[37.27,27.61,28.3], 'trinity-pear':[38.18,34.09,22.16], 'vintage':[39.43,26.14,20.91], 'vintage-filigree':[35.91,16.36,22.27] };
+  function prongLayer(src, headCol){
+    var k=(src||'').replace('img/','').replace('_big.jpg','');
+    var g=PRONG_CUTS[k]; if(!g) return '';
+    var url='img/prongs/'+k+'.webp';
+    var inner='<img src="'+url+'" alt="">';
+    if(headCol) inner += '<span class="cuttint" style="background:'+headCol+'; mix-blend-mode:color; -webkit-mask-image:url('+url+'); mask-image:url('+url+')"></span>';
+    return '<span class="hprong" style="left:'+g[0]+'%; top:'+g[1]+'%; width:'+g[2]+'%">'+inner+'</span>';
+  }
+
   function stoneCutLayer(src, carat, stone, tintable){
     var k=(src||'').replace('img/','').replace('_big.jpg','');
     var g=STONE_CUTS[k]; if(!g) return '';
@@ -558,21 +577,28 @@ a{ color:inherit; text-decoration:none; }
     'solitaire-p4-oval':1, 'solitaire-p4-pear':1, 'solitaire-p4-emerald':1,
     'solitaire-p4-princess':1, 'solitaire-p4-cushion':1
   };
+  function shotVariant(fam,shape,v){
+    if(fam!=='solitaire') return v;
+    var vo=variantObj(fam,shape,v);
+    return vo.shotAs || null;                     /* null — под такую посадку снимка нет */
+  }
   function shapeShot(fam,v,shape){
     if(!shape || shape==='round') return null;
-    var k=fam+'-'+v+'-'+shape;
+    var sv=shotVariant(fam,shape,v); if(!sv) return null;
+    var k=fam+'-'+sv+'-'+shape;
     return SHAPE_SHOTS[k] ? 'img/'+k+'_big.jpg' : null;
   }
   function heroSrc(fam,v,shape,stone){
     var cb=comboShot(fam,v,shape,stone); if(cb) return cb;
     var sh=shapeShot(fam,v,shape); if(sh) return sh;
-    var k=shotKey(fam,v);
+    var sv=shotVariant(fam,shape,v) || v;
+    var k=shotKey(fam,sv);
     return VARIANT_SHOTS[k]===1 ? PHOTOS_BIG[fam] : (VARIANT_SHOTS[k] ? 'img/'+k+'_big.jpg' : null);
   }
 
   var FAMILIES = [
     { id:'solitaire', name:'Солитер', tag:'чаще всего', note:'Камень на лапках и ничего вокруг — весь свет достаётся ему одному.',
-      variants:[{id:'p4',name:'4 лапки',sub:'острее силуэт'},{id:'p6',name:'6 лапок',sub:'надёжнее хват'}] },
+      variants:[{id:'p4',name:'4 лапки',sub:'острее силуэт',shotAs:'p4'},{id:'p6',name:'6 лапок',sub:'надёжнее хват',shotAs:'p6'}] },
     { id:'halo', name:'Гало', note:'Ореол из мелких бриллиантов: центральный камень выглядит заметно крупнее.',
       variants:[{id:'classic',name:'Классическое',sub:'один ряд'},{id:'double',name:'Двойное',sub:'два ряда'},{id:'hidden',name:'Скрытое',sub:'видно только сбоку'}] },
     { id:'pave', name:'Паве', note:'Дорожка камней по шинке — кольцо светится по всей длине пальца.',
@@ -597,6 +623,41 @@ a{ color:inherit; text-decoration:none; }
     { id:'tension', name:'Тенсион', extra:true, note:'Камень держится напряжением металла — выглядит парящим.',
       variants:[{id:'classic',name:'Классический',sub:'узкий зазор'},{id:'open',name:'Открытый',sub:'широкий зазор'}] }
   ];
+  /* посадка камня зависит от огранки: у груши нужен V-наконечник, у принцессы — уголковые когти.
+     shotAs говорит, каким снимком показывается вариант; null — снимка пока нет. */
+  var PRONGS = {
+    round:    [{id:'p4',name:'4 лапки',sub:'острее силуэт',shotAs:'p4'},
+               {id:'p6',name:'6 лапок',sub:'надёжнее хват',shotAs:'p6'}],
+    oval:     [{id:'p4',name:'4 лапки',sub:'камень кажется длиннее',shotAs:'p4'},
+               {id:'p6',name:'6 лапок',sub:'бережнее к концам',shotAs:null},
+               {id:'pd',name:'Двойные когти',sub:'винтажный характер',shotAs:null}],
+    pear:     [{id:'p5',name:'5 лапок с V-наконечником',sub:'острие закрыто — так и надо',shotAs:'p4'},
+               {id:'p3',name:'3 лапки',sub:'минимум металла',shotAs:null}],
+    emerald:  [{id:'p4f',name:'4 плоские лапки',sub:'не спорят со ступенями',shotAs:'p4'},
+               {id:'pd',name:'Двойные лапки',sub:'надёжнее на длинной грани',shotAs:null}],
+    princess: [{id:'pc4',name:'4 уголковые лапки',sub:'закрывают острые углы',shotAs:'p4'},
+               {id:'pv',name:'V-образные когти',sub:'угол виден целиком',shotAs:null}],
+    cushion:  [{id:'p4',name:'4 лапки',sub:'спокойно',shotAs:'p4'},
+               {id:'p8',name:'8 лапок',sub:'двойные, по паре на угол',shotAs:null}]
+  };
+  function variantsFor(fam, shape){
+    if(fam==='solitaire' && PRONGS[shape]) return PRONGS[shape];
+    return find(FAMILIES,fam).variants;
+  }
+  function variantObj(fam, shape, vid){
+    var list=variantsFor(fam,shape);
+    for(var i=0;i<list.length;i++) if(list[i].id===vid) return list[i];
+    return list[0];
+  }
+  /* металл под камнем может отличаться от шинки — обычная ювелирная опция */
+  var HEADS = [
+    { id:'same',   name:'Как шинка' },
+    { id:'white',  name:'Белый' },
+    { id:'yellow', name:'Жёлтый' },
+    { id:'rose',   name:'Розовый' }
+  ];
+  var SIZES = ['15,5','16,0','16,5','17,0','17,5','18,0','18,5','19,0','19,5','20,0','20,5','21,0','21,5'];
+
   var METALS = [
     { id:'platinum', name:'Платина', grad:'m-platinum' },
     { id:'white',    name:'Белое 750', grad:'m-white' },
@@ -953,15 +1014,15 @@ a{ color:inherit; text-decoration:none; }
 
   /* ================= UI ================= */
   var el = function(id){ return document.getElementById(id); };
-  var ORDER_ONE = ['family','stone','shape','carat','metal','variant'];
-  var ORDER_DUO = ['family','stone','shape','carat','stone2','shape2','carat2','metal','variant'];
+  var ORDER_ONE = ['family','stone','shape','carat','metal','variant','head','size','engrave'];
+  var ORDER_DUO = ['family','stone','shape','carat','stone2','shape2','carat2','metal','variant','head','size','engrave'];
   function isDuo(){ return state.family==='duet'; }
   function ORDERnow(){ return isDuo() ? ORDER_DUO : ORDER_ONE; }
-  var TITLES_ONE = { family:'Оправа', stone:'Камень', shape:'Огранка', carat:'Вес', metal:'Металл', variant:'Посадка камня' };
+  var TITLES_ONE = { family:'Оправа', stone:'Камень', shape:'Огранка', carat:'Вес', metal:'Металл', variant:'Посадка камня', head:'Крапаны', size:'Размер', engrave:'Гравировка' };
   var TITLES_DUO = { family:'Оправа',
     stone:'Первый камень', shape:'Огранка первого', carat:'Вес первого',
     stone2:'Второй камень', shape2:'Огранка второго', carat2:'Вес второго',
-    metal:'Металл', variant:'Посадка камней' };
+    metal:'Металл', variant:'Посадка камней', head:'Крапаны', size:'Размер', engrave:'Гравировка' };
   function TITLE(k){ return (isDuo() ? TITLES_DUO : TITLES_ONE)[k] || k; }
   function baseKey(k){ return k.replace(/2$/,''); }
   var open = 'family', builtOrder = null;
@@ -987,12 +1048,45 @@ a{ color:inherit; text-decoration:none; }
     }
     if(key==='variant'){
       var fm=find(FAMILIES,state.family);
-      out += '<p class="hint"><b>'+fm.name+'</b> — '+fm.note+'</p>';
-      out += '<div class="chips">'+fm.variants.map(function(vr){
+      var vlist=variantsFor(state.family, state.shape);
+      out += '<p class="hint">'+(state.family==='solitaire'
+        ? 'Под <b>'+find(SHAPES,state.shape).name.toLowerCase()+'</b> подходит своя посадка: это последний, косметический выбор — на цену и прочность он влияет сильнее, чем на вид.'
+        : '<b>'+fm.name+'</b> — '+fm.note)+'</p>';
+      out += '<div class="chips">'+vlist.map(function(vr){
         return '<div class="chip wide"><input type="radio" name="variant" id="variant-'+vr.id+'" value="'+vr.id+'"'+
           (picked.variant&&state.variant===vr.id?' checked':'')+'>'+
           '<label for="variant-'+vr.id+'">'+vr.name+'<span>'+vr.sub+'</span></label></div>';
       }).join('')+'</div>';
+    }
+    if(key==='head'){
+      out += '<p class="hint">Металл, который держит камень. Жёлтый крапан под жёлтым бриллиантом делает цвет камня сочнее, белый — наоборот, подчёркивает холодный блеск.</p>';
+      out += '<div class="chips">'+HEADS.map(function(h){
+        return '<div class="chip wide"><input type="radio" name="head" id="head-'+h.id+'" value="'+h.id+'"'+
+          (picked.head&&state.head===h.id?' checked':'')+'>'+
+          '<label for="head-'+h.id+'">'+h.name+'</label></div>';
+      }).join('')+'</div>';
+    }
+    if(key==='size'){
+      out += '<p class="hint">Российский размер — это внутренний диаметр в миллиметрах. Не знаете свой — пришлём кольцо-мерку, померите дома.</p>';
+      out += '<div class="chips">'+SIZES.map(function(z){
+        return '<div class="chip"><input type="radio" name="size" id="size-'+z.replace(',','_')+'" value="'+z+'"'+
+          (picked.size&&state.size===z?' checked':'')+'>'+
+          '<label for="size-'+z.replace(',','_')+'">'+z+'</label></div>';
+      }).join('')+'</div>';
+    }
+    if(key==='engrave'){
+      out += '<p class="hint">Гравировка наносится лазером с внутренней стороны шинки, до 20 знаков. Даты, имена, координаты — что угодно, кроме того, что вы потом пожалеете.</p>';
+      out += '<div class="chips">'+
+        ['no','yes'].map(function(v){
+          return '<div class="chip wide"><input type="radio" name="engrave" id="engrave-'+v+'" value="'+v+'"'+
+            (picked.engrave&&state.engrave===v?' checked':'')+'>'+
+            '<label for="engrave-'+v+'">'+(v==='no'?'Без гравировки':'С гравировкой')+'</label></div>';
+        }).join('')+'</div>';
+      if(state.engrave==='yes'){
+        out += '<div class="engbox"><input type="text" id="engText" maxlength="20" placeholder="например: 14.09.2026" value="'+
+          (state.engraveText||'').replace(/"/g,'&quot;')+'"><span class="mono" id="engCount">'+
+          (20-(state.engraveText||'').length)+'</span></div>';
+      }
     }
     if(key==='stone' || key==='stone2'){
       var g = key;
@@ -1040,7 +1134,10 @@ a{ color:inherit; text-decoration:none; }
   function stepValue(key){
     if(!picked[key]) return '';
     if(key==='family') return find(FAMILIES,state.family).name;
-    if(key==='variant') return find(find(FAMILIES,state.family).variants,state.variant).name;
+    if(key==='variant') return variantObj(state.family, state.shape, state.variant).name;
+    if(key==='head') return find(HEADS,state.head).name;
+    if(key==='size') return state.size;
+    if(key==='engrave') return state.engrave==='yes' ? (state.engraveText? '«'+state.engraveText+'»' : 'да') : 'нет';
     if(key==='stone'||key==='stone2') return find(STONES,state[key]).name;
     if(key==='shape'||key==='shape2') return find(SHAPES,state[key]).name;
     if(key==='carat'||key==='carat2') return state[key]+' ct';
@@ -1054,7 +1151,11 @@ a{ color:inherit; text-decoration:none; }
     return true;
   }
   function openIsSecond(){ return open==='stone2' || open==='shape2' || open==='carat2'; }
-  function flavour(key){ return key==='variant' ? state.family : (key+'|'+(isDuo()?'duo':'one')); }
+  function flavour(key){
+    if(key==='variant') return state.family+'|'+state.shape;
+    if(key==='engrave') return 'engrave|'+state.engrave;      /* поле ввода появляется по выбору */
+    return key+'|'+(isDuo()?'duo':'one');
+  }
 
   function buildSteps(){
     builtOrder = ORDERnow().join(',');
@@ -1068,6 +1169,10 @@ a{ color:inherit; text-decoration:none; }
     }).join('');
   }
 
+  function headTintCol(){
+    if(state.head==='same') return METAL_TINT[state.metal] || null;
+    return state.head==='white' ? null : (METAL_TINT[state.head] || null);
+  }
   function miniFor(key){
     if(key==='stone'||key==='shape'||key==='carat'){
       var sp=stonePhoto(state.shape,state.stone);
@@ -1151,17 +1256,20 @@ a{ color:inherit; text-decoration:none; }
     var notes = [];
     var metalTint = picked.metal ? metalLayers(src, state.metal) : '';
     if(picked.variant && !variantShot) notes.push('вариант «'+find(fm.variants,state.variant).name+'» — снимок готовится');
-    if(picked.metal && state.metal!=='platinum' && !metalTint) notes.push('на снимке платина');
+    if(picked.metal && state.metal!=='platinum' && state.metal!=='white' && !metalTint) notes.push('на снимке платина');
     if(picked.shape && state.shape!=='round' && !shapeShotSrc && !comboSrc) notes.push('кольцо снято с круглым камнем');
     var needTint = (!comboSrc && picked.stone && state.stone!=='diamond');
     var cut = (picked.carat || needTint) ? stoneCutLayer(src, state.carat, state.stone, needTint) : '';
+    /* если камень вырос — возвращаем лапки поверх него; заодно они красятся отдельно от шинки */
+    var headCol = picked.head ? headTintCol() : null;
+    var prongs = (cut || headCol) ? prongLayer(src, headCol) : '';
     /* если камень уже увеличен вырезкой — красим вырезку, а не исходный кадр */
     var tinted = (needTint && !cut) ? tintLayers(src, state.stone) : '';
     var colourShown = !!(comboSrc || tinted || (cut && needTint));
     if(picked.stone && state.stone!=='diamond' && !colourShown) notes.push('цвет камня — в спецификации');
 
     var plate = '';
-    box.innerHTML = '<figure class="hero"><img src="'+src+'" alt="'+fm.name+'">'+tinted+cut+metalTint+plate+
+    box.innerHTML = '<figure class="hero"><img src="'+src+'" alt="'+fm.name+'">'+tinted+cut+prongs+metalTint+plate+
       '<figcaption><span class="hname">'+fm.name+
       (picked.variant ? ' · '+find(fm.variants,state.variant).name : '')+'</span>'+
       (picked.carat ? '<span class="hsize mono">'+state.carat+' ct · '+stoneMM(state.carat)+' мм</span>' : '')+
@@ -1170,7 +1278,7 @@ a{ color:inherit; text-decoration:none; }
   }
 
   function paintSpec(){
-    var fm=find(FAMILIES,state.family), vr=find(fm.variants,state.variant);
+    var fm=find(FAMILIES,state.family), vr=variantObj(state.family, state.shape, state.variant);
     var mt=find(METALS,state.metal);
     function row(dt,dd,ready,mono){
       return '<dt>'+dt+'</dt><dd class="'+(ready?'':'wait ')+(mono?'mono':'')+'">'+dd+'</dd>';
@@ -1190,7 +1298,9 @@ a{ color:inherit; text-decoration:none; }
       html += row('Огранка', picked.shape ? (find(SHAPES,state.shape).name+' · '+find(SHAPES,state.shape).facets) : '—', picked.shape, true);
       html += row('Твёрдость', picked.stone ? (find(STONES,state.stone).hard+' по Моосу') : '—', picked.stone, true);
     }
-    html += row('Металл', picked.metal ? mt.name : 'не выбран', picked.metal);
+    html += row('Металл', picked.metal ? (mt.name + (picked.head && state.head!=='same' ? ', крапаны — '+find(HEADS,state.head).name.toLowerCase() : '')) : 'не выбран', picked.metal);
+    html += row('Размер', picked.size ? state.size+' мм' : '—', picked.size, true);
+    html += row('Гравировка', picked.engrave ? (state.engrave==='yes' ? (state.engraveText ? '«'+state.engraveText+'»' : 'да, текст уточним') : 'без неё') : '—', picked.engrave);
     el('specList').innerHTML = html;
 
     var O=ORDERnow(), done=O.every(function(k){ return picked[k]; });
@@ -1209,6 +1319,12 @@ a{ color:inherit; text-decoration:none; }
     state[key]=t.value; picked[key]=true;
     if(key==='variant' && isDuo() && DUET_PAIRS[t.value]){
       state.shape = DUET_PAIRS[t.value][0]; state.shape2 = DUET_PAIRS[t.value][1];
+    }
+    if(key==='shape' && state.family==='solitaire'){
+      /* посадка своя у каждой огранки — сбрасываем выбор, если он не подходит */
+      var vl=variantsFor('solitaire', t.value), okv=false;
+      for(var z=0;z<vl.length;z++) if(vl[z].id===state.variant) okv=true;
+      if(!okv){ state.variant=vl[0].id; picked.variant=false; }
     }
     if(key==='family'){
       state.variant=find(FAMILIES,t.value).variants[0].id; picked.variant=false;
@@ -1237,6 +1353,14 @@ a{ color:inherit; text-decoration:none; }
     if(e.target && e.target.id==='moreBtn'){
       var w=el('moreWrap'); w.classList.toggle('open');
       el('moreLabel').textContent = w.classList.contains('open') ? 'Свернуть' : 'Другие оправы';
+    }
+  });
+
+  el('cfg').addEventListener('input', function(e){
+    if(e.target && e.target.id==='engText'){
+      state.engraveText = e.target.value;
+      var c=el('engCount'); if(c) c.textContent = String(20 - e.target.value.length);
+      paintSpec(); syncSteps();
     }
   });
 
