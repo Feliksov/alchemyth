@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Рецепт философского камня — Alchemyth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#08080B; --soot:#141419; --ash:#2A2A33;
+    --bone:#E8E3DA; --dim:#9A958C;
+    --plasma:#B45CE8; --ember:#FF7A3D; --ice:#8FD8F0;
+    --serif:"Fraunces",Georgia,serif; --sans:"IBM Plex Sans",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--void);color:var(--bone);font-family:var(--sans);font-weight:300;
+       line-height:1.65;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  .wrap{width:min(1180px,90vw);margin:0 auto}
+  h1,h2,h3{font-family:var(--serif);font-weight:300;line-height:1.08;letter-spacing:-0.012em}
+  p{max-width:58ch}
+  a{color:inherit}
+
+  /* film grain over everything */
+  body::after{
+    content:"";position:fixed;inset:-50%;z-index:60;pointer-events:none;opacity:.035;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");
+    animation:grain 7s steps(6) infinite;
+  }
+  @keyframes grain{
+    0%{transform:translate(0,0)}20%{transform:translate(-4%,3%)}40%{transform:translate(3%,-4%)}
+    60%{transform:translate(-3%,-3%)}80%{transform:translate(4%,2%)}100%{transform:translate(0,0)}
+  }
+
+  /* rail */
+  .rail{position:fixed;right:max(2vw,18px);top:50%;transform:translateY(-50%);z-index:40;
+        display:flex;flex-direction:column;gap:13px;opacity:0;transition:opacity .6s ease}
+  .rail.on{opacity:1}
+  .rail a{display:flex;align-items:center;gap:10px;justify-content:flex-end;color:var(--dim);
+          text-decoration:none;font-size:12px}
+  .rail span.t{opacity:0;transform:translateX(6px);transition:.35s ease}
+  .rail a:hover span.t,.rail a.active span.t{opacity:1;transform:none}
+  .rail i{width:20px;height:1px;background:currentColor;display:block;transition:.35s ease}
+  .rail a.active{color:var(--bone)} .rail a.active i{width:42px;background:var(--plasma)}
+
+  /* prologue */
+  .prologue{min-height:100svh;display:grid;place-items:center;text-align:center;padding:12vh 0;
+    background:radial-gradient(ellipse 70% 55% at 50% 45%,#16121B 0%,var(--void) 70%)}
+  #sigil{width:clamp(90px,14vw,150px);height:auto;margin-bottom:5vh;color:var(--ash)}
+  #sigil path,#sigil circle,#sigil line{fill:none;stroke:currentColor;stroke-width:1.2;
+    stroke-dasharray:var(--len,600);stroke-dashoffset:var(--len,600);
+    animation:draw 2.6s cubic-bezier(.4,0,.2,1) forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  .prologue h1{font-size:clamp(34px,6.4vw,78px);margin-bottom:26px}
+  .prologue .lede{color:var(--dim);font-size:clamp(16px,2vw,20px);margin:0 auto;max-width:42ch}
+  .reveal{opacity:0;filter:blur(7px);transition:opacity 1.1s ease,filter 1.1s ease}
+  .reveal.in{opacity:1;filter:blur(0)}
+  .scroll-hint{margin-top:8vh;color:var(--ash);font-size:12px;letter-spacing:.18em}
+
+  /* ingredients card */
+  .ingredients{padding:14vh 0 4vh}
+  .ing-inner{border-left:1px solid var(--ash);padding-left:clamp(20px,4vw,52px)}
+  .ing-inner h2{font-size:clamp(24px,3.4vw,40px);margin-bottom:8px}
+  .ing-inner>p{color:var(--dim);margin-bottom:34px}
+  .ing-list{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:1px;
+            background:var(--soot);border:1px solid var(--soot)}
+  .ing-list li{background:var(--void);padding:22px 20px}
+  .ing-list b{display:block;font-family:var(--serif);font-size:clamp(20px,2.4vw,27px);font-weight:300;margin-bottom:5px}
+  .ing-list span{color:var(--dim);font-size:13px}
+
+  /* acts */
+  .act{position:relative;padding:0 0 10vh}
+  .act-head{padding:14vh 0 5vh}
+  .stage-num{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--plasma);
+    display:block;margin-bottom:10px}
+  .act-head h2{font-size:clamp(30px,5.4vw,64px);margin-bottom:20px}
+  .act-head p{color:var(--dim);font-size:clamp(15px,1.6vw,18px)}
+
+  .sticky-track{position:relative}
+  .sticky-in{position:sticky;top:0;height:100svh;display:grid;grid-template-columns:1fr 1fr;
+             gap:4vw;align-items:center}
+  .stage-copy{position:relative;height:min(70vh,560px)}
+  .step{position:absolute;left:0;right:0;top:50%;transform:translateY(-40%);opacity:0;
+        transition:opacity .45s ease,transform .45s ease;pointer-events:none}
+  .step.on{opacity:1;transform:translateY(-50%)}
+  .step h3{font-size:clamp(22px,2.9vw,34px);margin-bottom:14px}
+  .step p{color:var(--dim)}
+  .readout{margin-top:24px;font-size:13px;color:var(--ash);border-top:1px solid var(--soot);padding-top:12px}
+  .readout b{color:var(--bone);font-weight:400}
+
+  canvas{display:block;width:100%}
+  #lattice,#plasma{height:min(70vh,560px)}
+
+  /* video layers — fall back to the canvas/still beneath when blocked */
+  .stack-vis{position:relative}
+  .stack-vis canvas{position:relative;z-index:0}
+  video.layer{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+    z-index:1;background:transparent;
+  }
+  .strip{position:relative;height:min(62vh,480px);overflow:hidden;margin-top:6vh;
+    background:radial-gradient(ellipse at 50% 50%,#131318,var(--void) 75%)}
+  .strip video{width:100%;height:100%;object-fit:cover;opacity:.78}
+  .strip::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(90deg,var(--void),transparent 18%,transparent 82%,var(--void))}
+  .finale{position:relative;overflow:hidden}
+  .finale video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.22}
+  .finale .wrap{position:relative;z-index:2}
+  .credits{padding:6vh 0 10vh;color:var(--ash);font-size:12px;line-height:2}
+  .credits a{color:var(--dim);text-decoration:none;border-bottom:1px solid var(--soot)}
+  .credits a:hover{color:var(--bone)}
+
+  /* act II seed */
+  .seed-vis{height:min(70vh,560px);display:grid;place-items:center;position:relative;
+    background:radial-gradient(ellipse at 50% 62%,#131318,var(--void) 72%)}
+  .chamber{width:min(78%,340px);height:66%;border:1px solid var(--ash);position:relative;
+    display:flex;flex-direction:column;justify-content:flex-end;align-items:center;
+    padding-bottom:16%;overflow:hidden}
+  .chamber::after{content:"";position:absolute;inset:0;
+    background:radial-gradient(ellipse at 50% 100%,rgba(143,216,240,var(--glow,0)),transparent 62%);
+    transition:background .2s linear}
+  .seed-plate{width:76px;height:8px;
+    background:linear-gradient(180deg,rgba(232,227,218,.9),rgba(143,216,240,.4));
+    box-shadow:0 0 26px rgba(143,216,240,.5)}
+  .holder{width:120px;height:4px;background:var(--ash);margin-top:7px}
+  .rulers{position:absolute;inset:0;pointer-events:none}
+  .rulers line{stroke:var(--ash);stroke-width:1;stroke-dasharray:3 4}
+
+  /* act III fork */
+  .fork-tabs{display:flex;border:1px solid var(--ash);width:max-content;overflow:hidden;margin-bottom:30px}
+  .fork-tabs button{background:none;border:0;color:var(--dim);font-family:var(--sans);font-size:14px;
+    padding:12px 26px;cursor:pointer;transition:.3s ease}
+  .fork-tabs button+button{border-left:1px solid var(--ash)}
+  .fork-tabs button.on{background:var(--bone);color:var(--void)}
+  .fork-body{display:grid;grid-template-columns:1fr 1fr;gap:4vw;align-items:center}
+  .fork-pane{display:none} .fork-pane.on{display:block;animation:fadein .45s ease}
+  @keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .specs{list-style:none;margin-top:24px;border-top:1px solid var(--soot)}
+  .specs li{display:flex;justify-content:space-between;gap:20px;padding:11px 0;
+    border-bottom:1px solid var(--soot);font-size:14.5px}
+  .specs li span:first-child{color:var(--dim)}
+  .vid-slot{position:relative}
+  .vid-slot figcaption{position:absolute;left:0;bottom:-30px;font-size:12px;color:var(--ash)}
+
+  /* act IV */
+  .grow-vis{height:min(70vh,560px);display:grid;place-items:center;
+    background:radial-gradient(ellipse at 50% 55%,#121218,var(--void) 70%)}
+  .grow-crystal{width:150px;height:4px;
+    background:linear-gradient(180deg,rgba(143,216,240,.55),rgba(232,227,218,.92));
+    box-shadow:0 0 55px rgba(143,216,240,.35)}
+  .counters{display:flex;gap:clamp(26px,4vw,48px);flex-wrap:wrap}
+  .counter b{display:block;font-family:var(--serif);font-size:clamp(34px,4.6vw,58px);font-weight:300;line-height:1}
+  .counter span{color:var(--dim);font-size:13px}
+  .scale-note{margin-top:38px}
+  .bar{height:2px;background:var(--soot);position:relative;margin:9px 0 20px}
+  .bar i{position:absolute;inset:0 auto 0 0;background:var(--bone);width:0;transition:width 1.6s ease}
+  .bar.earth i{background:var(--ember)}
+  .bar-label{display:flex;justify-content:space-between;font-size:13px;color:var(--dim)}
+
+  /* act V */
+  .cut-vis{height:min(70vh,560px);display:grid;place-items:center}
+  #cutSvg{width:min(78%,420px);height:auto;overflow:visible}
+  .facet{fill:none;stroke:var(--bone);stroke-width:.8}
+  .rough{fill:#26262C;stroke:#3C3C46;stroke-width:1}
+
+  /* finale */
+  .finale{padding:16vh 0 18vh;text-align:center;
+    background:radial-gradient(ellipse 60% 50% at 50% 40%,#16121B,var(--void) 72%)}
+  .finale h2{font-size:clamp(28px,4.8vw,58px);margin-bottom:24px}
+  .finale>.wrap>p{margin:0 auto 44px;color:var(--dim)}
+  .proof{display:flex;justify-content:center;gap:clamp(22px,6vw,70px);flex-wrap:wrap;margin-bottom:52px}
+  .proof div b{display:block;font-family:var(--serif);font-size:30px;font-weight:300}
+  .proof div span{font-size:12.5px;color:var(--dim)}
+  .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .btn{display:inline-block;padding:15px 30px;border:1px solid var(--bone);color:var(--bone);
+    text-decoration:none;font-size:14.5px;transition:.3s ease}
+  .btn:hover{background:var(--bone);color:var(--void)}
+  .btn.ghost{border-color:var(--ash);color:var(--dim)}
+  .btn.ghost:hover{border-color:var(--bone);color:var(--bone)}
+
+  @media (max-width:860px){
+    .sticky-in,.fork-body{grid-template-columns:1fr;gap:2vh}
+    #lattice,#plasma,.grow-vis,.cut-vis,.seed-vis{height:40svh}
+    .stage-copy{height:38svh}
+    .rail{display:none}
+    .counter b{font-size:34px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    .reveal{opacity:1;filter:none}
+  }
+  :focus-visible{outline:2px solid var(--plasma);outline-offset:3px}
+</style>
+</head>
+<body>
+
+<nav class="rail" id="rail">
+  <a href="#act1"><span class="t">Чёрное начало</span><i></i></a>
+  <a href="#act2"><span class="t">Семя</span><i></i></a>
+  <a href="#act3"><span class="t">Плазма</span><i></i></a>
+  <a href="#act4"><span class="t">Рост</span><i></i></a>
+  <a href="#act5"><span class="t">Огранка</span><i></i></a>
+</nav>
+
+<!-- ПРОЛОГ -->
+<section class="prologue">
+  <div class="wrap">
+    <svg id="sigil" viewBox="0 0 120 120" aria-hidden="true">
+      <circle cx="60" cy="60" r="50" style="--len:315"></circle>
+      <path d="M60 18 L100 86 L20 86 Z" style="--len:250"></path>
+      <path d="M60 102 L20 34 L100 34 Z" style="--len:250;animation-delay:.5s"></path>
+      <circle cx="60" cy="60" r="20" style="--len:126;animation-delay:1s"></circle>
+    </svg>
+    <h1 class="reveal">Рецепт философского камня</h1>
+    <p class="lede reveal">Тысячу лет алхимики искали рецепт. Ошиблись только в одном — искали золото.</p>
+    <div class="scroll-hint reveal">листайте вниз</div>
+  </div>
+</section>
+
+<!-- ИНГРЕДИЕНТЫ -->
+<section class="ingredients">
+  <div class="wrap">
+    <div class="ing-inner reveal">
+      <h2>Что нужно</h2>
+      <p>Список короче, чем у большинства десертов.</p>
+      <ul class="ing-list">
+        <li><b>Углерод</b><span>метан или графит</span></li>
+        <li><b>Затравка</b><span>алмазная пластина 0,3 мм</span></li>
+        <li><b>Тепло</b><span>от 800 до 1500 °C</span></li>
+        <li><b>Давление</b><span>или, наоборот, вакуум</span></li>
+        <li><b>Время</b><span>от четырёх недель</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- АКТ I -->
+<section class="act" id="act1">
+  <div class="wrap act-head">
+    <span class="stage-num">Стадия первая · Nigredo</span>
+    <h2>Чёрное начало</h2>
+    <p>Бриллиант сделан из самого обычного вещества на свете. Грифель карандаша и камень в кольце — это один и тот же углерод. Разница только в том, как уложены атомы.</p>
+  </div>
+  <div class="sticky-track" id="latticeTrack" style="height:300vh">
+    <div class="sticky-in">
+      <canvas id="lattice"></canvas>
+      <div class="stage-copy">
+        <div class="step">
+          <h3>Графит</h3>
+          <p>Атомы лежат плоскими слоями. Слои держатся друг за друга так слабо, что расходятся от нажатия карандаша на бумагу.</p>
+          <div class="readout">Твёрдость по Моосу — <b>1</b> · связей на атом — <b>3</b></div>
+        </div>
+        <div class="step">
+          <h3>Перестройка</h3>
+          <p>Дайте углероду достаточно тепла и давления — и слои начнут складываться друг в друга, связывая атомы в объём.</p>
+          <div class="readout">Идёт превращение — <b id="latPct">0%</b></div>
+        </div>
+        <div class="step">
+          <h3>Алмаз</h3>
+          <p>Каждый атом связан с четырьмя соседями в жёсткий каркас. Тот же самый углерод — и самое твёрдое вещество из известных.</p>
+          <div class="readout">Твёрдость по Моосу — <b>10</b> · связей на атом — <b>4</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- АКТ II -->
+<section class="act" id="act2">
+  <div class="wrap act-head">
+    <span class="stage-num">Стадия вторая</span>
+    <h2>Семя</h2>
+  </div>
+  <div class="sticky-track" id="seedTrack" style="height:220vh">
+    <div class="sticky-in">
+      <div class="seed-vis">
+        <div class="chamber" id="chamber">
+          <svg class="rulers" id="rulers" aria-hidden="true"></svg>
+          <div class="seed-plate" id="seedPlate"></div>
+          <div class="holder"></div>
+        </div>
+      </div>
+      <div class="stage-copy">
+        <div class="step">
+          <h3>Пластина толщиной с ноготь</h3>
+          <p>В камеру опускают кусочек алмаза — затравку. Её режут из уже выращенного кристалла, и порядок атомов в ней задан идеально.</p>
+          <div class="readout">Толщина — <b>0,3 мм</b> · площадь — <b>до 100 мм²</b></div>
+        </div>
+        <div class="step">
+          <h3>Камень не собирают, ему задают начало</h3>
+          <p>Всё, что нарастёт сверху, повторит эту решётку атом за атомом. Ошибка в затравке уйдёт в готовый камень — поэтому её выбирают строже, чем сырьё.</p>
+          <div class="readout">Камера закрыта · <b id="seedState">вакуумирование</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- АКТ III -->
+<section class="act" id="act3">
+  <div class="wrap">
+    <div class="act-head">
+      <span class="stage-num">Стадия третья · Albedo</span>
+      <h2>Плазма</h2>
+      <p>Дальше есть два пути. Один воспроизводит мантию Земли, другой обходит её стороной. Выберите свой.</p>
+    </div>
+    <div class="fork-tabs" role="tablist">
+      <button class="on" data-fork="cvd" role="tab" aria-selected="true">CVD · газ</button>
+      <button data-fork="hpht" role="tab" aria-selected="false">HPHT · давление</button>
+    </div>
+    <div class="fork-body">
+      <figure class="vid-slot stack-vis">
+        <canvas id="plasma"></canvas>
+        <video class="layer" id="plasmaVid" autoplay muted loop playsinline
+               src="video/plasma-cvd.mp4"></video>
+        <figcaption id="vidCap">Камера роста · CVD</figcaption>
+      </figure>
+      <div>
+        <div class="fork-pane on" data-pane="cvd">
+          <h3>Газ, который становится камнем</h3>
+          <p>В камеру подают метан и водород. Микроволны разрывают молекулы на плазму, свободный углерод оседает на затравке и достраивает её решётку — слой за слоем.</p>
+          <ul class="specs">
+            <li><span>Температура</span><span>800–1200 °C</span></li>
+            <li><span>Давление</span><span>ниже атмосферного</span></li>
+            <li><span>Сырьё</span><span>метан и водород</span></li>
+            <li><span>Форма кристалла</span><span>пластина</span></li>
+          </ul>
+        </div>
+        <div class="fork-pane" data-pane="hpht">
+          <h3>Мантия в стальном прессе</h3>
+          <p>Затравку кладут в расплав металла с углеродом и сжимают так, как сжимает порода на глубине полутора сотен километров. Углерод переходит в алмазную форму и нарастает на затравке.</p>
+          <ul class="specs">
+            <li><span>Температура</span><span>около 1500 °C</span></li>
+            <li><span>Давление</span><span>до 60 000 атмосфер</span></li>
+            <li><span>Сырьё</span><span>графит и металл-катализатор</span></li>
+            <li><span>Форма кристалла</span><span>кубооктаэдр</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- АКТ IV -->
+<section class="act" id="act4">
+  <div class="wrap act-head">
+    <span class="stage-num">Стадия четвёртая · Citrinitas</span>
+    <h2>Рост</h2>
+    <p>Дальше остаётся только ждать. Камень прибавляет сотые доли миллиметра в час — и так неделя за неделей.</p>
+  </div>
+  <div class="sticky-track" id="growthTrack" style="height:280vh">
+    <div class="sticky-in">
+      <div class="grow-vis"><div class="grow-crystal" id="growCrystal"></div></div>
+      <div>
+        <div class="counters">
+          <div class="counter"><b id="cDays">0</b><span>дней в камере</span></div>
+          <div class="counter"><b id="cMm">0,0</b><span>миллиметров</span></div>
+          <div class="counter"><b id="cCt">0,0</b><span>карат в сырце</span></div>
+        </div>
+        <div class="scale-note" id="scaleNote">
+          <div class="bar-label"><span>Выращенный камень</span><span>около шести недель</span></div>
+          <div class="bar"><i data-w="12%"></i></div>
+          <div class="bar-label"><span>Природный камень</span><span>1–3 миллиарда лет</span></div>
+          <div class="bar earth"><i data-w="100%"></i></div>
+          <p style="color:var(--dim);font-size:14px;margin-top:18px">Процесс один и тот же: углерод под теплом и давлением занимает алмазную решётку. Разница — в скорости и в том, кто за этим следит.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- АКТ V -->
+<section class="act" id="act5">
+  <div class="wrap act-head">
+    <span class="stage-num">Стадия пятая · Rubedo</span>
+    <h2>Огранка</h2>
+    <p>Из камеры достают невзрачный серый брусок. Бриллиантом его делает не реактор, а огранщик.</p>
+  </div>
+  <div class="sticky-track" id="cutTrack" style="height:260vh">
+    <div class="sticky-in">
+      <div class="cut-vis">
+        <svg id="cutSvg" viewBox="0 0 320 320" aria-label="Превращение сырого кристалла в огранённый камень">
+          <g id="roughG">
+            <polygon class="rough" points="86,96 160,58 236,102 248,196 162,262 74,192"></polygon>
+          </g>
+          <g id="facetG" transform="translate(160,160)">
+            <circle class="facet" r="112"></circle>
+            <polygon class="facet" points="0,-112 97,-56 97,56 0,112 -97,56 -97,-56"></polygon>
+            <polygon class="facet" points="0,-58 50,-29 50,29 0,58 -50,29 -50,-29"></polygon>
+            <line class="facet" x1="0" y1="-112" x2="0" y2="-58"></line>
+            <line class="facet" x1="97" y1="-56" x2="50" y2="-29"></line>
+            <line class="facet" x1="97" y1="56" x2="50" y2="29"></line>
+            <line class="facet" x1="0" y1="112" x2="0" y2="58"></line>
+            <line class="facet" x1="-97" y1="56" x2="-50" y2="29"></line>
+            <line class="facet" x1="-97" y1="-56" x2="-50" y2="-29"></line>
+            <line class="facet" x1="-50" y1="-29" x2="50" y2="29"></line>
+            <line class="facet" x1="50" y1="-29" x2="-50" y2="29"></line>
+            <line class="facet" x1="0" y1="-58" x2="0" y2="58"></line>
+          </g>
+          <g id="sparkG" transform="translate(160,160)" opacity="0">
+            <line x1="-152" y1="0" x2="152" y2="0" stroke="#fff"></line>
+            <line x1="0" y1="-152" x2="0" y2="152" stroke="#fff"></line>
+            <line x1="-108" y1="-108" x2="108" y2="108" stroke="#fff" stroke-opacity=".5"></line>
+            <line x1="108" y1="-108" x2="-108" y2="108" stroke="#fff" stroke-opacity=".5"></line>
+          </g>
+        </svg>
+      </div>
+      <div class="stage-copy">
+        <div class="step">
+          <h3>Сырой кристалл</h3>
+          <p>Мутный, угловатый, без блеска. На этом этапе его невозможно отличить от куска, поднятого из шахты — потому что отличать нечего.</p>
+          <div class="readout">Оценка сырья — <b>по весу и чистоте</b></div>
+        </div>
+        <div class="step">
+          <h3>Разметка и распиловка</h3>
+          <p>Лазер режет кристалл по осям решётки. Половина массы уходит в опил — платите вы только за то, что осталось.</p>
+          <div class="readout">Потеря массы — <b>до 50%</b></div>
+        </div>
+        <div class="step">
+          <h3>Пятьдесят семь граней</h3>
+          <p>Каждая грань поставлена под своим углом, чтобы свет вошёл, отразился внутри и вышел обратно к глазу. Вот теперь это бриллиант.</p>
+          <div class="readout">Граней в круглой огранке — <b>57</b> · допуск — <b>десятые доли градуса</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="strip">
+      <video autoplay muted loop playsinline
+             src="video/workshop.mp4"></video>
+    </div>
+  </div>
+</section>
+
+<!-- ФИНАЛ -->
+<section class="finale">
+  <video autoplay muted loop playsinline
+         src="video/diamond.mp4"></video>
+  <div class="wrap">
+    <h2 class="reveal">Рецепт сработал</h2>
+    <p class="reveal">Тот же углерод, та же решётка, те же свойства. Ни один прибор не найдёт разницы в составе — только запись о происхождении в сертификате.</p>
+    <div class="proof reveal">
+      <div><b>10</b><span>твёрдость по Моосу</span></div>
+      <div><b>2,42</b><span>показатель преломления</span></div>
+      <div><b>3,52</b><span>плотность, г/см³</span></div>
+      <div><b>IGI</b><span>сертификат на каждый камень</span></div>
+    </div>
+    <div class="cta reveal">
+      <a class="btn" href="#">Сравнить с природным камнем</a>
+      <a class="btn ghost" href="#">Собрать своё кольцо</a>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="credits">
+    Съёмка мастерской — Tima Miroshnichenko, <a href="https://www.pexels.com/video/jeweler-working-6263487/" target="_blank" rel="noopener">Pexels</a>.
+    Камень крупным планом — ArtHouse Studio, <a href="https://www.pexels.com/video/close-up-view-of-a-shiny-diamond-7663572/" target="_blank" rel="noopener">Pexels</a>.
+    Камера роста — сгенерировано для Alchemyth.
+  </div>
+</div>
+
+<script>
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const prog=el=>{const r=el.getBoundingClientRect();return clamp(-r.top/(r.height-innerHeight),0,1)};
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const stepOf=(p,n)=>clamp(Math.floor(p*n*0.999),0,n-1);
+function paint(track,p){const s=track.querySelectorAll(".step");const i=stepOf(p,s.length);
+  s.forEach((e,k)=>e.classList.toggle("on",k===i));return i}
+
+/* reveals */
+const io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add("in")),{threshold:.2});
+document.querySelectorAll(".reveal").forEach((el,i)=>{el.style.transitionDelay=(i%4)*130+"ms";io.observe(el)});
+new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)
+  e.target.querySelectorAll(".bar i").forEach(b=>b.style.width=b.dataset.w)}),{threshold:.4})
+  .observe(document.getElementById("scaleNote"));
+
+/* ---- lattice ---- */
+const cv=document.getElementById("lattice"),ctx=cv.getContext("2d");
+const A=[],B=[];
+(function(){
+  const basis=[[0,0,0],[.5,.5,0],[.5,0,.5],[0,.5,.5],[.25,.25,.25],[.75,.75,.25],[.75,.25,.75],[.25,.75,.75]];
+  for(let x=0;x<2;x++)for(let y=0;y<2;y++)for(let z=0;z<2;z++)
+    basis.forEach(b=>B.push([x+b[0]-1,y+b[1]-1,z+b[2]-1]));
+  const per=Math.ceil(B.length/4);
+  B.forEach((p,i)=>{const l=Math.floor(i/per),k=i%per,c=k%7,r=Math.floor(k/7);
+    A.push([(c-3)*.42+(r%2)*.21, l*.62-.95, (r-1.5)*.36]);});
+})();
+const pl=document.getElementById("plasma"),pctx=pl.getContext("2d");
+function fit(c){const r=c.getBoundingClientRect(),d=devicePixelRatio||1;
+  c.width=r.width*d;c.height=r.height*d;c.getContext("2d").setTransform(d,0,0,d,0,0);return r}
+let LR=fit(cv),PR=fit(pl);
+addEventListener("resize",()=>{LR=fit(cv);PR=fit(pl)});
+
+let latT=0,T=0;
+function drawLattice(){
+  const w=LR.width,h=LR.height;ctx.clearRect(0,0,w,h);
+  const S=Math.min(w,h)*.34,cx=w/2,cy=h/2,e=ease(latT);
+  const ang=T*.00032+latT*1.25,ca=Math.cos(ang),sa=Math.sin(ang),tl=.42;
+  const P=[],C=[];
+  for(let i=0;i<B.length;i++){
+    const x=A[i][0]+(B[i][0]-A[i][0])*e,y=A[i][1]+(B[i][1]-A[i][1])*e,z=A[i][2]+(B[i][2]-A[i][2])*e;
+    C.push([x,y,z]);
+    const X=x*ca-z*sa,Z=x*sa+z*ca,Y=y*Math.cos(tl)-Z*Math.sin(tl),Zd=y*Math.sin(tl)+Z*Math.cos(tl);
+    const pr=1/(1+Zd*.22);P.push([cx+X*S*pr,cy+Y*S*pr,Zd,pr]);
+  }
+  ctx.lineWidth=1;
+  for(let i=0;i<C.length;i++)for(let j=i+1;j<C.length;j++){
+    const d=Math.hypot(C[i][0]-C[j][0],C[i][1]-C[j][1],C[i][2]-C[j][2]);
+    if(d<.47){const a=clamp((.47-d)/.47*1.5,0,.55);
+      ctx.strokeStyle="rgba(180,92,232,"+a+")";
+      ctx.beginPath();ctx.moveTo(P[i][0],P[i][1]);ctx.lineTo(P[j][0],P[j][1]);ctx.stroke();}
+  }
+  P.sort((a,b)=>a[2]-b[2]).forEach(p=>{
+    ctx.fillStyle="rgba(232,227,218,"+clamp(.32+p[3]*.5,0,1)+")";
+    ctx.beginPath();ctx.arc(p[0],p[1],2.6*p[3],0,7);ctx.fill();});
+}
+
+/* ---- plasma ---- */
+let mode="cvd";
+const blobs=[...Array(7)].map((_,i)=>({x:Math.random(),y:Math.random(),
+  vx:(Math.random()-.5)*.00016,vy:(Math.random()-.5)*.00012,r:.28+Math.random()*.3,ph:Math.random()*9}));
+function drawPlasma(){
+  const w=PR.width,h=PR.height;
+  pctx.globalCompositeOperation="source-over";
+  pctx.fillStyle="#0A0A0E";pctx.fillRect(0,0,w,h);
+  pctx.globalCompositeOperation="lighter";
+  const hot=mode==="cvd"?[180,92,232]:[255,122,61];
+  blobs.forEach((b,i)=>{
+    b.x+=b.vx*16;b.y+=b.vy*16;
+    if(b.x<0||b.x>1)b.vx*=-1; if(b.y<0||b.y>1)b.vy*=-1;
+    const puls=.72+Math.sin(T*.0011+b.ph)*.28;
+    const R=b.r*Math.min(w,h)*puls;
+    const g=pctx.createRadialGradient(b.x*w,b.y*h,0,b.x*w,b.y*h,R);
+    g.addColorStop(0,`rgba(${hot[0]},${hot[1]},${hot[2]},${.16*puls})`);
+    g.addColorStop(.55,`rgba(${hot[0]},${hot[1]},${hot[2]},${.05*puls})`);
+    g.addColorStop(1,"rgba(0,0,0,0)");
+    pctx.fillStyle=g;pctx.fillRect(0,0,w,h);
+  });
+  // core glow at the seed
+  const cg=pctx.createRadialGradient(w/2,h*.62,0,w/2,h*.62,Math.min(w,h)*.4);
+  cg.addColorStop(0,`rgba(255,255,255,${.1+Math.sin(T*.004)*.03})`);
+  cg.addColorStop(1,"rgba(0,0,0,0)");
+  pctx.fillStyle=cg;pctx.fillRect(0,0,w,h);
+  pctx.globalCompositeOperation="source-over";
+  pctx.strokeStyle="rgba(42,42,51,.9)";pctx.lineWidth=1;
+  pctx.strokeRect(w*.18,h*.2,w*.64,h*.6);
+  pctx.fillStyle="rgba(232,227,218,.85)";
+  pctx.fillRect(w/2-26,h*.62,52,5);
+}
+
+/* ---- elements ---- */
+const latTrack=document.getElementById("latticeTrack"),latPct=document.getElementById("latPct"),
+ seedTrack=document.getElementById("seedTrack"),seedPlate=document.getElementById("seedPlate"),
+ chamber=document.getElementById("chamber"),seedState=document.getElementById("seedState"),
+ rulers=document.getElementById("rulers"),
+ gTrack=document.getElementById("growthTrack"),crystal=document.getElementById("growCrystal"),
+ cDays=document.getElementById("cDays"),cMm=document.getElementById("cMm"),cCt=document.getElementById("cCt"),
+ cutTrack=document.getElementById("cutTrack"),roughG=document.getElementById("roughG"),
+ facetG=document.getElementById("facetG"),sparkG=document.getElementById("sparkG"),
+ rail=document.getElementById("rail"),railLinks=[...rail.querySelectorAll("a")],
+ acts=["act1","act2","act3","act4","act5"].map(i=>document.getElementById(i));
+rulers.innerHTML='<line x1="6%" y1="0" x2="6%" y2="100%"/><line x1="94%" y1="0" x2="94%" y2="100%"/>';
+
+function frame(ts){
+  T=ts||0;
+  // I
+  const lp=prog(latTrack);
+  latT=clamp((lp-.14)/.62,0,1);
+  latPct.textContent=Math.round(latT*100)+"%";
+  paint(latTrack,lp);drawLattice();
+  // II
+  const sp=prog(seedTrack);
+  seedPlate.style.transform=`translateY(${(1-ease(clamp(sp*1.8,0,1)))*-150}px) scale(${.6+ease(clamp(sp*1.8,0,1))*.4})`;
+  seedPlate.style.opacity=clamp(sp*4,0,1);
+  chamber.style.setProperty("--glow",(sp*.22).toFixed(3));
+  seedState.textContent=sp<.45?"вакуумирование":(sp<.8?"нагрев камеры":"подача газа");
+  paint(seedTrack,sp);
+  // III
+  drawPlasma();
+  // IV
+  const gp=prog(gTrack),days=gp*42;
+  cDays.textContent=Math.round(days);
+  cMm.textContent=(days*24*0.0085).toFixed(1).replace(".",",");
+  cCt.textContent=(gp*4.2).toFixed(1).replace(".",",");
+  crystal.style.height=(4+gp*185)+"px";
+  crystal.style.width=(150+gp*28)+"px";
+  // V
+  const cp=prog(cutTrack);
+  roughG.style.opacity=clamp(1-cp*2.4,0,1);
+  const fa=clamp((cp-.3)/.45,0,1);
+  facetG.style.opacity=fa;
+  facetG.setAttribute("transform",`translate(160,160) rotate(${(1-fa)*24}) scale(${.72+fa*.28})`);
+  sparkG.setAttribute("opacity",cp>.88?clamp((cp-.88)*8,0,.85)*(0.75+Math.sin(T*.006)*.25):0);
+  paint(cutTrack,cp);
+  // rail
+  rail.classList.toggle("on",scrollY>innerHeight*.9);
+  let act=-1;acts.forEach((a,i)=>{if(a.getBoundingClientRect().top<innerHeight*.45)act=i});
+  railLinks.forEach((l,i)=>l.classList.toggle("active",i===act));
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+/* fork */
+document.querySelectorAll(".fork-tabs button").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll(".fork-tabs button").forEach(x=>{x.classList.remove("on");x.setAttribute("aria-selected","false")});
+  b.classList.add("on");b.setAttribute("aria-selected","true");
+  mode=b.dataset.fork;
+  document.querySelectorAll(".fork-pane").forEach(p=>p.classList.toggle("on",p.dataset.pane===mode));
+  const pv=document.getElementById("plasmaVid");
+  pv.style.opacity = mode==="cvd" ? "1" : "0";
+  document.getElementById("vidCap").textContent = mode==="cvd" ? "Камера роста · CVD" : "Пресс · HPHT";
+}));
+document.getElementById("plasmaVid").style.transition="opacity .5s ease";
+</script>
+</body>
+</html>
