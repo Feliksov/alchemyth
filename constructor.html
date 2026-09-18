@@ -182,7 +182,11 @@
 
 
   .stagesvg .ph{ color:#6f7280; font-size:.9rem; text-align:center; line-height:1.6; padding:2rem; }
-  .hero{ margin:0; width:100%; position:relative; }
+  .hero{ margin:0; width:100%; position:relative; isolation:isolate; }
+  .hero .tint{ position:absolute; inset:0; pointer-events:none; z-index:2; mix-blend-mode:color; opacity:.88;
+    border-radius:16px; mask-size:100% 100%; mask-repeat:no-repeat; mask-position:center;
+    -webkit-mask-size:100% 100%; -webkit-mask-repeat:no-repeat; -webkit-mask-position:center; }
+  .hero .tint.deep{ mix-blend-mode:multiply; opacity:.28; }
   .hero img{ width:100%; height:auto; display:block; border-radius:16px;
     animation:heroIn .5s cubic-bezier(.2,.8,.25,1); }
   @keyframes heroIn{ from{ opacity:0; transform:scale(.97);} to{ opacity:1; transform:none;} }
@@ -456,7 +460,7 @@ a{ color:inherit; text-decoration:none; }
   var VARIANT_SHOTS = {
     'solitaire-p4':1, 'solitaire-p6':2,
     'halo-classic':1, 'halo-double':2, 'halo-hidden':2,
-    'pave-r1':1, 'pave-r2':2, 'pave-r3':2,
+    'pave-r1':1, 'pave-r2':2,
     'trinity-round':1, 'trinity-baguette':2, 'trinity-pear':2,
     'bezel-full':1, 'bezel-half':2,
     'cathedral-plain':1, 'cathedral-pave':2,
@@ -476,6 +480,25 @@ a{ color:inherit; text-decoration:none; }
     return 'img/stones/'+shape+'-'+stone+'.webp';
   }
   function stoneMM(w){ return (6.4*Math.pow(Number(w)||1,1/3)).toFixed(1).replace('.',','); }
+
+  /* перекраска центрального камня прямо на фотографии кольца:
+     маска камня + слой цвета в режиме color (яркость и грани берутся с фото) */
+  var STONE_TINT = { yellow:'#e6c552', blue:'#86bde6', pink:'#eda6c0',
+                     ruby:'#bf1c46', sapphire:'#2c4dbe', emerald:'#179268' };
+  var DEEP_STONES = { ruby:1, sapphire:1, emerald:1 };
+  var MASKED = { 'bezel':1, 'bezel-half':1, 'cathedral':1, 'cathedral-pave':1, 'cluster':1, 'cluster-honeycomb':1, 'eternity':1, 'eternity-center':1, 'eternity-half':1, 'halo':1, 'halo-double':1, 'halo-hidden':1, 'pave':1, 'pave-r2':1, 'solitaire':1, 'solitaire-p4-cushion':1, 'solitaire-p4-emerald':1, 'solitaire-p4-oval':1, 'solitaire-p4-pear':1, 'solitaire-p4-princess':1, 'solitaire-p6':1, 'tension':1, 'tension-open':1, 'trinity':1, 'trinity-baguette':1, 'trinity-pear':1, 'vintage':1, 'vintage-filigree':1 };
+  function maskFor(src){
+    var k=(src||'').replace('img/','').replace('_big.jpg','');
+    return MASKED[k] ? 'img/masks/'+k+'.webp' : null;
+  }
+  function tintLayers(src, stone){
+    var mk=maskFor(src), col=STONE_TINT[stone];
+    if(!mk || !col) return '';
+    var m=' -webkit-mask-image:url('+mk+'); mask-image:url('+mk+');';
+    var out='<span class="tint" style="background:'+col+';'+m+'"></span>';
+    if(DEEP_STONES[stone]) out+='<span class="tint deep" style="background:'+col+';'+m+'"></span>';
+    return out;
+  }
 
   /* снимки кольца под конкретную огранку: ключ оправа-вариант-огранка */
   var SHAPE_SHOTS = {
@@ -499,7 +522,7 @@ a{ color:inherit; text-decoration:none; }
     { id:'halo', name:'Гало', note:'Ореол из мелких бриллиантов: центральный камень выглядит заметно крупнее.',
       variants:[{id:'classic',name:'Классическое',sub:'один ряд'},{id:'double',name:'Двойное',sub:'два ряда'},{id:'hidden',name:'Скрытое',sub:'видно только сбоку'}] },
     { id:'pave', name:'Паве', note:'Дорожка камней по шинке — кольцо светится по всей длине пальца.',
-      variants:[{id:'r1',name:'Один ряд',sub:'сдержанно'},{id:'r2',name:'Два ряда',sub:'ярче'},{id:'r3',name:'Три ряда',sub:'максимум'}] },
+      variants:[{id:'r1',name:'Один ряд',sub:'сдержанно'},{id:'r2',name:'Два ряда',sub:'ярче'}] },
     { id:'trinity', name:'Трилогия', note:'Центр и два спутника — классическая история «прошлое, настоящее, будущее».',
       variants:[{id:'round',name:'Круглые',sub:'мягко'},{id:'baguette',name:'Багеты',sub:'графично'},{id:'pear',name:'Груши',sub:'текуче'}] },
     { id:'bezel', name:'Бизель', note:'Глухой ободок. Ничего не цепляется — оправа для тех, кто не снимает кольцо.',
@@ -1070,7 +1093,8 @@ a{ color:inherit; text-decoration:none; }
     if(picked.variant && !variantShot) notes.push('вариант «'+find(fm.variants,state.variant).name+'» — снимок готовится');
     if(picked.metal && state.metal!=='platinum') notes.push('на снимке платина');
     if(picked.shape && state.shape!=='round' && !shapeShotSrc) notes.push('кольцо снято с круглым камнем');
-    if(picked.stone && state.stone!=='diamond') notes.push('цвет — на макро-снимке камня');
+    var tinted = picked.stone && state.stone!=='diamond' ? tintLayers(src, state.stone) : '';
+    if(picked.stone && state.stone!=='diamond' && !tinted) notes.push('цвет — на макро-снимке камня');
 
     /* плашка с настоящим макро-снимком выбранного камня: меняется от огранки, цвета и веса */
     var plate = '';
@@ -1084,7 +1108,7 @@ a{ color:inherit; text-decoration:none; }
           '<span class="hplatecap mono">'+state.carat+' ct · '+stoneMM(state.carat)+' мм</span></div>';
       }
     }
-    box.innerHTML = '<figure class="hero"><img src="'+src+'" alt="'+fm.name+'">'+plate+
+    box.innerHTML = '<figure class="hero"><img src="'+src+'" alt="'+fm.name+'">'+tinted+plate+
       '<figcaption><span class="hname">'+fm.name+
       (picked.variant ? ' · '+find(fm.variants,state.variant).name : '')+'</span>'+
       (notes.length ? '<span class="hnote">'+notes.join(' · ')+'</span>' : '')+
