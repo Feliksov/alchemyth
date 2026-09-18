@@ -545,14 +545,18 @@ a{ color:inherit; text-decoration:none; }
     'cluster':1.0, 'cluster-honeycomb':0.8, 'tension':1.0, 'tension-open':1.0,
     'trinity':1.4, 'trinity-baguette':1.8, 'trinity-pear':1.6, 'vintage':1.2, 'vintage-filigree':1.2
   };
+  var HEAD_FULL = { 'halo':1, 'halo-double':1, 'cluster':1, 'cluster-honeycomb':1 };  /* ореол — из камней, растёт полностью */
   var NO_RESIZE = { 'eternity':1, 'eternity-half':1, 'eternity-center':1 };
   /* размеры «в лицо» при одном карате, мм: длина и ширина */
   var MM_1CT = { round:[6.5,6.5], oval:[7.7,5.7], pear:[8.7,5.7],
                  emerald:[7.0,5.0], princess:[5.5,5.5], cushion:[5.75,5.75] };
+  /* у гало и кластера голова и так широкая: без потолка десятикаратник превращается в блюдце */
+  var SCALE_CAP = { 'halo':1.42, 'halo-double':1.36, 'cluster':1.4, 'cluster-honeycomb':1.36,
+                    'halo-hidden':1.55, 'vintage':1.5, 'vintage-filigree':1.45, 'cathedral-pave':1.6 };
   function caratScale(w, key){
     var base = BASE_CT[key] || 2.0;
     var sc = Math.pow((Number(w)||1)/base, 1/3);
-    return Math.max(0.55, Math.min(1.8, sc));
+    return Math.max(0.55, Math.min(SCALE_CAP[key] || 1.8, sc));
   }
   /* лапки, снятые отдельно: рисуем их поверх увеличенного камня, чтобы он не «проглатывал» закрепку */
   var PRONG_CUTS = { 'bezel':[36.7,17.39,30.8,27.84], 'bezel-half':[28.75,24.89,35.45,29.43], 'cathedral':[35.11,12.61,29.2,27.39], 'cathedral-pave':[36.02,12.05,27.95,24.77], 'cluster':[44.09,33.52,33.75,32.73], 'cluster-honeycomb':[36.02,23.75,26.93,25.57], 'eternity':[20.0,33.86,59.43,42.05], 'eternity-center':[42.05,26.25,15.8,15.0], 'eternity-half':[18.64,37.95,61.25,46.25], 'halo':[18.75,20.0,61.82,49.89], 'halo-double':[26.14,25.34,57.5,49.55], 'halo-hidden':[37.95,24.43,30.45,29.43], 'pave':[36.36,25.45,27.84,26.48], 'pave-r2':[39.2,20.91,26.14,23.52], 'solitaire':[32.39,24.66,40.45,35.23], 'solitaire-p4-cushion':[21.14,42.84,58.07,29.89], 'solitaire-p4-emerald':[32.61,40.23,42.61,27.05], 'solitaire-p4-oval':[39.2,19.77,33.41,32.84], 'solitaire-p4-pear':[34.66,20.68,39.43,39.2], 'solitaire-p4-princess':[34.09,21.25,39.32,35.45], 'solitaire-p6':[32.95,27.61,40.45,29.77], 'tension':[29.43,26.14,24.2,23.52], 'tension-open':[38.41,23.07,18.86,17.27], 'trinity':[33.86,35.11,28.18,24.77], 'trinity-baguette':[32.39,23.41,39.32,32.84], 'trinity-pear':[34.2,33.3,30.68,26.82], 'vintage':[34.09,25.8,33.86,27.27], 'vintage-filigree':[27.05,14.89,38.86,31.7] };
@@ -564,10 +568,14 @@ a{ color:inherit; text-decoration:none; }
     if(headCol) inner += '<span class="cuttint" style="background:'+headCol+'; mix-blend-mode:color; -webkit-mask-image:url('+url+'); mask-image:url('+url+')"></span>';
     var tr='';
     if(sc && Math.abs(sc-1)>0.004 && st && g.length>3 && st.length>3){
-      /* закрепка живёт вместе с камнем: тот же масштаб вокруг центра камня */
+      /* Закрепка тянется за камнем, но не во всю силу: иначе металл у камня раздувается,
+         а шинка рядом остаётся прежней — это первое, что бросается в глаза.
+         Ореол из камней у гало и кластера — другое дело, он обязан расти вместе с центром. */
+      var full = HEAD_FULL[keyOf(src)];
+      var hs = full ? sc : 1 + (sc-1)*0.38;
       var cx=st[0]+st[2]/2, cy=st[1]+st[3]/2;
       var ox=((cx-g[0])/g[2]*100).toFixed(1), oy=((cy-g[1])/g[3]*100).toFixed(1);
-      tr=' transform:scale('+sc.toFixed(3)+'); transform-origin:'+ox+'% '+oy+'%;';
+      tr=' transform:scale('+hs.toFixed(3)+'); transform-origin:'+ox+'% '+oy+'%;';
     }
     return '<span class="hprong" style="left:'+g[0]+'%; top:'+g[1]+'%; width:'+g[2]+'%;'+tr+'">'+inner+'</span>';
   }
