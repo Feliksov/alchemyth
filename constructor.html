@@ -649,13 +649,6 @@ a{ color:inherit; text-decoration:none; }
     for(var i=0;i<list.length;i++) if(list[i].id===vid) return list[i];
     return list[0];
   }
-  /* металл под камнем может отличаться от шинки — обычная ювелирная опция */
-  var HEADS = [
-    { id:'same',   name:'Как шинка' },
-    { id:'white',  name:'Белый' },
-    { id:'yellow', name:'Жёлтый' },
-    { id:'rose',   name:'Розовый' }
-  ];
   var SIZES = ['15,5','16,0','16,5','17,0','17,5','18,0','18,5','19,0','19,5','20,0','20,5','21,0','21,5'];
 
   var METALS = [
@@ -1014,15 +1007,15 @@ a{ color:inherit; text-decoration:none; }
 
   /* ================= UI ================= */
   var el = function(id){ return document.getElementById(id); };
-  var ORDER_ONE = ['family','stone','shape','carat','metal','variant','head','size','engrave'];
-  var ORDER_DUO = ['family','stone','shape','carat','stone2','shape2','carat2','metal','variant','head','size','engrave'];
+  var ORDER_ONE = ['family','stone','shape','carat','metal','variant','size','engrave'];
+  var ORDER_DUO = ['family','stone','shape','carat','stone2','shape2','carat2','metal','variant','size','engrave'];
   function isDuo(){ return state.family==='duet'; }
   function ORDERnow(){ return isDuo() ? ORDER_DUO : ORDER_ONE; }
-  var TITLES_ONE = { family:'Оправа', stone:'Камень', shape:'Огранка', carat:'Вес', metal:'Металл', variant:'Посадка камня', head:'Крапаны', size:'Размер', engrave:'Гравировка' };
+  var TITLES_ONE = { family:'Оправа', stone:'Камень', shape:'Огранка', carat:'Вес', metal:'Металл', variant:'Посадка камня', size:'Размер', engrave:'Гравировка' };
   var TITLES_DUO = { family:'Оправа',
     stone:'Первый камень', shape:'Огранка первого', carat:'Вес первого',
     stone2:'Второй камень', shape2:'Огранка второго', carat2:'Вес второго',
-    metal:'Металл', variant:'Посадка камней', head:'Крапаны', size:'Размер', engrave:'Гравировка' };
+    metal:'Металл', variant:'Посадка камней', size:'Размер', engrave:'Гравировка' };
   function TITLE(k){ return (isDuo() ? TITLES_DUO : TITLES_ONE)[k] || k; }
   function baseKey(k){ return k.replace(/2$/,''); }
   var open = 'family', builtOrder = null;
@@ -1056,14 +1049,6 @@ a{ color:inherit; text-decoration:none; }
         return '<div class="chip wide"><input type="radio" name="variant" id="variant-'+vr.id+'" value="'+vr.id+'"'+
           (picked.variant&&state.variant===vr.id?' checked':'')+'>'+
           '<label for="variant-'+vr.id+'">'+vr.name+'<span>'+vr.sub+'</span></label></div>';
-      }).join('')+'</div>';
-    }
-    if(key==='head'){
-      out += '<p class="hint">Металл, который держит камень. Жёлтый крапан под жёлтым бриллиантом делает цвет камня сочнее, белый — наоборот, подчёркивает холодный блеск.</p>';
-      out += '<div class="chips">'+HEADS.map(function(h){
-        return '<div class="chip wide"><input type="radio" name="head" id="head-'+h.id+'" value="'+h.id+'"'+
-          (picked.head&&state.head===h.id?' checked':'')+'>'+
-          '<label for="head-'+h.id+'">'+h.name+'</label></div>';
       }).join('')+'</div>';
     }
     if(key==='size'){
@@ -1135,7 +1120,6 @@ a{ color:inherit; text-decoration:none; }
     if(!picked[key]) return '';
     if(key==='family') return find(FAMILIES,state.family).name;
     if(key==='variant') return variantObj(state.family, state.shape, state.variant).name;
-    if(key==='head') return find(HEADS,state.head).name;
     if(key==='size') return state.size;
     if(key==='engrave') return state.engrave==='yes' ? (state.engraveText? '«'+state.engraveText+'»' : 'да') : 'нет';
     if(key==='stone'||key==='stone2') return find(STONES,state[key]).name;
@@ -1169,10 +1153,6 @@ a{ color:inherit; text-decoration:none; }
     }).join('');
   }
 
-  function headTintCol(){
-    if(state.head==='same') return METAL_TINT[state.metal] || null;
-    return state.head==='white' ? null : (METAL_TINT[state.head] || null);
-  }
   function miniFor(key){
     if(key==='stone'||key==='shape'||key==='carat'){
       var sp=stonePhoto(state.shape,state.stone);
@@ -1260,9 +1240,8 @@ a{ color:inherit; text-decoration:none; }
     if(picked.shape && state.shape!=='round' && !shapeShotSrc && !comboSrc) notes.push('кольцо снято с круглым камнем');
     var needTint = (!comboSrc && picked.stone && state.stone!=='diamond');
     var cut = (picked.carat || needTint) ? stoneCutLayer(src, state.carat, state.stone, needTint) : '';
-    /* если камень вырос — возвращаем лапки поверх него; заодно они красятся отдельно от шинки */
-    var headCol = picked.head ? headTintCol() : null;
-    var prongs = (cut || headCol) ? prongLayer(src, headCol) : '';
+    /* если камень вырос — возвращаем лапки поверх него, иначе он проглотит закрепку */
+    var prongs = cut ? prongLayer(src, picked.metal ? METAL_TINT[state.metal] : null) : '';
     /* если камень уже увеличен вырезкой — красим вырезку, а не исходный кадр */
     var tinted = (needTint && !cut) ? tintLayers(src, state.stone) : '';
     var colourShown = !!(comboSrc || tinted || (cut && needTint));
@@ -1298,7 +1277,7 @@ a{ color:inherit; text-decoration:none; }
       html += row('Огранка', picked.shape ? (find(SHAPES,state.shape).name+' · '+find(SHAPES,state.shape).facets) : '—', picked.shape, true);
       html += row('Твёрдость', picked.stone ? (find(STONES,state.stone).hard+' по Моосу') : '—', picked.stone, true);
     }
-    html += row('Металл', picked.metal ? (mt.name + (picked.head && state.head!=='same' ? ', крапаны — '+find(HEADS,state.head).name.toLowerCase() : '')) : 'не выбран', picked.metal);
+    html += row('Металл', picked.metal ? (mt.name) : 'не выбран', picked.metal);
     html += row('Размер', picked.size ? state.size+' мм' : '—', picked.size, true);
     html += row('Гравировка', picked.engrave ? (state.engrave==='yes' ? (state.engraveText ? '«'+state.engraveText+'»' : 'да, текст уточним') : 'без неё') : '—', picked.engrave);
     el('specList').innerHTML = html;
