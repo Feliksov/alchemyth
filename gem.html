@@ -5,91 +5,55 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Камень — Alchemyth</title>
 <style>
-  html,body{margin:0;height:100%;background:#FAF7F0;font-family:system-ui,sans-serif}
-  #stage{position:fixed;inset:0}
-  .hint{position:fixed;left:0;right:0;bottom:22px;text-align:center;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a99f8c}
+html,body{margin:0;height:100%;background:#FAF7F0;font-family:system-ui,sans-serif}
+#stage{position:fixed;inset:0}
+.hint{position:fixed;left:0;right:0;bottom:22px;text-align:center;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a99f8c}
 </style>
 </head>
 <body>
 <div id="stage"></div>
 <div class="hint">portuguese cut · 3d</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-const stage=document.getElementById('stage');
+const stage=document.getElementById("stage");
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(30,1,0.1,100);
-camera.position.set(0,0.35,7.4);
+camera.position.set(0,0.3,7.6);
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 renderer.outputEncoding=THREE.sRGBEncoding;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure=1.0;
 stage.appendChild(renderer.domElement);
-
 function equirect(){
-  const c=document.createElement('canvas');c.width=1024;c.height=512;const x=c.getContext('2d');
-  const g=x.createLinearGradient(0,0,0,512);
-  g.addColorStop(0,'#ffffff');g.addColorStop(.38,'#F6ECD9');g.addColorStop(.55,'#C9A873');
-  g.addColorStop(.78,'#6E5B41');g.addColorStop(1,'#2A241C');
-  x.fillStyle=g;x.fillRect(0,0,1024,512);
-  const spots=[[170,120,70],[520,90,50],[820,160,60],[330,300,45],[700,340,55]];
-  spots.forEach(function(p){
-    const rg=x.createRadialGradient(p[0],p[1],0,p[0],p[1],p[2]);
-    rg.addColorStop(0,'rgba(255,255,255,1)');rg.addColorStop(1,'rgba(255,255,255,0)');
-    x.fillStyle=rg;x.beginPath();x.arc(p[0],p[1],p[2],0,7);x.fill();
-  });
-  const t=new THREE.CanvasTexture(c);
-  t.mapping=THREE.EquirectangularReflectionMapping;
-  t.encoding=THREE.sRGBEncoding;
-  return t;
-}
-const pmrem=new THREE.PMREMGenerator(renderer);
-pmrem.compileEquirectangularShader();
-const env=pmrem.fromEquirectangular(equirect()).texture;
+var c=document.createElement("canvas");c.width=1024;c.height=512;var x=c.getContext("2d");
+var g=x.createLinearGradient(0,0,0,512);
+g.addColorStop(0,"#ffffff");g.addColorStop(.36,"#F6ECD9");g.addColorStop(.54,"#C9A873");
+g.addColorStop(.76,"#6E5B41");g.addColorStop(1,"#241E17");
+x.fillStyle=g;x.fillRect(0,0,1024,512);
+var sp=[[170,120,70],[520,90,50],[820,160,60],[330,300,45],[700,340,55]];
+sp.forEach(function(p){var rg=x.createRadialGradient(p[0],p[1],0,p[0],p[1],p[2]);
+rg.addColorStop(0,"rgba(255,255,255,1)");rg.addColorStop(1,"rgba(255,255,255,0)");
+x.fillStyle=rg;x.beginPath();x.arc(p[0],p[1],p[2],0,7);x.fill();});
+var t=new THREE.CanvasTexture(c);t.mapping=THREE.EquirectangularReflectionMapping;t.encoding=THREE.sRGBEncoding;return t;}
+var pmrem=new THREE.PMREMGenerator(renderer);pmrem.compileEquirectangularShader();
+var env=pmrem.fromEquirectangular(equirect()).texture;
 scene.environment=env;
-
 function gemGeo(){
-  const p=[
-    [0.002,-1.30],[0.30,-1.02],[0.56,-0.74],[0.78,-0.44],[0.93,-0.18],[1.00,0.00],
-    [0.975,0.06],[0.90,0.15],[0.78,0.24],[0.62,0.31],[0.42,0.37],[0.002,0.40]
-  ].map(function(a){return new THREE.Vector2(a[0],a[1]);});
-  const g=new THREE.LatheGeometry(p,28);
-  g.computeVertexNormals();
-  return g;
-}
-
-const mat=new THREE.MeshPhysicalMaterial({
-  color:0xffffff,metalness:0,roughness:0.0,
-  transmission:1.0,thickness:1.1,ior:2.42,
-  clearcoat:1,clearcoatRoughness:0.0,
-  envMap:env,envMapIntensity:1.1,
-  flatShading:true,side:THREE.DoubleSide,
-  transparent:true,opacity:1
-});
-
-const gem=new THREE.Mesh(gemGeo(),mat);
-gem.scale.set(1.18,1.18,0.92);
-const pivot=new THREE.Group();pivot.add(gem);scene.add(pivot);
-
-scene.add(new THREE.AmbientLight(0xffffff,0.28));
-const k=new THREE.DirectionalLight(0xffffff,0.9);k.position.set(4,5,6);scene.add(k);
-const f2=new THREE.DirectionalLight(0xE8D2A8,0.5);f2.position.set(-5,-3,-4);scene.add(f2);
-
-function size(){
-  const w=stage.clientWidth,h=stage.clientHeight;
-  camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h);
-}
-addEventListener('resize',size);size();
-
-function loop(ms){
-  const t=ms*0.001;
-  pivot.rotation.y=t*0.30;
-  pivot.rotation.x=Math.sin(t*0.19)*0.42;
-  pivot.rotation.z=Math.cos(t*0.13)*0.16;
-  renderer.render(scene,camera);
-  requestAnimationFrame(loop);
-}
+var a=[[0.002,-1.30],[0.30,-1.02],[0.56,-0.74],[0.78,-0.44],[0.93,-0.18],[1.00,0.00],[0.975,0.06],[0.90,0.15],[0.78,0.24],[0.62,0.31],[0.42,0.37],[0.002,0.40]];
+var p=a.map(function(v){return new THREE.Vector2(v[0],v[1]);});
+var g=new THREE.LatheGeometry(p,28);g.computeVertexNormals();return g;}
+var mat=new THREE.MeshPhysicalMaterial({color:0xffffff,metalness:0,roughness:0.0,transmission:1.0,thickness:1.1,ior:2.42,clearcoat:1,clearcoatRoughness:0.0,envMap:env,envMapIntensity:1.1,flatShading:true,side:THREE.DoubleSide});
+var gem=new THREE.Mesh(gemGeo(),mat);
+gem.scale.set(1.15,1.15,0.9);
+var pivot=new THREE.Group();pivot.add(gem);scene.add(pivot);
+scene.add(new THREE.AmbientLight(0xffffff,0.25));
+var k=new THREE.DirectionalLight(0xffffff,0.9);k.position.set(4,5,6);scene.add(k);
+var f2=new THREE.DirectionalLight(0xE8D2A8,0.5);f2.position.set(-5,-3,-4);scene.add(f2);
+function size(){var w=stage.clientWidth,h=stage.clientHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h);}
+addEventListener("resize",size);size();
+function loop(ms){var t=ms*0.001;pivot.rotation.y=t*0.30;pivot.rotation.x=Math.sin(t*0.19)*0.42;pivot.rotation.z=Math.cos(t*0.13)*0.16;renderer.render(scene,camera);requestAnimationFrame(loop);}
 requestAnimationFrame(loop);
-<\/script>
+</script>
 </body>
 </html>
