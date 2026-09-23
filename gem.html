@@ -25,7 +25,7 @@ camera.position.set(0,0.25,8);
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure=1.15;
+renderer.toneMappingExposure=0.95;
 stage.appendChild(renderer.domElement);
 function envTex(){
  const c=document.createElement("canvas");c.width=1024;c.height=512;const x=c.getContext("2d");
@@ -59,10 +59,11 @@ function cutGeo(){
  g.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));
  g.computeVertexNormals();return g;}
 const mat=new THREE.MeshPhysicalMaterial({
- color:0xffffff,metalness:0,roughness:0.02,
- transmission:1,thickness:1.6,ior:2.42,dispersion:6,
+ color:0xF2EADB,metalness:0,roughness:0.04,
+ transparent:true,opacity:0.62,
+ envMap:env,envMapIntensity:2.4,
  clearcoat:1,clearcoatRoughness:0.01,
- envMap:env,envMapIntensity:1.6,flatShading:true,side:THREE.DoubleSide});
+ flatShading:true,side:THREE.DoubleSide});
 const gem=new THREE.Mesh(cutGeo(),mat);
 gem.scale.setScalar(1.45);
 const pivot=new THREE.Group();pivot.add(gem);scene.add(pivot);
