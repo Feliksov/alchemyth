@@ -194,3 +194,7 @@ footer { padding: 32px 0; border-top: 0.5px solid var(--line); background: var(-
 .vs-chart .lbl { fill: var(--on-dark-mute); font-family: var(--sans); font-size: 12px; }
 .vs-chart .cap { fill: var(--on-dark-mute); font-family: var(--sans); font-size: 10.5px; opacity: 0.8; }
 @media (max-width: 900px) { .vs-honest { padding: 20px; } }
+
+.hero .bg-gem{position:absolute;left:auto;right:0;top:0;width:52%;height:100%;z-index:0;pointer-events:none}
+.hero .bg-gem canvas{display:block;width:100%;height:100%}
+@media (max-width:900px){.hero .bg-gem{position:relative;width:100%;height:280px;margin-top:24px}}
