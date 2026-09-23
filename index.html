@@ -184,7 +184,7 @@ const BRASS=0xB08D57, DEEP=0x8A6C3E;
 const faces=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({
  color:BRASS,transparent:true,opacity:0.05,side:THREE.DoubleSide,depthWrite:false}));
 const shade=new THREE.Mesh(geo,new THREE.MeshLambertMaterial({
- color:0xEFE4CE,transparent:true,opacity:0.30,flatShading:true,side:THREE.DoubleSide,depthWrite:false}));
+ color:0xF4EAD6,transparent:true,opacity:0.72,flatShading:true,side:THREE.DoubleSide,depthWrite:false}));
 const edges=new THREE.LineSegments(new THREE.EdgesGeometry(geo,1),
  new THREE.LineBasicMaterial({color:DEEP,transparent:true,opacity:0.55}));
 const nodes=new THREE.Points(geo,new THREE.PointsMaterial({
@@ -194,14 +194,15 @@ gem.scale.setScalar(4.0);
 const halo=new THREE.Mesh(new THREE.RingGeometry(2.35,2.38,96),
  new THREE.MeshBasicMaterial({color:BRASS,transparent:true,opacity:0.22,side:THREE.DoubleSide}));
 const pivot=new THREE.Group();pivot.add(gem);pivot.position.set(1.45,0.05,0);scene.add(pivot);
-scene.add(new THREE.AmbientLight(0xffffff,0.55));
-const d1=new THREE.DirectionalLight(0xffffff,1.1);d1.position.set(3,5,4);scene.add(d1);
-const d2=new THREE.DirectionalLight(0xC9A873,0.7);d2.position.set(-4,-2,-3);scene.add(d2);
+scene.add(new THREE.AmbientLight(0xffffff,0.22));
+const d1=new THREE.DirectionalLight(0xffffff,1.9);d1.position.set(3,5,4);scene.add(d1);
+const d2=new THREE.DirectionalLight(0xB08D57,1.0);d2.position.set(-4,-2,-3);scene.add(d2);
 function size(){const w=stage.clientWidth,h=stage.clientHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h);}
 addEventListener("resize",size);size();
 renderer.setAnimationLoop(ms=>{const t=ms*0.001;
- pivot.rotation.y=t*0.30;pivot.rotation.x=Math.sin(t*0.19)*0.44;pivot.rotation.z=Math.cos(t*0.13)*0.18;
- halo.rotation.z=-t*0.06;
+ gem.rotation.x=-0.34;
+ pivot.rotation.y=t*0.26;
+ pivot.rotation.z=Math.sin(t*0.12)*0.05;
  renderer.render(scene,camera);});
 </script>
 </body>
