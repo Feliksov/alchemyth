@@ -161,7 +161,7 @@ import * as THREE from "three";
 const stage=document.getElementById("gemStage");
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(26,1,0.1,100);
-camera.position.set(0,0.2,8.6);
+camera.position.set(0,0.2,9.2);
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 stage.appendChild(renderer.domElement);
@@ -186,14 +186,14 @@ const faces=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({
 const shade=new THREE.Mesh(geo,new THREE.MeshLambertMaterial({
  color:0xEFE4CE,transparent:true,opacity:0.30,flatShading:true,side:THREE.DoubleSide,depthWrite:false}));
 const edges=new THREE.LineSegments(new THREE.EdgesGeometry(geo,1),
- new THREE.LineBasicMaterial({color:DEEP,transparent:true,opacity:0.85}));
+ new THREE.LineBasicMaterial({color:DEEP,transparent:true,opacity:0.55}));
 const nodes=new THREE.Points(geo,new THREE.PointsMaterial({
- color:BRASS,size:0.045,sizeAttenuation:true,transparent:true,opacity:0.9}));
+ color:BRASS,size:0.05,sizeAttenuation:true,transparent:true,opacity:0.9}));
 const gem=new THREE.Group();gem.add(faces);gem.add(shade);gem.add(edges);gem.add(nodes);
-gem.scale.setScalar(1.55);
+gem.scale.setScalar(3.0);
 const halo=new THREE.Mesh(new THREE.RingGeometry(2.35,2.38,96),
  new THREE.MeshBasicMaterial({color:BRASS,transparent:true,opacity:0.22,side:THREE.DoubleSide}));
-const pivot=new THREE.Group();pivot.add(gem);scene.add(pivot);scene.add(halo);
+const pivot=new THREE.Group();pivot.add(gem);pivot.position.set(1.15,0.1,0);scene.add(pivot);
 scene.add(new THREE.AmbientLight(0xffffff,0.55));
 const d1=new THREE.DirectionalLight(0xffffff,1.1);d1.position.set(3,5,4);scene.add(d1);
 const d2=new THREE.DirectionalLight(0xC9A873,0.7);d2.position.set(-4,-2,-3);scene.add(d2);
