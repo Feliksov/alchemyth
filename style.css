@@ -46,14 +46,14 @@ header { position: sticky; top: 0; z-index: 20; background: rgba(250, 247, 240, 
 .drawer-foot { margin-top: auto; font-size: 13px; color: var(--ink-mute); }
 .bg-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
 .bg-veil { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
-.hero { position: relative; overflow: hidden; background: var(--paper); padding: 110px 0 120px; text-align: left; }
+.hero { position: relative; overflow: hidden; background: var(--paper); padding: 150px 0 180px; text-align: left; }
 .hero .bg-video { left: auto; right: 0; top: 0; width: 52%; height: 100%; z-index: 0; }
 .hero .bg-veil { left: 0; right: 0; width: 100%; background: linear-gradient(90deg, var(--paper) 0%, rgba(250,247,240,0.88) 26%, rgba(250,247,240,0.35) 58%, rgba(250,247,240,0) 100%); z-index: 1; }
 .hero .wrap { position: relative; z-index: 2; }
 .hero-copy { max-width: 720px; }
 @media (min-width: 901px) { .hero h1 { white-space: nowrap; } }
 .hero-lede { color: var(--ink-mute); font-size: 18px; margin-top: 20px; }
-.gates { padding: 72px 0 88px; background: var(--paper); }
+.gates { padding: 18px 0 80px; background: var(--paper); }
 .gate-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 .gate { background: #fff; border: 0.5px solid var(--line); display: flex; flex-direction: column; transition: border-color 0.2s ease, transform 0.2s ease; }
 .gate:hover { border-color: var(--brass); transform: translateY(-3px); }
@@ -139,11 +139,11 @@ footer { padding: 32px 0; border-top: 0.5px solid var(--line); background: var(-
 .vs-cta-row { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
 @media (max-width: 900px) {
   h1 { font-size: 36px; }
-  .hero { padding: 60px 0 0; text-align: center; }
+  .hero { padding: 80px 0 90px; text-align: center; }
   .hero .bg-video { position: relative; width: 100%; height: 260px; margin-top: 32px; }
   .hero .bg-veil { display: none; }
   .hero-copy { max-width: 100%; }
-  .gates { padding-top: 48px; }
+  .gates { padding-top: 12px; }
   .gate-grid { grid-template-columns: repeat(2, 1fr); }
   .myth { padding: 80px 0; }
   .myth-emph { font-size: 24px; }
