@@ -198,3 +198,14 @@ footer { padding: 32px 0; border-top: 0.5px solid var(--line); background: var(-
 .hero .bg-gem{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 .hero .bg-gem canvas{display:block;width:100%;height:100%}
 @media (max-width:900px){.hero .bg-gem{opacity:0.5}}
+
+/* Versus page — live price snapshot */
+.vs-live { max-width: 700px; margin: 0 auto 40px; padding: 24px 26px; background: var(--paper-2); border-top: 2px solid var(--verdigris); }
+.vs-live-row { display: flex; align-items: baseline; gap: 12px; padding: 6px 0; }
+.vs-live-label { font-size: 13px; letter-spacing: 0.06em; color: var(--ink-mute); min-width: 110px; }
+.vs-live-val { font-family: var(--serif); font-size: 30px; color: var(--ink-strong); }
+.vs-live-val.brass { color: var(--brass-deep); }
+.vs-live-unit { font-size: 13px; color: var(--ink-mute); }
+.vs-live-meta { margin: 14px 0 0; font-size: 12.5px; line-height: 1.6; color: var(--ink-mute); }
+.vs-live-meta a { color: var(--brass-deep); text-decoration: underline; text-underline-offset: 2px; }
+@media (max-width: 520px) { .vs-live-row { flex-wrap: wrap; gap: 6px; } .vs-live-label { min-width: 100%; } }
