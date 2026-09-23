@@ -20,23 +20,25 @@ html,body{margin:0;height:100%;background:#FAF7F0;font-family:system-ui,sans-ser
 import * as THREE from "three";
 const stage=document.getElementById("stage");
 const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(28,1,0.1,100);
-camera.position.set(0,0.25,8);
+const camera=new THREE.PerspectiveCamera(26,1,0.1,100);
+camera.position.set(0,0.3,8.4);
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure=0.95;
+renderer.toneMappingExposure=1.0;
 stage.appendChild(renderer.domElement);
 function envTex(){
  const c=document.createElement("canvas");c.width=1024;c.height=512;const x=c.getContext("2d");
+ x.fillStyle="#0B0906";x.fillRect(0,0,1024,512);
  const g=x.createLinearGradient(0,0,0,512);
- g.addColorStop(0,"#ffffff");g.addColorStop(.30,"#FBF3E4");g.addColorStop(.52,"#D8BC8C");
- g.addColorStop(.74,"#7A6647");g.addColorStop(1,"#1E1913");
- x.fillStyle=g;x.fillRect(0,0,1024,512);
- const sp=[[150,110,90],[470,70,60],[790,140,80],[300,290,55],[660,330,65],[950,260,50]];
+ g.addColorStop(0,"#ffffff");g.addColorStop(.18,"#F6E9CF");g.addColorStop(.34,"#8A7category");
+ const bands=[[0,60,"#ffffff"],[60,110,"#F3E3C4"],[110,170,"#6E5B3E"],[170,230,"#12100C"],[230,300,"#C9A96E"],[300,360,"#0E0C08"],[360,430,"#F7EEDB"],[430,512,"#141109"]];
+ bands.forEach(b=>{x.fillStyle=b[2];x.fillRect(0,b[0],1024,b[1]-b[0]);});
+ const sp=[[130,70,80],[420,45,55],[760,95,70],[980,55,45],[250,255,50],[610,270,60],[880,300,40]];
  sp.forEach(p=>{const rg=x.createRadialGradient(p[0],p[1],0,p[0],p[1],p[2]);
-  rg.addColorStop(0,"rgba(255,255,255,1)");rg.addColorStop(1,"rgba(255,255,255,0)");
+  rg.addColorStop(0,"rgba(255,255,255,1)");rg.addColorStop(.5,"rgba(255,245,225,.5)");rg.addColorStop(1,"rgba(255,255,255,0)");
   x.fillStyle=rg;x.beginPath();x.arc(p[0],p[1],p[2],0,7);x.fill();});
+ for(let i=0;i<14;i++){x.fillStyle="rgba(0,0,0,.55)";x.fillRect(i*76,180+((i%3)*40),34,120);}
  const t=new THREE.CanvasTexture(c);t.mapping=THREE.EquirectangularReflectionMapping;
  t.colorSpace=THREE.SRGBColorSpace;return t;}
 const pmrem=new THREE.PMREMGenerator(renderer);
@@ -49,31 +51,34 @@ function cutGeo(){
  const P=(ri,i)=>{const r=rings[ri];const a=(i+r[2])/N*TAU;return [Math.cos(a)*r[0],r[1],Math.sin(a)*r[0]];};
  const tri=(a,b,c)=>{pos.push(...a,...b,...c);};
  for(let i=0;i<N;i++){tri([0,rings[0][1],0],P(0,i),P(0,i+1));}
- for(let k=0;k<rings.length-1;k++){
-  for(let i=0;i<N;i++){
-   const a=P(k,i),b=P(k,i+1),c=P(k+1,i),d=P(k+1,i+1);
-   tri(a,c,d);tri(a,d,b);}}
+ for(let k=0;k<rings.length-1;k++){for(let i=0;i<N;i++){
+  const a=P(k,i),b=P(k,i+1),c=P(k+1,i),d=P(k+1,i+1);tri(a,c,d);tri(a,d,b);}}
  const last=rings.length-1;
  for(let i=0;i<N;i++){tri(P(last,i+1),P(last,i),[0,-1.10,0]);}
  const g=new THREE.BufferGeometry();
  g.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));
  g.computeVertexNormals();return g;}
-const mat=new THREE.MeshPhysicalMaterial({
- color:0xF2EADB,metalness:0,roughness:0.04,
- transparent:true,opacity:0.62,
- envMap:env,envMapIntensity:2.4,
- clearcoat:1,clearcoatRoughness:0.01,
- flatShading:true,side:THREE.DoubleSide});
-const gem=new THREE.Mesh(cutGeo(),mat);
-gem.scale.setScalar(1.45);
+const geo=cutGeo();
+const inner=new THREE.Mesh(geo,new THREE.MeshPhysicalMaterial({
+ color:0xB08D57,metalness:0.9,roughness:0.12,
+ envMap:env,envMapIntensity:1.8,flatShading:true,side:THREE.BackSide}));
+const outer=new THREE.Mesh(geo,new THREE.MeshPhysicalMaterial({
+ color:0xFFFFFF,metalness:0.1,roughness:0.0,
+ transparent:true,opacity:0.55,
+ envMap:env,envMapIntensity:3.2,
+ clearcoat:1,clearcoatRoughness:0,reflectivity:1,
+ flatShading:true,side:THREE.FrontSide,depthWrite:false}));
+const gem=new THREE.Group();gem.add(inner);gem.add(outer);
+gem.scale.setScalar(1.5);
 const pivot=new THREE.Group();pivot.add(gem);scene.add(pivot);
-scene.add(new THREE.AmbientLight(0xffffff,0.35));
-const k1=new THREE.DirectionalLight(0xffffff,1.6);k1.position.set(4,6,5);scene.add(k1);
-const k2=new THREE.DirectionalLight(0xEBD6AE,0.9);k2.position.set(-5,-2,-4);scene.add(k2);
+scene.add(new THREE.AmbientLight(0xffffff,0.15));
+const k1=new THREE.DirectionalLight(0xffffff,2.6);k1.position.set(4,6,5);scene.add(k1);
+const k2=new THREE.DirectionalLight(0xF0D9AC,1.2);k2.position.set(-5,-2,-4);scene.add(k2);
+const k3=new THREE.PointLight(0xffffff,3.5,20);k3.position.set(-3,4,3);scene.add(k3);
 function size(){const w=stage.clientWidth,h=stage.clientHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h);}
 addEventListener("resize",size);size();
 renderer.setAnimationLoop(ms=>{const t=ms*0.001;
- pivot.rotation.y=t*0.32;pivot.rotation.x=Math.sin(t*0.2)*0.40;pivot.rotation.z=Math.cos(t*0.14)*0.15;
+ pivot.rotation.y=t*0.34;pivot.rotation.x=Math.sin(t*0.21)*0.42;pivot.rotation.z=Math.cos(t*0.15)*0.16;
  renderer.render(scene,camera);});
 </script>
 </body>
