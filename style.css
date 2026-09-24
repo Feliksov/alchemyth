@@ -492,10 +492,29 @@ details[open] > summary .chev { transform: translateY(2px) rotate(-135deg); }
   .vs-live-label { min-width: 100%; }
 }
 
+/* ─── Единственная анимация: блик по краю кнопки или карточки, 0.5 с, один раз ─── */
+.shine { position: relative; isolation: isolate; }
+.shine::after {
+  content: ""; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none; z-index: 2;
+  padding: 1px; opacity: 0;
+  background: linear-gradient(115deg, transparent 38%, rgba(255, 248, 230, 0.95) 50%, transparent 62%) no-repeat;
+  background-size: 300% 100%; background-position: 100% 0;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+}
+.btn-ghost.shine::after, .pcard.shine::after { background-image: linear-gradient(115deg, transparent 38%, #E9D3A6 50%, transparent 62%); }
+.shine:hover::after { animation: shine 0.5s ease-out 1; }
+@keyframes shine {
+  0% { opacity: 1; background-position: 100% 0; }
+  85% { opacity: 1; }
+  100% { opacity: 0; background-position: 0 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .drawer, .overlay, .sheet, .fbar { transition: none; }
   .bg-video { display: none; }
+  .shine:hover::after { animation: none; }
   .pcard, .learn { transition: border-color 0.2s ease; }
   .pcard:hover, .learn:hover { transform: none; }
 }
