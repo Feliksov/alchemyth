@@ -468,7 +468,7 @@ a{ color:inherit; text-decoration:none; }
   </div>
 </div>
 
-<script>window.R3D_HAVE={"bezel_oval":[50,100,200],"bezel_pear":[50,100,200],"bezel_round":[50,100,200],"cluster_oval":[50,100,200],"cluster_pear":[50,100,200],"cluster_round":[50,100,200],"eternity_oval":[50,100,200],"eternity_pear":[50,100,200],"eternity_round":[50,100,200],"eternityhalf_round":[50,100,200],"halo_cushion":[50,100,200],"halo_emerald":[50,100,200],"halo_oval":[50,100,200],"halo_pear":[50,100,200],"halo_princess":[50,100,200],"halo_round":[50,100,200,300],"halodouble_round":[50,100,200],"pave_cushion":[50,100,200],"pave_emerald":[50,100,200],"pave_oval":[50,100,200],"pave_pear":[50,100,200],"pave_princess":[50,100,200],"pave_round":[50,100,200,300],"solitaire6_round":[50,100,200],"solitaire_cushion":[50,100,200],"solitaire_emerald":[50,100,200],"solitaire_oval":[50,100,200,300],"solitaire_pear":[50,100,200],"solitaire_princess":[50,100,200],"solitaire_round":[50,100,200,300,400,700,1000],"tension_oval":[50,100,200],"tension_pear":[50,100,200],"tension_round":[50,100,200],"trinity_oval":[50,100,200],"trinity_pear":[50,100,200],"trinity_round":[50,100,200]};
+<script>window.R3D_HAVE={"bezel_cushion":[50,100,200,300],"bezel_emerald":[50,100,200,300],"bezel_oval":[50,100,200,300],"bezel_pear":[50,100,200,300],"bezel_princess":[50,100,200,300],"bezel_round":[50,100,200,300],"cluster_cushion":[50,100,200,300],"cluster_emerald":[50,100,200,300],"cluster_oval":[50,100,200,300],"cluster_pear":[50,100,200,300],"cluster_princess":[50,100,200,300],"cluster_round":[50,100,200,300],"eternity_cushion":[50,100,200,300],"eternity_emerald":[50,100,200,300],"eternity_oval":[50,100,200,300],"eternity_pear":[50,100,200,300],"eternity_princess":[50,100,200,300],"eternity_round":[50,100,200,300],"eternityhalf_cushion":[50,100,200,300],"eternityhalf_emerald":[50,100,200,300],"eternityhalf_oval":[50,100,200,300],"eternityhalf_pear":[50,100,200,300],"eternityhalf_princess":[50,100,200,300],"eternityhalf_round":[50,100,200,300],"halo_cushion":[50,100,200,300],"halo_emerald":[50,100,200,300],"halo_oval":[50,100,200,300],"halo_pear":[50,100,200,300],"halo_princess":[50,100,200,300],"halo_round":[50,100,200,300],"halodouble_cushion":[50,100,200,300],"halodouble_emerald":[50,100,200,300],"halodouble_oval":[50,100,200,300],"halodouble_pear":[50,100,200,300],"halodouble_princess":[50,100,200,300],"halodouble_round":[50,100,200,300],"pave_cushion":[50,100,200,300],"pave_emerald":[50,100,200,300],"pave_oval":[50,100,200,300],"pave_pear":[50,100,200,300],"pave_princess":[50,100,200,300],"pave_round":[50,100,200,300],"solitaire6_cushion":[50,100,200,300],"solitaire6_emerald":[50,100,200,300],"solitaire6_oval":[50,100,200,300],"solitaire6_pear":[50,100,200,300],"solitaire6_princess":[50,100,200,300],"solitaire6_round":[50,100,200,300],"solitaire_cushion":[50,100,200,300],"solitaire_emerald":[50,100,200,300],"solitaire_oval":[50,100,200,300],"solitaire_pear":[50,100,200,300],"solitaire_princess":[50,100,200,300],"solitaire_round":[50,100,200,300,400,700,1000],"tension_cushion":[50,100,200,300],"tension_emerald":[50,100,200,300],"tension_oval":[50,100,200,300],"tension_pear":[50,100,200,300],"tension_princess":[50,100,200,300],"tension_round":[50,100,200,300],"trinity_cushion":[50,100,200,300],"trinity_emerald":[50,100,200,300],"trinity_oval":[50,100,200,300],"trinity_pear":[50,100,200,300],"trinity_princess":[50,100,200,300],"trinity_round":[50,100,200,300]};
 (function(){
   'use strict';
 
@@ -655,7 +655,10 @@ a{ color:inherit; text-decoration:none; }
     trinity:   { round:'trinity', baguette:'trinity', pear:'trinity' },
     eternity:  { full:'eternity', half:'eternityhalf', center:'eternity' },
     cluster:   { flower:'cluster', honeycomb:'cluster' },
-    tension:   { classic:'tension', open:'tension' }
+    tension:   { classic:'tension', open:'tension' },
+    /* null — у варианта своей 3D-геометрии нет, остаётся фотография */
+    cathedral: { plain:'cathedral', pave:null },
+    vintage:   { milgrain:'vintage', filigree:null }
   };
   var R3D_SHAPE = { round:1, oval:1, pear:1, emerald:1, princess:1, cushion:1 };
   var R3D_METAL = { platinum:0, white:1, yellow:2, rose:3 };        /* строка в спрайте */
@@ -678,7 +681,7 @@ a{ color:inherit; text-decoration:none; }
   }
   function r3d(st){
     var fams = R3D_FAM[st.family]; if(!fams) return null;
-    var fam = fams[st.variant] || fams[Object.keys(fams)[0]]; if(!fam) return null;
+    var fam = (st.variant in fams) ? fams[st.variant] : fams[Object.keys(fams)[0]]; if(!fam) return null;
     if(!R3D_SHAPE[st.shape]) return null;
     var row = R3D_METAL[st.metal], col = R3D_STONE[R3D_STONE_ID[st.stone]];
     if(row === undefined || col === undefined) return null;
