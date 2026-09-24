@@ -8,107 +8,103 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=f6e8c694">
+<link rel="stylesheet" href="style.css?v=3275b16a">
 </head>
 <body>
 
-<div class="draft-banner">Черновик каталога — <strong>карточки-заглушки</strong>. Замените фото, названия и цены на реальные перед публикацией.</div>
+<div class="overlay" id="overlay"></div>
+
+<aside class="drawer" id="drawer">
+<button class="drawer-close" id="drawerClose" aria-label="Закрыть меню">Закрыть</button>
+<nav class="drawer-nav">
+<a href="index.html">Главная</a>
+<a href="catalog.html">Каталог</a>
+<a href="constructor.html">Собери своё кольцо</a>
+<a href="recipe.html">Рецепт философского камня</a>
+<a href="versus.html">Лабораторный против натурального</a>
+<a href="https://instagram.com/alchemyth.lab" target="_blank" rel="noopener">Instagram</a>
+</nav>
+<div class="drawer-foot">alchemyth.философский камень</div>
+</aside>
 
 <header>
-<div class="wrap">
-<nav>
-<a class="logo" href="index.html">ALCHE(MY)TH</a>
-<div class="nav-links">
-<a href="index.html">Главная</a>
-<a href="catalog.html" class="active">Каталог</a>
-<a href="index.html#about">О бренде</a>
-<a href="index.html#instagram">Instagram</a>
-</div>
-<a class="nav-cta" href="index.html#subscribe">Узнать об открытии</a>
-</nav>
+<div class="wrap nav">
+<button class="burger" id="burgerBtn" aria-label="Открыть меню">
+<span></span><span></span><span></span>
+</button>
+<a class="logo" href="index.html">alche<span class="my">(my)</span>th</a>
+<a class="nav-link" href="constructor.html">Конструктор</a>
 </div>
 </header>
 
-<section style="padding-bottom:0;">
+<main class="cat-page">
 <div class="wrap">
-<div class="section-head">
+<nav class="crumbs" aria-label="Навигация">
+<a href="index.html">Главная</a><span aria-hidden="true">/</span><span id="crumbHere">Каталог</span>
+</nav>
+<div class="cat-head">
 <div>
-<div class="kicker">Каталог</div>
-<h2 class="section-title">Украшения Alchemyth</h2>
+<h1 id="catTitle">Украшения</h1>
+<p>Украшения с выращенными бриллиантами.</p>
 </div>
-<p class="section-sub">Готовые изделия с лабораторно выращенными бриллиантами. Любое украшение можно собрать индивидуально.</p>
-</div>
-
-<div class="filters">
-<button class="filter-btn active" data-cat="all">Все</button>
-<button class="filter-btn" data-cat="rings">Кольца</button>
-<button class="filter-btn" data-cat="earrings">Серьги</button>
-<button class="filter-btn" data-cat="pendants">Подвески</button>
-<button class="filter-btn" data-cat="bracelets">Браслеты</button>
+<span class="cat-count" id="count"></span>
 </div>
 
-<div class="product-grid" id="productGrid"></div>
+<nav class="cats" id="cats" aria-label="Категории"></nav>
 </div>
-</section>
 
-<section class="signup" id="subscribe">
+<div class="fbar-wrap" id="fbarWrap">
 <div class="wrap">
-<div class="kicker">Скоро открытие</div>
-<h2 class="section-title">Узнайте об открытии первыми</h2>
-<p>Оставьте почту — напишем, когда откроем магазин и когда выйдет первая коллекция.</p>
-<form class="subscribe" id="subscribeForm">
-<input type="email" id="subscribeEmail" placeholder="Ваш email" required>
-<button type="submit">Подписаться</button>
-</form>
-<p class="consent">Нажимая «Подписаться», вы даёте согласие на обработку персональных данных.</p>
+<div class="fbar">
+<div class="fbar-group" id="fbarFilters"></div>
+<div class="fbar-group"><div class="fdrop right" id="sortDrop" data-g="sort"></div></div>
+</div>
+</div>
+</div>
+
+<div class="wrap">
+<div class="fmobile">
+<button class="btn btn-ghost shine" type="button" id="openFilters">Фильтры</button>
+<button class="btn btn-ghost shine" type="button" id="openSort">Сортировка</button>
+</div>
+<div class="chips" id="chips"></div>
+
+<div class="pgrid" id="grid"></div>
+<div class="empty" id="empty" hidden></div>
+<div class="more-row" id="moreRow" hidden>
+<button class="btn btn-ghost shine" type="button" id="more">Показать ещё</button>
+</div>
+</div>
+</main>
+
+<div class="overlay" id="sheetOverlay"></div>
+<section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+<div class="sheet-head">
+<h3 id="sheetTitle">Фильтры</h3>
+<button type="button" id="sheetClose">Закрыть</button>
+</div>
+<div class="sheet-body" id="sheetBody"></div>
+<div class="sheet-foot">
+<button class="btn btn-primary btn-block shine" type="button" id="sheetApply">Применить</button>
 </div>
 </section>
 
 <footer>
 <div class="wrap foot-row">
-<span class="logo">ALCHE(MY)TH</span>
+<a class="logo" href="index.html">alche<span class="my">(my)</span>th</a>
 <div class="foot-links">
+<a href="catalog.html">Каталог</a>
+<a href="constructor.html">Конструктор</a>
 <a href="https://instagram.com/alchemyth.lab" target="_blank" rel="noopener">Instagram</a>
 <a href="mailto:hello@alchemyth.ru">hello@alchemyth.ru</a>
-<a href="index.html">Главная</a>
 </div>
-<span class="copyright">© 2026 Alchemyth. Sister-бренд Feliksov Diamonds.</span>
+<span class="copyright">© 2026 alchemyth.философский камень</span>
 </div>
 </footer>
 
-<script>
-  // Placeholder catalog data — replace with real products before launch.
-  var PRODUCTS = [
-    {name:"Кольцо Aurora", cat:"rings", catLabel:"Кольцо", price:"от 00 000 ₽"},
-    {name:"Кольцо Lumen", cat:"rings", catLabel:"Кольцо", price:"от 00 000 ₽"},
-    {name:"Кольцо Nova", cat:"rings", catLabel:"Кольцо", price:"от 00 000 ₽"},
-    {name:"Серьги Echo", cat:"earrings", catLabel:"Серьги", price:"от 00 000 ₽"},
-    {name:"Серьги Halo", cat:"earrings", catLabel:"Серьги", price:"от 00 000 ₽"},
-    {name:"Серьги Vela", cat:"earrings", catLabel:"Серьги", price:"от 00 000 ₽"},
-    {name:"Подвеска Solis", cat:"pendants", catLabel:"Подвеска", price:"от 00 000 ₽"},
-    {name:"Подвеска Mira", cat:"pendants", catLabel:"Подвеска", price:"от 00 000 ₽"},
-    {name:"Подвеска Orin", cat:"pendants", catLabel:"Подвеска", price:"от 00 000 ₽"},
-    {name:"Браслет Selene", cat:"bracelets", catLabel:"Браслет", price:"от 00 000 ₽"},
-    {name:"Браслет Iris", cat:"bracelets", catLabel:"Браслет", price:"от 00 000 ₽"},
-    {name:"Браслет Faro", cat:"bracelets", catLabel:"Браслет", price:"от 00 000 ₽"}
-  ];
-
-  var diamondSvg = '<svg viewBox="0 0 100 100" fill="none" stroke="#a67c3d" stroke-width="1.4">' +
-    '<path d="M20 35 L50 10 L80 35 L50 90 Z"/><path d="M20 35 L80 35"/>' +
-    '<path d="M35 35 L50 10 L65 35"/><path d="M35 35 L50 90"/><path d="M65 35 L50 90"/></svg>';
-
-  var grid = document.getElementById('productGrid');
-  grid.innerHTML = PRODUCTS.map(function(p){
-    return '<div class="product-card" data-cat="' + p.cat + '">' +
-      '<div class="product-thumb"><span class="ph-tag">заглушка</span>' + diamondSvg + '</div>' +
-      '<div class="product-info">' +
-        '<div class="cat">' + p.catLabel + '</div>' +
-        '<h3>' + p.name + '</h3>' +
-        '<div class="price">' + p.price + '</div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-</script>
 <script src="script.js?v=37d8b3b6"></script>
+<script src="cuts.js?v=73b1da04"></script>
+<script src="shop.js?v=b2ddb701"></script>
+<script src="catalog.js?v=d81620b3"></script>
 </body>
 </html>
