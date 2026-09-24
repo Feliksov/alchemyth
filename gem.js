@@ -109,7 +109,7 @@ function initGem(canvas) {
     depthWrite: false,
   });
   const gem = new THREE.Mesh(geometry, material);
-  gem.scale.setScalar(1.15);
+  gem.scale.setScalar(1.5);
   gem.rotation.z = 0.18;
   gem.rotation.x = 0.22;
   scene.add(gem);
@@ -117,7 +117,7 @@ function initGem(canvas) {
   // The brass wireframe is the actual subject here, not a garnish — every
   // facet edge, drawn crisp, is what makes this read as a cut diagram.
   const edges = new THREE.LineSegments(
-    new THREE.EdgesGeometry(geometry, 12),
+    new THREE.EdgesGeometry(geometry, 0),
     new THREE.LineBasicMaterial({ color: BRASS, transparent: true, opacity: 0.85 })
   );
   edges.scale.copy(gem.scale);
@@ -172,18 +172,18 @@ function initGem(canvas) {
   if (reduceMotion) {
     renderOnce();
   } else {
-    let visible = true;
+    // Start immediately rather than waiting on an observer's first async
+    // callback — browsers already throttle rAF in backgrounded tabs on
+    // their own, so there's no need to duplicate that with a fragile
+    // visibilitychange listener. IntersectionObserver here only pauses the
+    // loop once the gem has actually scrolled out of view, as an
+    // optimization, and resumes it when it scrolls back in.
+    start();
     const io = new IntersectionObserver(
-      (entries) => {
-        visible = entries[0].isIntersecting;
-        if (visible && document.visibilityState === 'visible') start(); else stop();
-      },
+      (entries) => { if (entries[0].isIntersecting) start(); else stop(); },
       { threshold: 0.01 }
     );
     io.observe(canvas);
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible' && visible) start(); else stop();
-    });
   }
 
   const ro = new ResizeObserver(() => renderOnce());
