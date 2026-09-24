@@ -186,6 +186,8 @@
     .reveal{opacity:1;filter:none}
   }
   :focus-visible{outline:2px solid var(--plasma);outline-offset:3px}
+  .act-photo{margin:40px auto 0}
+  .act-photo img{display:block;width:100%;height:auto;max-width:960px;margin:0 auto;aspect-ratio:4/3;object-fit:cover;border-radius:2px}
 </style>
 </head>
 <body>
@@ -342,6 +344,7 @@
     <h2>Рост</h2>
     <p>Дальше остаётся только ждать. Камень прибавляет сотые доли миллиметра в час — и так неделя за неделей.</p>
   </div>
+  <figure class="wrap act-photo"><img src="img/recipe.jpg" alt="Кристалл алмаза растёт на подложке в камере роста" width="1232" height="928" loading="lazy"></figure>
   <div class="sticky-track" id="growthTrack" style="height:280vh">
     <div class="sticky-in">
       <div class="grow-vis"><div class="grow-crystal" id="growCrystal"></div></div>

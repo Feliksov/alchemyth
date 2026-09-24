@@ -179,8 +179,10 @@ span.ph { display: flex; align-items: center; justify-content: center; backgroun
 .cat-tile:hover .cat-img { border-color: var(--brass); }
 .cat-tile h3 { text-align: center; font-size: 24px; }
 
-.myth { padding: 128px 0; position: relative; overflow: hidden; background-color: var(--night); color: var(--on-night); text-align: center; }
+.myth { padding: 128px 0; position: relative; overflow: hidden; background: var(--night) url('img/myth.jpg') center / cover no-repeat; color: var(--on-night); text-align: center; }
 .myth .bg-veil { background: linear-gradient(180deg, rgba(25,22,17,0.78) 0%, rgba(25,22,17,0.9) 100%); }
+.myth-photos { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 64px; }
+.myth-photos img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius); }
 .myth-inner { max-width: var(--read); margin: 0 auto; position: relative; z-index: 2; }
 .myth-inner p { color: var(--on-night-mute); font-size: 18px; }
 .myth-inner .label { color: var(--brass); font-size: var(--fs-label); margin-bottom: 24px; }
@@ -348,6 +350,8 @@ details[open] > summary .chev { transform: translateY(2px) rotate(-135deg); }
 .vs-intro { padding: 144px 0 72px; text-align: center; }
 .vs-intro h1 { max-width: 720px; margin: 0 auto 24px; }
 .vs-intro > .wrap > p { max-width: 560px; margin: 0 auto; color: var(--graphite-soft); font-size: 18px; }
+.vs-intro-img { max-width: 896px; margin: 56px auto 0; }
+.vs-intro-img img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius); }
 .vs-element { display: flex; align-items: center; justify-content: center; gap: 24px; padding: 32px 0 88px; }
 .vs-carbon { width: 56px; height: 56px; border: 1px solid var(--graphite); transform: rotate(45deg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .vs-carbon span { transform: rotate(-45deg); font-family: var(--serif); font-size: 24px; }
@@ -447,6 +451,7 @@ details[open] > summary .chev { transform: translateY(2px) rotate(-135deg); }
   .cut-cell { padding: 24px 8px 16px; }
   .cut-cell .cut { width: 56px; height: 56px; }
   .myth { padding: 80px 0; }
+  .myth-photos { grid-template-columns: 1fr; gap: 16px; margin-top: 40px; }
   .myth-inner p { font-size: var(--fs-body); }
   .learn { grid-template-columns: 1fr; }
   .learn-img { min-height: 176px; }
