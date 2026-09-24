@@ -7,8 +7,8 @@
 <meta name="description" content="Alchemyth — украшения с выращенными бриллиантами.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=f6e8c694">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=3275b16a">
 </head>
 <body>
 
@@ -17,8 +17,8 @@
 <aside class="drawer" id="drawer">
 <button class="drawer-close" id="drawerClose" aria-label="Закрыть меню">Закрыть</button>
 <nav class="drawer-nav">
-<a href="#hero">Главная</a>
-<a href="#categories">Каталог</a>
+<a href="index.html">Главная</a>
+<a href="catalog.html">Каталог</a>
 <a href="constructor.html">Собери своё кольцо</a>
 <a href="recipe.html">Рецепт философского камня</a>
 <a href="versus.html">Лабораторный против натурального</a>
@@ -32,8 +32,8 @@
 <button class="burger" id="burgerBtn" aria-label="Открыть меню">
 <span></span><span></span><span></span>
 </button>
-<a class="logo" href="#hero">alche<span class="my">(my)</span>th</a>
-<span class="nav-spacer"></span>
+<a class="logo" href="index.html">alche<span class="my">(my)</span>th</a>
+<a class="nav-link" href="catalog.html">Каталог</a>
 </div>
 </header>
 
@@ -41,51 +41,77 @@
 
 <section class="hero" id="hero">
 <div class="bg-gem"><canvas data-gem aria-hidden="true"></canvas></div>
-  <div class="bg-veil"></div>
+<div class="bg-veil"></div>
 <div class="wrap">
 <div class="hero-copy">
 <h1>Твой философский камень</h1>
 <p class="hero-lede">Украшения с выращенными бриллиантами.</p>
+<div class="hero-cta">
+<a class="btn btn-primary shine" href="catalog.html">Смотреть каталог</a>
+<a class="btn btn-ghost shine" href="constructor.html">Собрать кольцо</a>
+</div>
 </div>
 </div>
 </section>
 
-<section class="gates">
+<section class="section" id="categories">
 <div class="wrap">
-<div class="gate-grid">
-
-<a class="gate" href="#categories">
-<div class="gate-img" style="background-image:url('https://images.pexels.com/photos/2735981/pexels-photo-2735981.jpeg?auto=compress&cs=tinysrgb&w=1200')" aria-hidden="true"></div>
-<div class="gate-body">
-<h2>Смотреть украшения</h2>
-<p>Кольца, серьги, подвески и браслеты из готовой коллекции.</p>
+<div class="section-head">
+<div>
+<p class="label">Каталог</p>
+<h2>Выберите украшение</h2>
 </div>
+</div>
+<div class="cat-grid">
+<a class="cat-tile" href="catalog.html?cat=rings">
+<div class="cat-img own" style="background-image:url('img/products/lumen_yellow_diamond-s.webp')" aria-hidden="true"></div>
+<h3>Кольца</h3>
 </a>
+<a class="cat-tile" href="catalog.html?cat=earrings">
+<div class="cat-img" style="background-image:url('https://images.pexels.com/photos/20943477/pexels-photo-20943477.jpeg?auto=compress&cs=tinysrgb&w=800')" aria-hidden="true"></div>
+<h3>Серьги</h3>
+</a>
+<a class="cat-tile" href="catalog.html?cat=pendants">
+<div class="cat-img" style="background-image:url('https://images.pexels.com/photos/19646999/pexels-photo-19646999.jpeg?auto=compress&cs=tinysrgb&w=800')" aria-hidden="true"></div>
+<h3>Подвески</h3>
+</a>
+<a class="cat-tile" href="catalog.html?cat=bracelets">
+<div class="cat-img" style="background-image:url('https://images.pexels.com/photos/12194325/pexels-photo-12194325.jpeg?auto=compress&cs=tinysrgb&w=800')" aria-hidden="true"></div>
+<h3>Браслеты</h3>
+</a>
+</div>
+</div>
+</section>
 
-<a class="gate" href="constructor.html">
-<div class="gate-img" style="background-image:url('https://images.pexels.com/photos/4354585/pexels-photo-4354585.jpeg?auto=compress&cs=tinysrgb&w=1200')" aria-hidden="true"></div>
-<div class="gate-body">
+<section class="section" id="featured">
+<div class="wrap">
+<div class="section-head">
+<div>
+<h2>Избранные украшения</h2>
+</div>
+<a class="link-arrow" href="catalog.html">Весь каталог →</a>
+</div>
+<div class="pgrid ribbon" data-products="nova,lumen,aurora,vela"></div>
+</div>
+</section>
+
+<section class="section warm" id="constructor">
+<div class="wrap grid-12 build-grid">
+<div class="col-7">
+<div class="cuts-grid">
+<div class="cut-cell" data-cut="round"><span>Круг</span></div>
+<div class="cut-cell" data-cut="oval"><span>Овал</span></div>
+<div class="cut-cell" data-cut="pear"><span>Груша</span></div>
+<div class="cut-cell" data-cut="emerald"><span>Эмеральд</span></div>
+<div class="cut-cell" data-cut="princess"><span>Принцесса</span></div>
+<div class="cut-cell" data-cut="cushion"><span>Кушон</span></div>
+</div>
+</div>
+<div class="col-5 build-copy">
+<p class="label">Конструктор</p>
 <h2>Собери своё кольцо</h2>
-<p>Камень, огранка, металл и гравировка — на ваш выбор.</p>
-</div>
-</a>
-
-<a class="gate" href="recipe.html">
-<div class="gate-img" style="background-image:url('https://images.pexels.com/photos/15032908/pexels-photo-15032908.jpeg?auto=compress&cs=tinysrgb&w=1200')" aria-hidden="true"></div>
-<div class="gate-body">
-<h2>Рецепт философского камня</h2>
-<p>Как из углерода вырастает бриллиант — весь путь камня.</p>
-</div>
-</a>
-
-<a class="gate" href="versus.html">
-<div class="gate-img" style="background-image:url('https://images.pexels.com/photos/1927266/pexels-photo-1927266.jpeg?auto=compress&cs=tinysrgb&w=1200')" aria-hidden="true"></div>
-<div class="gate-body">
-<h2>Лабораторный против натурального</h2>
-<p>Что совпадает до атома, а что различается.</p>
-</div>
-</a>
-
+<p>Оправа, огранка, вес, металл и гравировка — по одному выбору за шаг.</p>
+<a class="btn btn-primary shine" href="constructor.html">Открыть конструктор</a>
 </div>
 </div>
 </section>
@@ -94,48 +120,41 @@
 <video class="bg-video" autoplay muted loop playsinline preload="metadata" poster="img/myth.jpg">
 <source src="img/myth.mp4" type="video/mp4">
 </video>
-<div class="bg-veil veil-strong"></div>
+<div class="bg-veil"></div>
 <div class="wrap myth-inner">
+<p class="label">История бренда</p>
 <p>Алхимики веками искали способ создать драгоценность из ничего. С золотом не вышло — получилось с бриллиантом.</p>
 <p class="myth-emph">Миф сбылся. Просто не так, как ожидали.</p>
 </div>
 </section>
 
-<section class="categories" id="categories">
+<section class="section" id="stones">
 <div class="wrap">
 <div class="section-head">
-<h2>Выберите украшение</h2>
-</div>
-<div class="cat-grid">
-<a class="cat-tile" href="#categories">
-<div class="cat-img" style="background-image:url('https://images.pexels.com/photos/2799863/pexels-photo-2799863.jpeg?auto=compress&cs=tinysrgb&w=800')" aria-hidden="true"></div>
-<h3>Кольца</h3>
-</a>
-<a class="cat-tile" href="#categories">
-<div class="cat-img" style="background-image:url('https://images.pexels.com/photos/20943477/pexels-photo-20943477.jpeg?auto=compress&cs=tinysrgb&w=800')" aria-hidden="true"></div>
-<h3>Серьги</h3>
-</a>
-<a class="cat-tile" href="#categories">
-<div class="cat-img" style="background-image:url('https://images.pexels.com/photos/19646999/pexels-photo-19646999.jpeg?auto=compress&cs=tinysrgb&w=800')" aria-hidden="true"></div>
-<h3>Подвески</h3>
-</a>
-<a class="cat-tile" href="#categories">
-<div class="cat-img" style="background-image:url('https://images.pexels.com/photos/12194325/pexels-photo-12194325.jpeg?auto=compress&cs=tinysrgb&w=800')" aria-hidden="true"></div>
-<h3>Браслеты</h3>
-</a>
+<div>
+<p class="label">Выращенные камни</p>
+<h2>Как устроен выращенный камень</h2>
 </div>
 </div>
-</section>
-
-<section class="showcase">
-<div class="wrap">
-<div class="section-head">
-<h2>Последние работы</h2>
+<div class="learn-grid">
+<a class="learn" href="recipe.html">
+<div class="learn-img" style="background-image:url('https://images.pexels.com/photos/15032908/pexels-photo-15032908.jpeg?auto=compress&cs=tinysrgb&w=900')" aria-hidden="true"></div>
+<div class="learn-body">
+<p class="label">Рецепт</p>
+<h3>Рецепт философского камня</h3>
+<p>Как из углерода вырастает бриллиант: путь камня от реактора до кольца.</p>
+<span class="link-arrow">Читать →</span>
 </div>
-<div class="show-grid">
-<div class="show-card" style="background-image:url('https://images.pexels.com/photos/3641059/pexels-photo-3641059.jpeg?auto=compress&cs=tinysrgb&w=900')"></div>
-<div class="show-card" style="background-image:url('https://images.pexels.com/photos/2735981/pexels-photo-2735981.jpeg?auto=compress&cs=tinysrgb&w=900')"></div>
-<div class="show-card" style="background-image:url('https://images.pexels.com/photos/12194325/pexels-photo-12194325.jpeg?auto=compress&cs=tinysrgb&w=900')"></div>
+</a>
+<a class="learn" href="versus.html">
+<div class="learn-img" style="background-image:url('https://images.pexels.com/photos/1927266/pexels-photo-1927266.jpeg?auto=compress&cs=tinysrgb&w=900')" aria-hidden="true"></div>
+<div class="learn-body">
+<p class="label">Сравнение</p>
+<h3>Лабораторный против натурального</h3>
+<p>Что у выращенного и природного камня совпадает, а что различается.</p>
+<span class="link-arrow">Читать →</span>
+</div>
+</a>
 </div>
 </div>
 </section>
@@ -144,17 +163,20 @@
 
 <footer>
 <div class="wrap foot-row">
-<a class="logo" href="#hero">alche<span class="my">(my)</span>th</a>
+<a class="logo" href="index.html">alche<span class="my">(my)</span>th</a>
 <div class="foot-links">
+<a href="catalog.html">Каталог</a>
+<a href="constructor.html">Конструктор</a>
 <a href="https://instagram.com/alchemyth.lab" target="_blank" rel="noopener">Instagram</a>
 <a href="mailto:hello@alchemyth.ru">hello@alchemyth.ru</a>
-<a href="#categories">Каталог</a>
 </div>
 <span class="copyright">© 2026 alchemyth.философский камень</span>
 </div>
 </footer>
 
 <script src="script.js?v=37d8b3b6"></script>
+<script src="cuts.js?v=73b1da04"></script>
+<script src="shop.js?v=b2ddb701"></script>
 
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js"}}
