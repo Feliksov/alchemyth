@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Украшение — Alchemyth</title>
+<meta name="description" content="Украшение Alchemyth с выращенным бриллиантом.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=3275b16a">
+</head>
+<body class="has-buybar">
+
+<div class="overlay" id="overlay"></div>
+
+<aside class="drawer" id="drawer">
+<button class="drawer-close" id="drawerClose" aria-label="Закрыть меню">Закрыть</button>
+<nav class="drawer-nav">
+<a href="index.html">Главная</a>
+<a href="catalog.html">Каталог</a>
+<a href="constructor.html">Собери своё кольцо</a>
+<a href="recipe.html">Рецепт философского камня</a>
+<a href="versus.html">Лабораторный против натурального</a>
+<a href="https://instagram.com/alchemyth.lab" target="_blank" rel="noopener">Instagram</a>
+</nav>
+<div class="drawer-foot">alchemyth.философский камень</div>
+</aside>
+
+<header>
+<div class="wrap nav">
+<button class="burger" id="burgerBtn" aria-label="Открыть меню">
+<span></span><span></span><span></span>
+</button>
+<a class="logo" href="index.html">alche<span class="my">(my)</span>th</a>
+<a class="nav-link" href="catalog.html">Каталог</a>
+</div>
+</header>
+
+<main>
+<section class="product">
+<div class="wrap grid-12">
+
+<div class="col-7 gallery">
+<div class="gallery-main" id="gallery" tabindex="0" aria-label="Фотографии украшения"></div>
+<div class="dots" id="dots" aria-hidden="true"></div>
+<div class="thumbs" id="thumbs"></div>
+</div>
+
+<div class="col-5 buy">
+<nav class="crumbs" aria-label="Навигация">
+<a href="index.html">Главная</a><span aria-hidden="true">/</span>
+<a href="catalog.html">Каталог</a><span aria-hidden="true">/</span>
+<a href="catalog.html?cat=rings" id="crumbCat">Кольца</a>
+</nav>
+<h1 id="pName"></h1>
+<p class="buy-spec" id="pSpec"></p>
+<div class="buy-price" id="pPrice"></div>
+
+<div class="buy-block">
+<p class="label">Металл</p>
+<div class="buy-metals" role="radiogroup" aria-label="Металл" id="metals"></div>
+</div>
+
+<div class="buy-block">
+<p class="label"><label for="size">Размер</label></p>
+<div class="size-row">
+<div class="select">
+<select id="size">
+<option value="">Выберите размер</option>
+<option>15</option><option>15,5</option><option>16</option><option>16,5</option><option>17</option>
+<option>17,5</option><option>18</option><option>18,5</option><option>19</option><option>19,5</option><option>20</option>
+</select>
+<i class="chev"></i>
+</div>
+<button type="button" class="link-quiet" id="sizeHelpBtn" aria-expanded="false" aria-controls="sizeHelp">Как определить размер</button>
+</div>
+<div class="size-help" id="sizeHelp" hidden>
+<p>Размер кольца — внутренний диаметр в миллиметрах.</p>
+<p>Возьмите кольцо, которое хорошо сидит, и измерьте линейкой расстояние между внутренними краями.</p>
+</div>
+</div>
+
+<button class="btn btn-primary btn-block btn-cart shine" type="button" data-cart>В корзину</button>
+<div class="buy-under"><button type="button" class="link-quiet" data-fav>В избранное</button></div>
+<p class="buy-note" id="buyNote" hidden>Заказ на сайте пока не работает. Напишите нам: <a href="mailto:hello@alchemyth.ru">hello@alchemyth.ru</a></p>
+
+<div class="accordion">
+<details>
+<summary>Доставка<i class="chev"></i></summary>
+<div class="acc-body"><p>Способ, срок и стоимость доставки согласуем при заказе.</p></div>
+</details>
+<details>
+<summary>Сертификат камня<i class="chev"></i></summary>
+<div class="acc-body"><p>Сведения о сертификате сообщим, когда подберём камень под заказ.</p></div>
+</details>
+<details>
+<summary>Возврат<i class="chev"></i></summary>
+<div class="acc-body"><p>Условия возврата сообщим при заказе. Вопросы — <a class="link-arrow" href="mailto:hello@alchemyth.ru">hello@alchemyth.ru</a></p></div>
+</details>
+</div>
+</div>
+
+</div>
+</section>
+
+<section class="section warm stone">
+<div class="wrap">
+<details id="stoneDetails" open>
+<summary>Характеристики камня<i class="chev"></i></summary>
+<div class="stone-inner grid-12 stone-grid">
+<div class="col-5"><div class="stone-figure" id="stoneFig"></div></div>
+<div class="col-7">
+<p class="label">Характеристики камня</p>
+<h2>Выращенный бриллиант</h2>
+<dl class="specs" id="specs"></dl>
+</div>
+</div>
+</details>
+</div>
+</section>
+
+<section class="section" id="similar">
+<div class="wrap">
+<div class="section-head">
+<h2>Похожие украшения</h2>
+<a class="link-arrow" href="catalog.html">Весь каталог →</a>
+</div>
+<div class="pgrid" id="similarGrid"></div>
+</div>
+</section>
+
+<section class="section" style="padding-top:0">
+<div class="wrap">
+<aside class="promo tall">
+<div class="promo-copy">
+<h2>Не нашли нужное?</h2>
+<p>Соберите кольцо в конструкторе: оправа, огранка, вес и металл.</p>
+<a class="btn btn-primary shine" href="constructor.html">Открыть конструктор</a>
+</div>
+<div class="cuts-row" aria-hidden="true">
+<span data-cut="round"></span><span data-cut="oval"></span><span data-cut="pear"></span>
+<span data-cut="emerald"></span><span data-cut="princess"></span><span data-cut="cushion"></span>
+</div>
+</aside>
+</div>
+</section>
+</main>
+
+<div class="buybar">
+<span class="buybar-price" id="barPrice"></span>
+<button class="btn btn-primary shine" type="button" data-cart>В корзину</button>
+</div>
+
+<footer>
+<div class="wrap foot-row">
+<a class="logo" href="index.html">alche<span class="my">(my)</span>th</a>
+<div class="foot-links">
+<a href="catalog.html">Каталог</a>
+<a href="constructor.html">Конструктор</a>
+<a href="https://instagram.com/alchemyth.lab" target="_blank" rel="noopener">Instagram</a>
+<a href="mailto:hello@alchemyth.ru">hello@alchemyth.ru</a>
+</div>
+<span class="copyright">© 2026 alchemyth.философский камень</span>
+</div>
+</footer>
+
+<script src="script.js?v=37d8b3b6"></script>
+<script src="cuts.js?v=73b1da04"></script>
+<script src="shop.js?v=b2ddb701"></script>
+<script src="product.js?v=6a303cc4"></script>
+</body>
+</html>
