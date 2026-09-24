@@ -40,7 +40,7 @@
 <main>
 
 <section class="hero" id="hero">
-<div class="bg-gem" id="gemStage"></div>
+<div class="bg-gem"><canvas data-gem aria-hidden="true"></canvas></div>
   <div class="bg-veil"></div>
 <div class="wrap">
 <div class="hero-copy">
@@ -159,58 +159,6 @@
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js"}}
 </script>
-<script type="module">
-import * as THREE from "three";
-const stage=document.getElementById("gemStage");
-const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(26,1,0.1,100);
-camera.position.set(0,0.2,9.2);
-const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-stage.appendChild(renderer.domElement);
-function cutGeo(){
- // Three sharply distinct parts, not a smooth taper: a wide flat table, one
- // shallow crown facet ring, a thin near-vertical girdle (the hard break),
- // then a single steep pavilion cone straight to a sharp culet point.
- const N=12,TAU=Math.PI*2;
- const rings=[[0.56,0.32,0],[1.00,0.00,0.5],[0.97,-0.02,0.5]];
- const apexY=-0.86;
- const pos=[];
- const P=(ri,i)=>{const r=rings[ri];const a=(i+r[2])/N*TAU;return [Math.cos(a)*r[0],r[1],Math.sin(a)*r[0]];};
- const tri=(a,b,c)=>{pos.push(...a,...b,...c);};
- for(let i=0;i<N;i++){tri([0,rings[0][1],0],P(0,i),P(0,i+1));}
- for(let k=0;k<rings.length-1;k++){for(let i=0;i<N;i++){
-  const a=P(k,i),b=P(k,i+1),c=P(k+1,i),d=P(k+1,i+1);tri(a,c,d);tri(a,d,b);}}
- const last=rings.length-1;
- for(let i=0;i<N;i++){tri(P(last,i+1),P(last,i),[0,apexY,0]);}
- const g=new THREE.BufferGeometry();
- g.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));
- g.computeVertexNormals();return g;}
-const geo=cutGeo();
-const BRASS=0xB08D57, DEEP=0x8A6C3E;
-const faces=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({
- color:BRASS,transparent:true,opacity:0.05,side:THREE.DoubleSide,depthWrite:false}));
-const shade=new THREE.Mesh(geo,new THREE.MeshLambertMaterial({
- color:0xF4EAD6,transparent:true,opacity:0.72,flatShading:true,side:THREE.DoubleSide,depthWrite:false}));
-const edges=new THREE.LineSegments(new THREE.EdgesGeometry(geo,1),
- new THREE.LineBasicMaterial({color:DEEP,transparent:true,opacity:0.55}));
-const nodes=new THREE.Points(geo,new THREE.PointsMaterial({
- color:BRASS,size:0.05,sizeAttenuation:true,transparent:true,opacity:0.9}));
-const gem=new THREE.Group();gem.add(faces);gem.add(shade);gem.add(edges);gem.add(nodes);
-gem.scale.setScalar(3.0);
-const halo=new THREE.Mesh(new THREE.RingGeometry(2.35,2.38,96),
- new THREE.MeshBasicMaterial({color:BRASS,transparent:true,opacity:0.22,side:THREE.DoubleSide}));
-const pivot=new THREE.Group();pivot.add(gem);pivot.position.set(1.45,0.05,0);scene.add(pivot);
-scene.add(new THREE.AmbientLight(0xffffff,0.22));
-const d1=new THREE.DirectionalLight(0xffffff,1.9);d1.position.set(3,5,4);scene.add(d1);
-const d2=new THREE.DirectionalLight(0xB08D57,1.0);d2.position.set(-4,-2,-3);scene.add(d2);
-function size(){const w=stage.clientWidth,h=stage.clientHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h);}
-addEventListener("resize",size);size();
-renderer.setAnimationLoop(ms=>{const t=ms*0.001;
- gem.rotation.x=-0.34;
- pivot.rotation.y=t*0.26;
- pivot.rotation.z=Math.sin(t*0.12)*0.05;
- renderer.render(scene,camera);});
-</script>
+<script type="module" src="gem.js"></script>
 </body>
 </html>

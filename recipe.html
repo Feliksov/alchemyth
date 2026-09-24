@@ -80,6 +80,7 @@
   .sticky-track{position:relative}
   .sticky-in{position:sticky;top:0;height:100svh;display:grid;grid-template-columns:1fr 1fr;
              gap:4vw;align-items:center}
+  @media (min-width:861px){.sticky-in{padding-right:190px;box-sizing:border-box}}
   .stage-copy{position:relative;height:min(70vh,560px)}
   .step{position:absolute;left:0;right:0;top:50%;transform:translateY(-40%);opacity:0;
         transition:opacity .45s ease,transform .45s ease;pointer-events:none}
@@ -94,9 +95,9 @@
 
   .strip{position:relative;height:min(38vh,300px);overflow:hidden;margin-top:6vh;
     background:radial-gradient(ellipse at 50% 50%,#131318,var(--void) 75%)}
-  .strip::before{content:"";position:absolute;inset:0;opacity:.14;
+  .strip::before{content:"";position:absolute;inset:0;opacity:.4;
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><g fill='none' stroke='%23E8E3DA' stroke-width='1'><circle cx='70' cy='70' r='46'/><path d='M70 30 L100 86 L40 86 Z'/><path d='M70 110 L40 54 L100 54 Z'/><circle cx='70' cy='70' r='18'/></g></svg>");
-    background-repeat:repeat-x;background-position:center;background-size:140px 140px}
+    background-repeat:repeat;background-position:center;background-size:140px 140px}
   .strip::after{content:"";position:absolute;inset:0;pointer-events:none;
     background:linear-gradient(90deg,var(--void),transparent 18%,transparent 82%,var(--void))}
   .finale{position:relative;overflow:hidden}
@@ -419,14 +420,7 @@
   </div>
 
   <div class="wrap">
-    <div class="strip" aria-hidden="true">
-      <svg class="strip-sigil" viewBox="0 0 120 120">
-        <circle cx="60" cy="60" r="50"></circle>
-        <path d="M60 18 L100 86 L20 86 Z"></path>
-        <path d="M60 102 L20 34 L100 34 Z"></path>
-        <circle cx="60" cy="60" r="20"></circle>
-      </svg>
-    </div>
+    <div class="strip" aria-hidden="true"></div>
   </div>
 </section>
 
