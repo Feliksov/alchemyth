@@ -1,11 +1,12 @@
-// Glass diamond, not a wireframe icon — reused by gem.html and index.html.
-// Every <canvas data-gem> element on the page becomes its own rotating gem.
+// Faceted diamond as a technical-drawing / blueprint object: transparent
+// faces, brass wireframe edges, no transmission/IOR/dispersion, no specular
+// glints. The geometry is what carries the piece — many small facets, seen
+// through each other. Reused by gem.html and index.html.
 
 import * as THREE from 'three';
 
 const PAPER = '#FAF7F0';
 const BRASS = '#B08D57';
-const BRASS_DEEP = '#8A6C3E';
 const INK = '#1C1712';
 
 function isMobile() {
@@ -13,8 +14,10 @@ function isMobile() {
     (navigator.maxTouchPoints > 1 && window.innerWidth < 900);
 }
 
-// --- Geometry: multi-tier faceted diamond, checkerboard-offset rings ---
-// (a real brilliant's kite/star pattern), not a lathe body of revolution.
+// --- Geometry: many-tier faceted diamond, checkerboard-offset rings (a
+// real brilliant's kite/star pattern), not a lathe body of revolution.
+// More tiers than a gemologically-accurate cut on purpose — the brief here
+// is "dozens of facets read at once", not correctness.
 
 function ringPoints(count, radius, y, phase) {
   const pts = [];
@@ -41,19 +44,18 @@ function capRing(pos, ring, center) {
 
 function buildDiamondGeometry(segments) {
   const S = segments;
-  // table / star / crown-girdle / girdle-bottom / pavilion-upper / pavilion-lower,
-  // each ring offset a half-step from its neighbour — sharp table, thin sharp
-  // girdle break, single sharp culet point.
   const levels = [
-    { y: 0.34, r: 0.42, phase: false },
-    { y: 0.20, r: 0.70, phase: true },
-    { y: 0.00, r: 1.00, phase: false },
-    { y: -0.02, r: 0.97, phase: false },
-    { y: -0.34, r: 0.62, phase: true },
-    { y: -0.62, r: 0.24, phase: false },
+    { y: 0.36, r: 0.30, phase: false }, // table
+    { y: 0.27, r: 0.52, phase: true },  // star facets
+    { y: 0.14, r: 0.80, phase: false }, // bezel facets
+    { y: 0.00, r: 1.00, phase: true },  // crown / girdle top
+    { y: -0.02, r: 0.97, phase: true }, // girdle bottom (thin band)
+    { y: -0.22, r: 0.74, phase: false },// upper pavilion tier
+    { y: -0.48, r: 0.46, phase: true }, // mid pavilion tier
+    { y: -0.72, r: 0.18, phase: false },// lower pavilion tier
   ];
   const rings = levels.map((l) => ringPoints(S, l.r, l.y, l.phase));
-  const apex = new THREE.Vector3(0, -0.86, 0);
+  const apex = new THREE.Vector3(0, -0.92, 0);
 
   const pos = [];
   capRing(pos, rings[0], new THREE.Vector3(0, levels[0].y, 0));
@@ -69,133 +71,42 @@ function buildDiamondGeometry(segments) {
   return geo;
 }
 
-// --- Environment: several small, sharply bright panels at scattered angles
-// in an otherwise dark box, baked through PMREMGenerator. A handful of
-// distinct bright spots (not a smooth wash) is what makes facets flash
-// one at a time as the gem turns, instead of glowing evenly all over. ---
-
-function buildEnvironmentScene() {
-  const scene = new THREE.Scene();
-
-  const room = new THREE.Mesh(
-    new THREE.BoxGeometry(30, 30, 30),
-    new THREE.MeshStandardMaterial({ color: INK, side: THREE.BackSide, roughness: 1, metalness: 0 })
-  );
-  scene.add(room);
-  scene.add(new THREE.AmbientLight(BRASS_DEEP, 0.08));
-
-  const spots = [
-    { pos: [-6, 4.5, -3], size: [0.9, 6], color: '#FFFFFF', intensity: 10 },
-    { pos: [7, 3, -2], size: [0.7, 5], color: BRASS, intensity: 9 },
-    { pos: [1, 8, 5], size: [5, 2.2], color: '#FFF6E4', intensity: 7 },
-    { pos: [-4, -5, 6], size: [0.8, 4], color: BRASS_DEEP, intensity: 6 },
-    { pos: [6, -3.5, -5], size: [0.6, 4.5], color: '#FFFFFF', intensity: 8 },
-    { pos: [-2, 2, 8], size: [3, 1.4], color: PAPER, intensity: 5 },
-    { pos: [0, -8, -2], size: [4, 1.5], color: BRASS, intensity: 4 },
-  ];
-  spots.forEach((d) => {
-    const c = new THREE.Color(d.color).multiplyScalar(d.intensity);
-    const mesh = new THREE.Mesh(
-      new THREE.PlaneGeometry(d.size[0], d.size[1]),
-      new THREE.MeshBasicMaterial({ color: c, toneMapped: false, side: THREE.DoubleSide })
-    );
-    mesh.position.set(...d.pos);
-    mesh.lookAt(0, 0, 0);
-    scene.add(mesh);
-  });
-
-  return scene;
-}
-
 // --- Scene bootstrap for one canvas ---
 
 function initGem(canvas) {
   const mobile = isMobile();
-  const segments = mobile ? 12 : 16;
+  const segments = mobile ? 14 : 20;
 
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !mobile, powerPreference: 'high-performance' });
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.5 : 2));
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const scene = new THREE.Scene();
-  // Transmission refracts whatever is already in the framebuffer behind the
-  // gem — on a truly transparent canvas there's nothing there, and the gem
-  // renders as a washed-out translucent ghost instead of glass. Painting the
-  // exact page parchment here fixes that and is visually identical to
-  // transparency wherever the gem sits on the site's --paper background.
   scene.background = new THREE.Color(PAPER);
-
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  const envRT = pmrem.fromScene(buildEnvironmentScene(), 0.02, 0.1, 50);
-  scene.environment = envRT.texture;
-  pmrem.dispose();
 
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
   camera.position.set(0, 0.15, 3.3);
   camera.lookAt(0, 0, 0);
 
-  // A few point lights at scattered angles for crisp, localized specular
-  // glints — one broad area light would just smear them into a soft glow.
-  scene.add(new THREE.HemisphereLight(PAPER, INK, 0.15));
-  const lights = [
-    { pos: [3, 4, 3], color: 0xfff6e6, intensity: 18 },
-    { pos: [-4, 1.5, 2.5], color: BRASS, intensity: 14 },
-    { pos: [2, -3, 3.5], color: 0xffffff, intensity: 10 },
-    { pos: [-2, -2.5, -3], color: BRASS_DEEP, intensity: 8 },
-  ];
-  lights.forEach((l) => {
-    const pl = new THREE.PointLight(l.color, l.intensity, 20, 2);
-    pl.position.set(...l.pos);
-    scene.add(pl);
-  });
-
-  // A flat background colour alone gives transmission nothing to bend —
-  // refraction through a uniform field just looks like more uniform field.
-  // A few bars behind the gem give it real straight lines to warp and
-  // double at the facet edges, which is what actually reads as "glass".
-  // IMPORTANT: they must be fully opaque — three.js's transmission pass
-  // only captures opaque scene content as the "what's behind it" backdrop;
-  // transparent:true objects are silently skipped and never show through.
-  // Sized/placed to stay inside the gem's own silhouette (accounting for
-  // perspective falloff at this z) so nothing pokes out past its edges.
-  const backdrop = new THREE.Group();
-  const barGeo = new THREE.PlaneGeometry(0.09, 1.3);
-  const barDefs = [
-    { x: -0.62, color: INK },
-    { x: -0.30, color: BRASS_DEEP },
-    { x: 0.0, color: INK },
-    { x: 0.30, color: BRASS_DEEP },
-    { x: 0.62, color: INK },
-  ];
-  barDefs.forEach((b) => {
-    const bar = new THREE.Mesh(barGeo, new THREE.MeshBasicMaterial({ color: b.color, side: THREE.DoubleSide }));
-    bar.position.set(b.x, -0.25, -1.3);
-    backdrop.add(bar);
-  });
-  const ringGeo = new THREE.RingGeometry(0.5, 0.58, 48);
-  const ring = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({ color: BRASS, side: THREE.DoubleSide }));
-  ring.position.set(0, -0.25, -1.15);
-  backdrop.add(ring);
-  scene.add(backdrop);
+  // Flat, even light — one soft fill from above and a touch of ambient so
+  // facets read as tonally distinct planes, with no bright specular points.
+  scene.add(new THREE.HemisphereLight(PAPER, INK, 0.7));
+  const fill = new THREE.DirectionalLight(0xffffff, 0.35);
+  fill.position.set(2, 3, 4);
+  scene.add(fill);
 
   const geometry = buildDiamondGeometry(segments);
-  const material = new THREE.MeshPhysicalMaterial({
+
+  // Nearly colourless, translucent faces — the point is to see straight
+  // through to the facets (and edges) behind, like an X-ray of the cut.
+  const material = new THREE.MeshStandardMaterial({
     color: 0xffffff,
+    transparent: true,
+    opacity: 0.2,
+    roughness: 1,
     metalness: 0,
-    roughness: 0.02,
-    transmission: 1,
-    ior: 2.42,
-    thickness: 1.6,
-    dispersion: 4,
-    attenuationColor: 0xffffff,
-    attenuationDistance: 1.6,
-    clearcoat: 0.4,
-    clearcoatRoughness: 0.05,
-    specularIntensity: 1,
-    envMapIntensity: 1.5,
-    side: THREE.FrontSide,
+    side: THREE.DoubleSide,
+    depthWrite: false,
   });
   const gem = new THREE.Mesh(geometry, material);
   gem.scale.setScalar(1.15);
@@ -203,17 +114,17 @@ function initGem(canvas) {
   gem.rotation.x = 0.22;
   scene.add(gem);
 
-  // A faint brass edge accent ties the glass back to the site palette
-  // without turning it back into a wireframe icon.
-  const rim = new THREE.LineSegments(
-    new THREE.EdgesGeometry(geometry, 8),
-    new THREE.LineBasicMaterial({ color: BRASS, transparent: true, opacity: 0.22 })
+  // The brass wireframe is the actual subject here, not a garnish — every
+  // facet edge, drawn crisp, is what makes this read as a cut diagram.
+  const edges = new THREE.LineSegments(
+    new THREE.EdgesGeometry(geometry, 12),
+    new THREE.LineBasicMaterial({ color: BRASS, transparent: true, opacity: 0.85 })
   );
-  rim.scale.copy(gem.scale);
-  rim.rotation.copy(gem.rotation);
-  scene.add(rim);
+  edges.scale.copy(gem.scale);
+  edges.rotation.copy(gem.rotation);
+  scene.add(edges);
 
-  function syncRim() { rim.rotation.copy(gem.rotation); }
+  function syncEdges() { edges.rotation.copy(gem.rotation); }
 
   let running = false;
   let raf = null;
@@ -243,7 +154,7 @@ function initGem(canvas) {
     gem.rotation.y += dt * 0.035;
     gem.rotation.x = 0.22 + Math.sin(elapsed * 0.11) * 0.05;
     gem.rotation.z = 0.18 + Math.cos(elapsed * 0.08) * 0.04;
-    syncRim();
+    syncEdges();
     if (size()) renderer.render(scene, camera);
   }
   function start() {
@@ -284,7 +195,7 @@ function initGem(canvas) {
       ro.disconnect();
       geometry.dispose();
       material.dispose();
-      envRT.texture.dispose();
+      edges.geometry.dispose();
       renderer.dispose();
     },
   };
