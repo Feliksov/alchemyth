@@ -151,9 +151,9 @@ function initGem(canvas) {
     elapsed += dt;
     // Barely-perceptible handheld turn: one slow drift plus a gentle wobble,
     // not a spinning-toy loop.
-    gem.rotation.y += dt * 0.035;
-    gem.rotation.x = 0.22 + Math.sin(elapsed * 0.11) * 0.05;
-    gem.rotation.z = 0.18 + Math.cos(elapsed * 0.08) * 0.04;
+    gem.rotation.y += dt * 0.09;
+    gem.rotation.x = 0.22 + Math.sin(elapsed * 0.17) * 0.06;
+    gem.rotation.z = 0.18 + Math.cos(elapsed * 0.13) * 0.05;
     syncEdges();
     if (size()) renderer.render(scene, camera);
   }
