@@ -33,7 +33,10 @@
 <span></span><span></span><span></span>
 </button>
 <a class="logo" href="index.html">alche<span class="my">(my)</span>th</a>
+<div class="nav-links">
 <a class="nav-link" href="catalog.html">Каталог</a>
+<a class="nav-link" href="constructor.html">Конструктор</a>
+</div>
 </div>
 </header>
 
@@ -54,20 +57,12 @@
 </div>
 </section>
 
-<section class="section" id="categories">
-<div class="wrap">
-<div class="section-head">
-<div>
-<p class="label">Каталог</p>
-<h2>Выберите украшение</h2>
-</div>
-</div>
-<div class="cat-links">
+<section class="cat-section" id="categories">
+<div class="wrap cat-links">
 <a class="cat-link" href="catalog.html?cat=rings">Кольца</a>
 <a class="cat-link" href="catalog.html?cat=earrings">Серьги</a>
 <a class="cat-link" href="catalog.html?cat=pendants">Подвески</a>
 <a class="cat-link" href="catalog.html?cat=bracelets">Браслеты</a>
-</div>
 </div>
 </section>
 
@@ -105,6 +100,7 @@
 </section>
 
 <section class="myth" id="myth">
+<div class="bg-veil"></div>
 <div class="wrap myth-inner">
 <p class="label">История бренда</p>
 <p>Алхимики веками искали способ создать драгоценность из ничего. С золотом не вышло — получилось с бриллиантом.</p>
@@ -122,7 +118,7 @@
 </div>
 <div class="learn-grid">
 <a class="learn" href="recipe.html">
-<div class="learn-cut" data-cut="round" aria-hidden="true"></div>
+<div class="learn-img" style="background-image:url('img/carbon.jpg')" aria-hidden="true"></div>
 <div class="learn-body">
 <p class="label">Рецепт</p>
 <h3>Рецепт философского камня</h3>
@@ -131,7 +127,7 @@
 </div>
 </a>
 <a class="learn" href="versus.html">
-<div class="learn-cut" data-cut="oval" aria-hidden="true"></div>
+<div class="learn-img" style="background-image:url('img/compare.jpg')" aria-hidden="true"></div>
 <div class="learn-body">
 <p class="label">Сравнение</p>
 <h3>Лабораторный против натурального</h3>
@@ -146,14 +142,31 @@
 </main>
 
 <footer>
-<div class="wrap foot-row">
+<div class="wrap foot-grid">
+<div class="foot-col foot-brand">
 <a class="logo" href="index.html">alche<span class="my">(my)</span>th</a>
-<div class="foot-links">
-<a href="catalog.html">Каталог</a>
-<a href="constructor.html">Конструктор</a>
-<a href="https://instagram.com/alchemyth.lab" target="_blank" rel="noopener">Instagram</a>
-<a href="mailto:hello@alchemyth.ru">hello@alchemyth.ru</a>
+<p>alchemyth.философский камень</p>
 </div>
+<details class="foot-col foot-group" open>
+<summary>Каталог</summary>
+<a href="catalog.html?cat=rings">Кольца</a>
+<a href="catalog.html?cat=earrings">Серьги</a>
+<a href="catalog.html?cat=pendants">Подвески</a>
+<a href="catalog.html?cat=bracelets">Браслеты</a>
+</details>
+<details class="foot-col foot-group" open>
+<summary>Разделы</summary>
+<a href="constructor.html">Конструктор</a>
+<a href="recipe.html">Рецепт философского камня</a>
+<a href="versus.html">Лабораторный против натурального</a>
+</details>
+<details class="foot-col foot-group" open>
+<summary>Контакты</summary>
+<a href="mailto:hello@alchemyth.ru">hello@alchemyth.ru</a>
+<a href="https://instagram.com/alchemyth.lab" target="_blank" rel="noopener">Instagram</a>
+</details>
+</div>
+<div class="wrap foot-bottom">
 <span class="copyright">© 2026 alchemyth.философский камень</span>
 </div>
 </footer>

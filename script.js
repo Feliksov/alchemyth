@@ -25,6 +25,11 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeDrawer();
 });
 
+const footGroups = document.querySelectorAll('.foot-group[open]');
+if (footGroups.length && window.matchMedia('(max-width: 640px)').matches) {
+  footGroups.forEach((el) => el.removeAttribute('open'));
+}
+
 const priceNatEl = document.getElementById('priceNat');
 
 if (priceNatEl) {

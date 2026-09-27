@@ -81,6 +81,7 @@ p { margin: 0 0 16px; }
 /* ─── Шапка и меню ─── */
 header { position: sticky; top: 0; z-index: 20; background: rgba(250, 247, 240, 0.92); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
 .nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: var(--header-h); }
+.nav-links { justify-self: end; display: flex; align-items: center; gap: 24px; }
 .nav-link { justify-self: end; font-size: var(--fs-caption); color: var(--graphite); }
 .nav-link:hover { color: var(--brass-deep); }
 .logo { font-family: var(--serif); font-size: 24px; letter-spacing: 0.02em; color: var(--graphite-dense); }
@@ -172,11 +173,13 @@ span.ph { display: flex; align-items: center; justify-content: center; backgroun
 
 .section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 40px; }
 
+.cat-section { padding: 56px 0; }
 .cat-links { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
-.cat-link { display: block; text-align: center; font-family: var(--serif); font-size: 32px; padding-bottom: 20px; border-bottom: 1px solid var(--line); color: var(--graphite-dense); transition: border-color 0.2s ease, color 0.2s ease; }
+.cat-link { display: block; text-align: center; font-family: var(--serif); font-size: 32px; line-height: 1.2; padding-bottom: 20px; border-bottom: 1px solid var(--line); color: var(--graphite-dense); transition: border-color 0.2s ease, color 0.2s ease; }
 .cat-link:hover { border-color: var(--brass); color: var(--brass-deep); }
 
-.myth { padding: 140px 0; position: relative; overflow: hidden; background: var(--night); color: var(--on-night); text-align: center; }
+.myth { padding: 140px 0; position: relative; overflow: hidden; background: var(--night) url('img/myth.jpg') center / cover no-repeat; color: var(--on-night); text-align: center; }
+.myth .bg-veil { background: linear-gradient(180deg, rgba(25,22,17,0.78) 0%, rgba(25,22,17,0.9) 100%); }
 .myth-inner { max-width: var(--read); margin: 0 auto; position: relative; z-index: 2; }
 .myth-inner p { color: var(--on-night-mute); font-size: 18px; }
 .myth-inner .label { color: var(--brass); font-size: var(--fs-label); margin-bottom: 24px; }
@@ -185,8 +188,7 @@ span.ph { display: flex; align-items: center; justify-content: center; backgroun
 .learn-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
 .learn { display: grid; grid-template-columns: 2fr 3fr; border: 1px solid var(--line); border-radius: var(--radius); background: var(--milk); transition: border-color 0.4s ease, transform 0.4s ease; }
 .learn:hover { border-color: var(--brass); transform: translateY(-3px); }
-.learn-cut { display: flex; align-items: center; justify-content: center; background: var(--milk-warm); min-height: 240px; }
-.learn-cut .cut { width: 120px; height: 120px; }
+.learn-img { background: var(--parchment) center / cover; min-height: 240px; }
 .learn-body { padding: 32px; display: flex; flex-direction: column; }
 .learn-body h3 { font-size: 26px; line-height: 1.2; margin-bottom: 8px; }
 .learn-body p:not(.label) { font-size: 15px; color: var(--graphite-soft); margin: 0 0 16px; }
@@ -197,6 +199,18 @@ footer { padding: 40px 0; border-top: 1px solid var(--line); background: var(--m
 .foot-links { display: flex; gap: 24px; font-size: var(--fs-caption); color: var(--graphite-soft); flex-wrap: wrap; }
 .foot-links a:hover { color: var(--brass-deep); }
 .copyright { font-size: var(--fs-caption); color: var(--graphite-soft); }
+
+/* Подвал главной — четыре колонки вместо одной строки ссылок */
+.foot-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 32px; padding-top: 16px; padding-bottom: 32px; }
+.foot-brand p { margin: 8px 0 0; font-size: var(--fs-caption); color: var(--graphite-soft); }
+.foot-col a, .foot-group a { display: block; padding: 6px 0; font-size: var(--fs-caption); color: var(--graphite-soft); }
+.foot-col a:hover, .foot-group a:hover { color: var(--brass-deep); }
+.foot-group { border: none; }
+.foot-group summary { font-family: var(--serif); font-size: 18px; color: var(--graphite-dense); margin-bottom: 12px; cursor: default; pointer-events: none; list-style: none; }
+.foot-group summary::-webkit-details-marker { display: none; }
+.foot-group summary::marker { content: ''; }
+.foot-bottom { padding-top: 24px; border-top: 1px solid var(--line); }
+.foot-bottom .copyright { font-size: 13px; }
 
 /* ─── Каталог ─── */
 .cat-page { padding: 40px 0 var(--section); }
@@ -436,11 +450,15 @@ details[open] > summary .chev { transform: translateY(2px) rotate(-135deg); }
     --fs-h1: 34px; --fs-h2: 26px; --fs-title: 34px; --fs-card: 17px;
     --fs-body: 15px; --fs-caption: 13px; --fs-price: 16px;
   }
+  .nav { grid-template-columns: auto 1fr auto; }
+  .logo { justify-self: center; }
+  .nav-links { gap: 12px; }
   .hero { padding: 72px 0 96px; }
   .hero-lede { font-size: var(--fs-body); }
   .section-head { flex-direction: column; align-items: flex-start; gap: 16px; }
   .pgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 12px; }
   .pcard-body { padding: 16px 8px 8px; }
+  .cat-section { padding: 32px 0; }
   .cat-links { gap: 16px; }
   .cat-link { font-size: 26px; padding-bottom: 14px; }
   .cut-cell { padding: 24px 8px 16px; }
@@ -448,10 +466,18 @@ details[open] > summary .chev { transform: translateY(2px) rotate(-135deg); }
   .myth { padding: 80px 0; }
   .myth-inner p { font-size: var(--fs-body); }
   .learn { grid-template-columns: 1fr; }
-  .learn-cut { min-height: 140px; }
-  .learn-cut .cut { width: 96px; height: 96px; }
+  .learn-img { min-height: 176px; }
   .learn-body { padding: 24px; }
-  .foot-row { flex-direction: column; align-items: flex-start; }
+
+  .foot-grid { grid-template-columns: 1fr; gap: 0; padding-top: 0; padding-bottom: 8px; }
+  .foot-brand { margin-bottom: 24px; }
+  .foot-group { border-top: 1px solid var(--line); }
+  .foot-group:last-of-type { border-bottom: 1px solid var(--line); }
+  .foot-group summary { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; margin-bottom: 0; cursor: pointer; pointer-events: auto; }
+  .foot-group summary::after { content: '+'; color: var(--graphite-soft); font-size: 18px; }
+  .foot-group[open] summary::after { content: '–'; }
+  .foot-group a:first-of-type { margin-top: 4px; }
+  .foot-group a:last-of-type { padding-bottom: 16px; }
 
   /* Избранное на главной — горизонтальная лента */
   .pgrid.ribbon { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 calc(var(--gutter) * -1); padding: 4px var(--gutter) 8px; scrollbar-width: none; }
